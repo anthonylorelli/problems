@@ -3,11 +3,6 @@
 
 #include <iostream>
 
-void TraversePath(double numerator, double denominator)
-{
-    
-}
-
 int main()
 {
     std::ios_base::sync_with_stdio(false);
