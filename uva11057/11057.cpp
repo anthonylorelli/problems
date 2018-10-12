@@ -40,10 +40,11 @@ int main()
                 {
                     couple.first = p;
                     couple.second = *b;
-                } 
+                }
             }
         }
 
+        if (couple.first > couple.second) { std::swap(couple.first, couple.second); }
         std::cout << "Peter should buy books whose prices are " << couple.first << 
             " and " << couple.second << "\n\n";
     }
