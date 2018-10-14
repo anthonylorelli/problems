@@ -24,21 +24,28 @@ int main()
             electionYears.push_back(year);
         }
 
-        std::vector<int> total;
-        std::vector<int> first;
-        std::vector<int> last;
+        int mostElections {0};
+        int startingYear {0};
+        int finalYear {0};
 
-        int elections {0};
-        int firstElection {0};
-        int lastElection {0};
-
-        for (int i {0}; i < electionYears.size(); ++i)
+        for (size_t i {0}; i < electionYears.size(); ++i)
         {
-            for (int j {0}; j < years; ++j)
+            int limit {electionYears[i] + years};
+            int lookAhead {0};
+
+            while ((i + lookAhead < electionYears.size()) && (electionYears[i + lookAhead] < limit))
             {
-                if (j == 0) { firstElection = electionYears[i]; }
-                else if (j == years - 1) { lastElection = electionYears[i + j];}
+                lookAhead++;
+            }
+
+            if (lookAhead > mostElections) 
+            { 
+                mostElections = lookAhead; 
+                startingYear = electionYears[i];
+                finalYear = electionYears[i + lookAhead - 1];
             }
         }
+
+        std::cout << mostElections << " " << startingYear << " " << finalYear;
     }
 }
