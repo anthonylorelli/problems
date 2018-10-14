@@ -10,11 +10,12 @@ int main()
 
     int years {0};
     int popes {0};
-    std::vector<int> electionYears;
 
     while (std::cin >> years)
     {
         std::cin >> popes;
+
+        std::vector<int> electionYears;
 
         for (int i {0}; i < popes; ++i)
         {
@@ -39,12 +40,12 @@ int main()
 
             if (lookAhead > mostElections) 
             { 
-                mostElections = lookAhead; 
+                mostElections = lookAhead;
                 startingYear = electionYears[i];
                 finalYear = electionYears[i + lookAhead - 1];
             }
         }
 
-        std::cout << mostElections << " " << startingYear << " " << finalYear;
+        std::cout << mostElections << " " << startingYear << " " << finalYear << "\n";
     }
 }
