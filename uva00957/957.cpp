@@ -2,7 +2,6 @@
 // https://uva.onlinejudge.org/external/9/957.pdf
 
 #include <iostream>
-#include <algorithm>
 #include <vector>
 
 int main()
