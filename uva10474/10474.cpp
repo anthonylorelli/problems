@@ -7,6 +7,8 @@
 
 int main()
 {
+    std::ios_base::sync_with_stdio(false);
+
     int numMarbles {0};
     int numQueries {0};
     std::vector<int> marbles;
