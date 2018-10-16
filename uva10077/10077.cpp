@@ -51,7 +51,7 @@ int main()
     int denominator {0};
 
     while (std::cin >> numerator && std::cin >> denominator && 
-        numerator != 1 && denominator != 1)
+        (numerator != 1 || denominator != 1))
     {
         SternBrocot sb {numerator, denominator};
         sb.PrintPath();
