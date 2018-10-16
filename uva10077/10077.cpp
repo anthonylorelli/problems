@@ -38,9 +38,9 @@ private:
     const int m_targetNumerator;
     const int m_targetDenominator;
 
-    const fraction m_left = std::make_pair(0, 1);
-    const fraction m_identity = std::make_pair(1, 1);
-    const fraction m_right = std::make_pair(1, 0);
+    const fraction m_left { std::make_pair(0, 1) };
+    const fraction m_identity { std::make_pair(1, 1) };
+    const fraction m_right { std::make_pair(1, 0) };
 };
 
 int main()
