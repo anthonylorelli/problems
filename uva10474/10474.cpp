@@ -1,5 +1,6 @@
 // Problem definition:
 // https://uva.onlinejudge.org/external/104/10474.pdf
+// Accepted 2018-10-11
 
 #include <iostream>
 #include <vector>

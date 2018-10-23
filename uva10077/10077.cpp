@@ -1,5 +1,6 @@
 // Problem definition:
 // https://uva.onlinejudge.org/external/100/10077.pdf
+// Accepted 2018-10-16
 
 #include <iostream>
 #include <tuple>
