@@ -10,10 +10,11 @@ int main()
     std::ios_base::sync_with_stdio(false);
 
     int count {0};
-    std::vector<int> prices;
 
     while (std::cin >> count)
     {
+        std::vector<int> prices;
+
         for (int i = 0; i < count; ++i)
         {
             int p {0};
@@ -46,6 +47,6 @@ int main()
 
         if (couple.first > couple.second) { std::swap(couple.first, couple.second); }
         std::cout << "Peter should buy books whose prices are " << couple.first << 
-            " and " << couple.second << "\n\n";
+            " and " << couple.second << ".\n\n";
     }
 }
