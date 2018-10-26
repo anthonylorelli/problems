@@ -1,5 +1,6 @@
 // Problem definition:
 // https://uva.onlinejudge.org/external/110/11057.pdf
+// Accepted 2018-10-25
 
 #include <iostream>
 #include <algorithm>
@@ -37,7 +38,7 @@ int main()
 
             if (b != prices.end())
             {
-                if (std::abs(p - *b) < std::abs(couple.second - couple.first))
+                if (*b == diff && std::abs(p - *b) < std::abs(couple.second - couple.first))
                 {
                     couple.first = p;
                     couple.second = *b;
