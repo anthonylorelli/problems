@@ -21,16 +21,18 @@ int NumberOfDigits(long long n)
 
 void GenerateLengths(std::vector<long long>& lengths)
 {
-    lengths.push_back(1);
     int count {1};
     constexpr int max {2147483647};
 
-    for (int i = 2; lengths[i - 2] <= max; ++i)
+    lengths.push_back(0);
+    lengths.push_back(1);
+
+    for (int i = 2; lengths[i - 1] <= max; ++i)
     {
         int length = NumberOfDigits(i);
         count += length;
-        lengths.push_back(count + lengths[i - 2]);
-        //std::cout << lengths[i - 1] << "\n";
+        lengths.push_back(count + lengths[i - 1]);
+        //std::cout << lengths[i] << "\n";
     }
 }
 
@@ -50,7 +52,9 @@ int main()
         std::cin >> target;
 
         auto offset = std::lower_bound(lengths.begin(), lengths.end(), target);
-        auto index = (*offset == target) ? offset - lengths.begin() : (offset - 1) - lengths.begin();
+        auto index = offset - lengths.begin();
+
+        std::cout << "Index: " << index << "\n";
 
         int next {1};
         int nextLength {1};
