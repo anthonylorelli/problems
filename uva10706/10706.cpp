@@ -32,8 +32,21 @@ void GenerateLengths(std::vector<long long>& lengths)
         int length = NumberOfDigits(i);
         count += length;
         lengths.push_back(count + lengths[i - 1]);
-        //std::cout << lengths[i] << "\n";
     }
+}
+
+template <typename T>
+int ExtractDecimalDigit(int number, T index)
+{
+    int value {0};
+
+    while (index--)
+    {
+        value = number % 10;
+        number /= 10;
+    }
+
+    return value;
 }
 
 int main()
@@ -52,28 +65,18 @@ int main()
         std::cin >> target;
 
         auto offset = std::lower_bound(lengths.begin(), lengths.end(), target);
-        auto index = offset - lengths.begin();
-
-        std::cout << "Index: " << index << "\n";
+        auto index = target - *(offset - 1);
 
         int next {1};
         int nextLength {1};
 
-        for (int nextLength {1}; index > nextLength; nextLength = NumberOfDigits(++next)) 
+        for (; index > nextLength; nextLength = NumberOfDigits(++next)) 
         { 
             index -= nextLength;
         }
 
         index = nextLength - index + 1;
 
-        int value {0};
-
-        while (index--)
-        {
-            value = next % 10;
-            next /= 10;
-        }
-
-        std::cout << value << "\n";
+        std::cout << ExtractDecimalDigit(next, index) << "\n";
     }
 }
