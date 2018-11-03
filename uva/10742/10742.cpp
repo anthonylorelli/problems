@@ -1,29 +1,28 @@
 // Problem definition: https://uva.onlinejudge.org/external/107/10742.pdf
 // Accepted ?
 
+#include <bitset>
 #include <iostream>
 #include <vector>
 
 void GeneratePrimes(std::vector<int>& numbers)
 {
     // https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes
-    constexpr int max {100};
-    std::vector<int> v;
+    constexpr int max {1000001};
+    std::bitset<max> sieve;
 
-    for (int i = 0; i <= max; ++i) { v.push_back(i); }
-
-    for (int i = 2; i <= max; ++i)
+    sieve.set();
+    sieve[0] = 0;
+    sieve[1] = 0;
+    
+    for (int i = 2; i < max; ++i)
     {
-        if (v[i])
+        if (sieve[i])
         {
-            for (int j = 1; i + (j * i) < max; ++j)
-            {
-                v[i + (j * i)] = 0;
-            }
+            for (int j = 1; i + (j * i) < max; ++j) { sieve[i + (j * i)] = 0; }
+            numbers.push_back(i);
         }
     }
-
-    for (auto i : v) { if (i) { numbers.push_back(i); } }
 }
 
 int main()
@@ -33,7 +32,7 @@ int main()
     std::vector<int> numbers;
     GeneratePrimes(numbers);
 
-    for (auto i : numbers) { std::cout << i << "\n"; }
+    //for (auto i : numbers) { std::cout << i << "\n"; }
 
     int price {0};
     int count {1};
