@@ -1,6 +1,7 @@
 // Problem definition: https://uva.onlinejudge.org/external/107/10742.pdf
 // Accepted ?
 
+#include <algorithm>
 #include <bitset>
 #include <iostream>
 #include <vector>
@@ -39,7 +40,14 @@ int main()
     
     while (std::cin >> price && price)
     {
+        auto bound = std::lower_bound(numbers.begin(), numbers.end(), price);
+
         int combinations {0};
+        int last {*bound};
+
+        while (*(--bound) + last > price) { }
+
+        auto remaining = bound - numbers.begin();
 
         std::cout << "Case #" << count++ << ": " << combinations << "\n";
     }
