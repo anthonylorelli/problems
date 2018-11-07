@@ -41,13 +41,18 @@ int main()
     while (std::cin >> price && price)
     {
         auto bound = std::lower_bound(numbers.begin(), numbers.end(), price);
+        //if (bound == numbers.end()) { bound--; }
+        bound--;
 
         int combinations {0};
-        int last {*bound};
 
-        while (*(--bound) + last > price) { }
-
-        auto remaining = bound - numbers.begin();
+        for (int i = bound - numbers.begin(); i >= 0; --i)
+        {
+            auto scan = bound;
+            while ((numbers[i] + *(--scan)) > price) { }
+            auto remaining = scan - numbers.begin();
+            combinations += remaining;
+        }
 
         std::cout << "Case #" << count++ << ": " << combinations << "\n";
     }
