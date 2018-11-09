@@ -6,7 +6,7 @@
 #include <iostream>
 #include <vector>
 
-void GeneratePrimes(std::vector<int>& numbers)
+void GeneratePrimes(std::vector<int>& primes)
 {
     // https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes
     constexpr int max {1000001};
@@ -21,7 +21,7 @@ void GeneratePrimes(std::vector<int>& numbers)
         if (sieve[i])
         {
             for (int j = 1; i + (j * i) < max; ++j) { sieve[i + (j * i)] = 0; }
-            numbers.push_back(i);
+            primes.push_back(i);
         }
     }
 }
@@ -30,28 +30,29 @@ int main()
 {
     std::ios_base::sync_with_stdio(false);
 
-    std::vector<int> numbers;
-    GeneratePrimes(numbers);
-
-    //for (auto i : numbers) { std::cout << i << "\n"; }
+    std::vector<int> primes;
+    GeneratePrimes(primes);
 
     int price {0};
     int count {1};
     
-    while (std::cin >> price && price)
+    while ((std::cin >> price) && price)
     {
-        auto bound = std::lower_bound(numbers.begin(), numbers.end(), price);
-        //if (bound == numbers.end()) { bound--; }
-        bound--;
+        auto limit = std::lower_bound(primes.begin(), primes.end(), price);
+        limit--;
 
-        int combinations {0};
+        size_t combinations {0};
 
-        for (int i = bound - numbers.begin(); i >= 0; --i)
+        for (size_t i = limit - primes.begin(); i > 0; --i)
         {
-            auto scan = bound;
-            while ((numbers[i] + *(--scan)) > price) { }
-            auto remaining = scan - numbers.begin();
-            combinations += remaining;
+            //std::cout << "Current prime: " << primes[i] << "\n";
+            if (primes[i] < (price - 1))
+            {
+                auto j = i - 1; 
+                for (;(primes[i] + primes[j]) > price; --j) { /*std::cout << "Lesser prime: " << *current-- << "\n";*/ }
+                //std::cout << "Remaining: " << j << "\n";
+                combinations += (j + 1);
+            }
         }
 
         std::cout << "Case #" << count++ << ": " << combinations << "\n";
