@@ -1,5 +1,5 @@
 // Problem definition: https://uva.onlinejudge.org/external/107/10742.pdf
-// Accepted ?
+// Accepted 2018-11-09
 
 #include <algorithm>
 #include <bitset>
@@ -38,23 +38,34 @@ int main()
     
     while ((std::cin >> price) && price)
     {
-        auto limit = std::lower_bound(primes.begin(), primes.end(), price);
-        limit--;
-
         size_t combinations {0};
 
-        for (size_t i = limit - primes.begin(); i > 0; --i)
+        if (price > 2)
         {
-            //std::cout << "Current prime: " << primes[i] << "\n";
-            if (primes[i] < (price - 1))
+            auto limit = std::lower_bound(primes.begin(), primes.end(), price);
+            limit--;
+
+            for (size_t i = limit - primes.begin(); i > 0; --i)
             {
-                auto j = i - 1; 
-                for (;(primes[i] + primes[j]) > price; --j) { /*std::cout << "Lesser prime: " << *current-- << "\n";*/ }
-                //std::cout << "Remaining: " << j << "\n";
-                combinations += (j + 1);
+                if (primes[i] < (price - 1))
+                {
+                    auto difference = price - primes[i];
+
+                    if (difference >= primes[i])
+                    {
+                        combinations += i;
+                    }
+                    else
+                    {
+                        auto pair = std::lower_bound(primes.begin(), primes.end(), difference);
+                        if (*pair != difference) { --pair; }
+                        auto j = (pair - primes.begin()) + 1;
+                        combinations += j;
+                    }
+                }
             }
         }
 
-        std::cout << "Case #" << count++ << ": " << combinations << "\n";
+        std::cout << "Case " << count++ << ": " << combinations << "\n";
     }
 }
