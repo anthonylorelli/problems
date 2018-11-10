@@ -1,5 +1,5 @@
-// Problem definition:
-// https://uva.onlinejudge.org/external/105/10567.pdf
+// Problem definition: https://uva.onlinejudge.org/external/105/10567.pdf
+// Accepted: ?
 
 #include <iostream>
 #include <string>
