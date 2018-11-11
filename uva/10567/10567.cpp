@@ -9,17 +9,17 @@ int main()
 {
     std::ios_base::sync_with_stdio(false);
 
-    std::string s;
-    std::cin >> s;
+    std::string candidates;
+    std::cin >> candidates;
 
-    int n {0};
-    std::cin >> n;
+    int queryCount {0};
+    std::cin >> queryCount;
 
-    while (n--)
+    while (queryCount--)
     {
-        std::string candidates;
-        std::cin >> candidates;
+        std::string query;
+        std::cin >> query;
 
-        std::cout << candidates << "\n";
+        std::cout << query << "\n";
     }
 }
