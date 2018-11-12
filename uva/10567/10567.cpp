@@ -12,6 +12,13 @@ int main()
     std::string candidates;
     std::cin >> candidates;
 
+    std::vector<std::vector<int>> serials {123};
+
+    for (int i = 0; i < candidates.size(); ++i)
+    {
+        serials[candidates[i]].push_back(i);
+    }
+
     int queryCount {0};
     std::cin >> queryCount;
 
