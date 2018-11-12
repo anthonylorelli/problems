@@ -14,7 +14,7 @@ int main()
 
     std::vector<std::vector<int>> serials {123};
 
-    for (int i = 0; i < candidates.size(); ++i)
+    for (size_t i = 0; i < candidates.size(); ++i)
     {
         serials[candidates[i]].push_back(i);
     }
