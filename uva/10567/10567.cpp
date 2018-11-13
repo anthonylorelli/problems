@@ -51,7 +51,7 @@ int main()
 
         if (found) 
         { 
-            std::cout << "Match " << first << " " << next << "\n"; 
+            std::cout << "Matched " << first << " " << next << "\n"; 
         }
         else 
         { 
