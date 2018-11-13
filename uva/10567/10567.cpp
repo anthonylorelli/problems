@@ -28,24 +28,25 @@ int main()
         std::string query;
         std::cin >> query;
 
+        constexpr int maxSerial {1000001};
+        int first {maxSerial};
         constexpr int invalidSerial {-1};
-        int first {invalidSerial};
         int next {invalidSerial};
         bool found {true};
 
-        for (size_t i = 0; i < query.size(); ++i)
+        for (const auto c : query)
         {
-            auto current = std::upper_bound(serials[query[i]].begin(), serials[query[i]].end(), next);
-            if (current == serials[query[i]].end())
+            auto current = std::upper_bound(serials[c].begin(), serials[c].end(), next);
+            if (current == serials[c].end())
             {
                 found = false;
                 break;
             }
             else
             {
-                auto offset = current - serials[query[i]].begin();
-                next = serials[query[i]][offset];
-                if (i == 0) { first = next; }
+                auto offset = current - serials[c].begin();
+                next = serials[c][offset];
+                if (next < first) { first = next; }
             }
         }
 
