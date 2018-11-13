@@ -1,6 +1,7 @@
 // Problem definition: https://uva.onlinejudge.org/external/105/10567.pdf
 // Accepted: ?
 
+#include <algorithm>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -27,6 +28,35 @@ int main()
         std::string query;
         std::cin >> query;
 
-        std::cout << query << "\n";
+        constexpr int maxSerial {1000001};
+        int first {maxSerial};
+        constexpr int invalidSerial {-1};
+        int next {invalidSerial};
+        bool found {true};
+
+        for (const auto c : query)
+        {
+            auto current = std::upper_bound(serials[c].begin(), serials[c].end(), next);
+            if (current == serials[c].end())
+            {
+                found = false;
+                break;
+            }
+            else
+            {
+                auto offset = current - serials[c].begin();
+                next = serials[c][offset];
+                if (next < first) { first = next; }
+            }
+        }
+
+        if (found) 
+        { 
+            std::cout << "Matched " << first << " " << next << "\n"; 
+        }
+        else 
+        { 
+            std::cout << "Not matched" << "\n"; 
+        }
     }
 }
