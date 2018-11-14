@@ -1,5 +1,5 @@
 // Problem definition: https://uva.onlinejudge.org/external/105/10567.pdf
-// Accepted: ?
+// Accepted: 2018-11-13
 
 #include <algorithm>
 #include <iostream>
@@ -32,14 +32,14 @@ int main()
         int first {maxSerial};
         constexpr int invalidSerial {-1};
         int next {invalidSerial};
-        bool found {true};
+        bool matched {true};
 
         for (const auto c : query)
         {
             auto current = std::upper_bound(serials[c].begin(), serials[c].end(), next);
             if (current == serials[c].end())
             {
-                found = false;
+                matched = false;
                 break;
             }
             else
@@ -50,7 +50,7 @@ int main()
             }
         }
 
-        if (found) 
+        if (matched)
         { 
             std::cout << "Matched " << first << " " << next << "\n"; 
         }
