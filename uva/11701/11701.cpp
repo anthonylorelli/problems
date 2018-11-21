@@ -8,20 +8,30 @@
 constexpr char g_member[] {"MEMBER"};
 constexpr char g_nonMember[] {"NON-MEMBER"};
 
-const char* IsInCantorSet(const std::string& number)
+const char* IsInCantorSet(const float input, int digit)
 {
-    return g_nonMember;
+    if (digit == 6) { return g_member; }
+
+    float rebase { input * 3 };
+    float first { std::floor(rebase) };
+
+    return (first == 1) ? g_nonMember : IsInCantorSet(rebase - first, digit + 1);
+}
+
+const char* IsInCantorSet(const float input)
+{
+    return IsInCantorSet(input, 0);
 }
 
 int main()
 {
     std::ios_base::sync_with_stdio(false);
 
-    std::string input;
+    float input {0.0};
 
-    while (std::cin >> input && input != "END")
+    while (std::cin.peek() != 'E' && std::cin >> input)
     {
-        const char* output = (input == "1" || input == "0") ? g_member : IsInCantorSet(input);
+        const char* output = (input == 1 || input == 0) ? g_member : IsInCantorSet(input);
         std::cout << output << "\n";
     }
 }
