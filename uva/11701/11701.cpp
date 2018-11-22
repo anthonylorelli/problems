@@ -2,6 +2,7 @@
 // Accepted ?
 
 #include <iostream>
+#include <math.h>
 #include <string>
 #include <vector>
 
@@ -13,7 +14,7 @@ const char* IsInCantorSet(const float input, int digit)
     if (digit == 6) { return g_member; }
 
     float rebase { input * 3 };
-    float first { std::floor(rebase) };
+    float first { floor(rebase) };
 
     return (first == 1) ? g_nonMember : IsInCantorSet(rebase - first, digit + 1);
 }
