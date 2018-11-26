@@ -11,16 +11,24 @@ constexpr char g_nonMember[] {"NON-MEMBER"};
 
 const char* IsInCantorSet(const float input, int digit)
 {
-    if (digit == 6) { return g_member; }
+    if (digit == 6) 
+    {
+        std::cout << "\n"; 
+        return g_member; 
+    }
 
     float rebase { input * 3 };
-    float first { floor(rebase) };
+    float first { (rebase >= 1) ? floor(rebase) : 0.0 };
 
-    return (first == 1) ? g_nonMember : IsInCantorSet(rebase - first, digit + 1);
+    std::cout << first;
+
+    return (first == 1) ? g_nonMember : 
+        IsInCantorSet((first > 1) ? rebase - first : rebase, digit + 1);
 }
 
 const char* IsInCantorSet(const float input)
 {
+    std::cout << "0.";
     return IsInCantorSet(input, 0);
 }
 
