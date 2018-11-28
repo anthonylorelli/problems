@@ -30,7 +30,8 @@ const char* IsInCantorSet(const double input, int digit)
     }
     else
     {
-        return IsInCantorSet((first > 1) ? rebase - first : rebase, digit + 1);
+        return (first > 1) ? IsInCantorSet(rebase - first, digit + 1) :
+            IsInCantorSet(rebase, digit);
     }
 }
 
