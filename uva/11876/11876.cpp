@@ -4,6 +4,13 @@
 #include <iostream>
 #include <vector>
 
+void GenerateNodSequence(std::vector<int>& sequence)
+{
+    // n0 = 1
+    // ni = n(i-1) + NOD(n(i-1))
+    // 1 2 4 7 9 12
+}
+
 int main()
 {
     std::ios_base::sync_with_stdio(false);
