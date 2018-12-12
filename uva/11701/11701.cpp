@@ -14,18 +14,18 @@ const char* IsInCantorSet(const double input, int digit)
 {
     if (digit == 6) 
     {
-        std::cout << "\n"; 
+        //std::cout << "\n"; 
         return g_member; 
     }
 
     double rebase { input * 3 };
     double first { (rebase >= 1) ? floor(rebase) : 0.0 };
 
-    std::cout << first;
+    //std::cout << first;
 
     if (first == 1) 
     {
-        std::cout << "\n";
+        //std::cout << "\n";
         return g_nonMember;
     }
     else
@@ -37,7 +37,7 @@ const char* IsInCantorSet(const double input, int digit)
 
 const char* IsInCantorSet(const double input)
 {
-    std::cout << "0.";
+    //std::cout << "0.";
     return IsInCantorSet(input, 0);
 }
 
@@ -49,7 +49,7 @@ int main()
 
     while (std::cin.peek() != 'E' && std::cin >> input)
     {
-        std::cout << "Input: " << input << " Result: ";
+        //std::cout << "Input: " << input << " Result: ";
         const char* output = (input == 1 || input == 0) ? g_member : IsInCantorSet(input);
         std::cout << output << "\n";
     }
