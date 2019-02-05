@@ -10,3 +10,8 @@ liz steve dave
 liz 30 1 steve 
 steve 55 2 liz dave 
 dave 0 2 steve liz
+3
+dave laura owen
+dave 200 0
+laura 100 0
+owen 100 0
