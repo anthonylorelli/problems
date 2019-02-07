@@ -1,0 +1,56 @@
+6 4 
+engine 
+brakes 
+tires 
+ashtray 
+vinyl roof 
+trip computer 
+Chevrolet 
+20000.00 3 
+engine 
+tires 
+brakes 
+Cadillac 
+70000.00 4 
+ashtray 
+vinyl roof 
+trip computer 
+engine 
+Hyundai 
+10000.00 3 
+engine 
+tires 
+ashtray 
+Lada 
+6000.00 1 
+tires 
+1 1 
+coffee 
+Starbucks 
+1.50 1 
+coffee 
+2 2
+hair
+goop
+Alpha
+101.0 2
+hair
+goop
+Beta
+102.0 2
+hair
+goop
+2 3
+hair
+goop
+Alpha Beta
+101.0 1
+hair
+Beta Gamma
+102.0 1
+hair
+Gamma Delta
+103.0 2
+hair
+goop
+0 0
