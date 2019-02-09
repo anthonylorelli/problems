@@ -4,3 +4,7 @@ Pakistan
 India 
 USA 
 USSR
+$
+Abc
+A
+J
