@@ -8,4 +8,6 @@
 +z +y +z 
 5 
 No +z No No 
+7
++y +z +y +z -y -z
 0
