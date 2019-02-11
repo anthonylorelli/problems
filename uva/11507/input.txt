@@ -10,4 +10,24 @@
 No +z No No 
 7
 +y +z +y +z -y -z
+2
++y
+2
+-y
+3
++z -y
+3
+-z +y
+4
++z +z -y
+4
+-z -z +y
+2
++z
+2
+-z
+5
++z +z +z +z
+5
+-z -z -z -z
 0
