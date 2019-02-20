@@ -2,7 +2,6 @@
 // Accepted ?
 
 #include <iostream>
-#include <stack>
 #include <deque>
 #include <string>
 #include <unordered_map>
@@ -26,18 +25,25 @@ int main()
 {
     std::ios_base::sync_with_stdio(false);
 
-    std::stack<Card> nonDealer;
-    std::stack<Card> dealer;
-
     std::string card;
     while (std::cin >> card && card[0] != '#')
     {
-        nonDealer.push(Card{rankMap[card[1]]});
+        std::deque<Card> dealer;        
+        std::deque<Card> nonDealer;
+        nonDealer.push_front(Card{rankMap[card[1]]});
+
         for (int i {1}; i < 52; ++i)
         {
             auto& p {i % 2 ? dealer : nonDealer};
             std::cin >> card;
-            p.push(Card{rankMap[card[1]]});
+            p.push_front(Card{rankMap[card[1]]});
+        }
+
+        std::deque<Card> stack;
+
+        while (dealer.size() != 0 && nonDealer.size() != 0)
+        {
+            
         }
     }
 }
