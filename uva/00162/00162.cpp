@@ -89,12 +89,9 @@ int main()
 
         std::deque<Card> pile;
 
-        std::deque<Card>* p1{&nonDealer};
-        std::deque<Card>* p2{&dealer};
-
         while (dealer.size() != 0 && nonDealer.size() != 0)
         {
-            ExecuteTurn(*p1, *p2, pile);
+            ExecuteTurn(nonDealer, dealer, pile);
         }
     }
 }
