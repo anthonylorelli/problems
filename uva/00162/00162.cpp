@@ -9,8 +9,8 @@
 
 std::unordered_map<char,int> rankMap 
 {
-    {{'A', 14}, {'2', 2}, {'3', 3}, {'4', 4}, {'5', 5}, {'6', 6}, {'7', 7},
-    {'8', 8}, {'9', 9}, {'T', 10}, {'J', 11}, {'Q', 12}, {'K', 13}}
+    {{'2', 2}, {'3', 3}, {'4', 4}, {'5', 5}, {'6', 6}, {'7', 7}, {'8', 8}, 
+    {'9', 9}, {'T', 10}, {'J', 11}, {'Q', 12}, {'K', 13}, {'A', 14}}
 };
 
 class Card
@@ -42,13 +42,31 @@ const Card Queen{'Q'};
 const Card King{'K'};
 const Card Ace{'A'};
 
+int CalculateDraw(std::deque<Card>& pile)
+{
+    if (pile.size() == 0) { return 1; }
+
+    Card c {pile.front()};
+
+    return (c == Jack) ? 1 : (c == Queen) ? 2 : (c == King) ? 3 : (c == Ace) ? 4 : 1;
+}
+
 void ExecuteTurn(std::deque<Card>& p1, std::deque<Card>& p2, std::deque<Card>& pile)
 {
-    pile.push_front(p1.front());
-    p1.pop_front();
+    int draw {CalculateDraw(pile)};
 
-    Card& top{pile.front()};
-    int deals = (top == Jack) ? 1 : (top == Queen) ? 2 : (top == King) ? 3 : (top == Ace) ? 4 : 1;
+    for (int i {0}; i < draw; ++i)
+    {
+        pile.push_front(p1.front());
+        p1.pop_front();
+
+        Card c {pile.front()};
+        if (c >= Jack) 
+        { 
+            ExecuteTurn(p2, p1, pile);
+            return;
+        }
+    }
 }
 
 int main()
