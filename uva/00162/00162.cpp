@@ -51,7 +51,7 @@ int CalculateDraw(std::deque<Card>& pile)
     return (c == Jack) ? 1 : (c == Queen) ? 2 : (c == King) ? 3 : (c == Ace) ? 4 : 1;
 }
 
-void ExecuteTurn(std::deque<Card>& p1, std::deque<Card>& p2, std::deque<Card>& pile)
+std::deque<Card>& ExecuteTurn(std::deque<Card>& p1, std::deque<Card>& p2, std::deque<Card>& pile)
 {
     int draw {CalculateDraw(pile)};
 
@@ -63,10 +63,11 @@ void ExecuteTurn(std::deque<Card>& p1, std::deque<Card>& p2, std::deque<Card>& p
         Card c {pile.front()};
         if (c >= Jack) 
         { 
-            ExecuteTurn(p2, p1, pile);
-            return;
+            return ExecuteTurn(p2, p1, pile);
         }
     }
+
+    return p2;
 }
 
 int main()
@@ -78,20 +79,23 @@ int main()
     {
         std::deque<Card> dealer;        
         std::deque<Card> nonDealer;
-        nonDealer.push_front(Card{rankMap[card[1]]});
+        nonDealer.push_front(Card{card[1]});
 
         for (int i {1}; i < 52; ++i)
         {
             auto& p {i % 2 ? dealer : nonDealer};
             std::cin >> card;
-            p.push_front(Card{rankMap[card[1]]});
+            p.push_front(Card{card[1]});
         }
 
         std::deque<Card> pile;
 
-        while (dealer.size() != 0 && nonDealer.size() != 0)
+        while (dealer.size() > 0 && nonDealer.size() > 0)
         {
-            ExecuteTurn(nonDealer, dealer, pile);
+            std::deque<Card>& p{ExecuteTurn(nonDealer, dealer, pile)};
+            std::move(pile.begin(), pile.end(), std::back_inserter(p));
         }
+
+        std::cout << (dealer.size() ? "1 " : "2 ") << (dealer.size() ? dealer.size() : nonDealer.size()) << "\n";
     }
 }
