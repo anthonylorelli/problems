@@ -18,20 +18,11 @@ class Card
 public:
     Card(const char rank) : m_rank{rankMap[rank]}  { }
 
-    bool operator<=(const Card& c)
-    {
-        return m_rank <= c.m_rank;
-    }
+    bool operator<=(const Card& c) const { return m_rank <= c.m_rank; }
+    bool operator>=(const Card& c) const { return m_rank >= c.m_rank; }
+    bool operator==(const Card& c) const { return m_rank == c.m_rank; }
 
-    bool operator>=(const Card& c)
-    {
-        return m_rank >= c.m_rank;
-    }
-
-    bool operator==(const Card& c)
-    {
-        return m_rank == c.m_rank;
-    }
+    std::string ToString() { return std::to_string(m_rank); }
 
 private:
     int m_rank;
@@ -51,11 +42,11 @@ int CalculateDraw(std::deque<Card>& pile)
     return (c == Jack) ? 1 : (c == Queen) ? 2 : (c == King) ? 3 : (c == Ace) ? 4 : 1;
 }
 
-std::deque<Card>& ExecuteTurn(std::deque<Card>& p1, std::deque<Card>& p2, std::deque<Card>& pile)
+std::deque<Card>* RespondToFace(std::deque<Card>& p1, std::deque<Card>& p2, std::deque<Card>& pile)
 {
     int draw {CalculateDraw(pile)};
 
-    for (int i {0}; i < draw; ++i)
+    for (int i {0}; i < draw && p1.size() > 0; ++i)
     {
         pile.push_front(p1.front());
         p1.pop_front();
@@ -63,11 +54,20 @@ std::deque<Card>& ExecuteTurn(std::deque<Card>& p1, std::deque<Card>& p2, std::d
         Card c {pile.front()};
         if (c >= Jack) 
         { 
-            return ExecuteTurn(p2, p1, pile);
+            return RespondToFace(p2, p1, pile);
         }
     }
 
-    return p2;
+    return &p2;
+}
+
+std::deque<Card>* StartGame(std::deque<Card>& p1, std::deque<Card>& p2, std::deque<Card>& pile)
+{    
+    pile.push_front(p1.front());
+    p1.pop_front();
+
+    Card c {pile.front()};
+    return (c >= Jack) ? RespondToFace(p2, p1, pile) : StartGame(p2, p1, pile);
 }
 
 int main()
@@ -79,6 +79,7 @@ int main()
     {
         std::deque<Card> dealer;        
         std::deque<Card> nonDealer;
+
         nonDealer.push_front(Card{card[1]});
 
         for (int i {1}; i < 52; ++i)
@@ -88,12 +89,23 @@ int main()
             p.push_front(Card{card[1]});
         }
 
+        std::cout << "Dealer deck\n";
+        std::for_each(dealer.begin(), dealer.end(), [](Card& c) { std::cout << c.ToString() << " "; });
+        std::cout << "\nNon-dealer deck\n";
+        std::for_each(nonDealer.begin(), nonDealer.end(), [](Card& c) { std::cout << c.ToString() << " "; });
+
         std::deque<Card> pile;
 
+        std::deque<Card>* startingPlayer {&nonDealer};
+        std::deque<Card>* secondTurn {&dealer};
         while (dealer.size() > 0 && nonDealer.size() > 0)
         {
-            std::deque<Card>& p{ExecuteTurn(nonDealer, dealer, pile)};
-            std::move(pile.begin(), pile.end(), std::back_inserter(p));
+            std::deque<Card>* winner {StartGame(*startingPlayer, *secondTurn, pile)};
+            if (winner->size() + pile.size() == 52) { break; }
+            std::move(pile.begin(), pile.end(), std::back_inserter(*winner));
+            if (winner != startingPlayer) { std::swap(startingPlayer, secondTurn); }
+            pile.clear();
+            std::cout << "Dealer " << dealer.size() << " Non-dealer " << nonDealer.size() << "\n";
         }
 
         std::cout << (dealer.size() ? "1 " : "2 ") << (dealer.size() ? dealer.size() : nonDealer.size()) << "\n";
