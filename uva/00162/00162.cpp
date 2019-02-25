@@ -16,15 +16,17 @@ std::unordered_map<char,int> rankMap
 class Card
 {
 public:
-    Card(const char rank) : m_rank{rankMap[rank]}  { }
+    Card(const char rank) : m_suit{'_'}, m_rank{rankMap[rank]} { }
+    Card(const char suit, const char rank) : m_suit{suit}, m_rank{rankMap[rank]}  { }
 
     bool operator<=(const Card& c) const { return m_rank <= c.m_rank; }
     bool operator>=(const Card& c) const { return m_rank >= c.m_rank; }
     bool operator==(const Card& c) const { return m_rank == c.m_rank; }
 
-    std::string ToString() { return std::to_string(m_rank); }
+    std::string ToString() { return m_suit + std::to_string(m_rank); }
 
 private:
+    char m_suit;
     int m_rank;
 };
 
@@ -62,12 +64,19 @@ std::deque<Card>* RespondToFace(std::deque<Card>& p1, std::deque<Card>& p2, std:
 }
 
 std::deque<Card>* StartGame(std::deque<Card>& p1, std::deque<Card>& p2, std::deque<Card>& pile)
-{    
-    pile.push_front(p1.front());
-    p1.pop_front();
+{
+    if (p1.size() > 0)
+    {
+        pile.push_front(p1.front());
+        p1.pop_front();
 
-    Card c {pile.front()};
-    return (c >= Jack) ? RespondToFace(p2, p1, pile) : StartGame(p2, p1, pile);
+        Card c {pile.front()};
+        return (c >= Jack) ? RespondToFace(p2, p1, pile) : StartGame(p2, p1, pile);
+    }
+    else
+    {
+        return &p2;
+    }    
 }
 
 int main()
@@ -80,19 +89,14 @@ int main()
         std::deque<Card> dealer;        
         std::deque<Card> nonDealer;
 
-        nonDealer.push_front(Card{card[1]});
+        nonDealer.push_front(Card{card[0], card[1]});
 
         for (int i {1}; i < 52; ++i)
         {
             auto& p {i % 2 ? dealer : nonDealer};
             std::cin >> card;
-            p.push_front(Card{card[1]});
+            p.push_front(Card{card[0], card[1]});
         }
-
-        std::cout << "Dealer deck\n";
-        std::for_each(dealer.begin(), dealer.end(), [](Card& c) { std::cout << c.ToString() << " "; });
-        std::cout << "\nNon-dealer deck\n";
-        std::for_each(nonDealer.begin(), nonDealer.end(), [](Card& c) { std::cout << c.ToString() << " "; });
 
         std::deque<Card> pile;
 
@@ -100,12 +104,16 @@ int main()
         std::deque<Card>* secondTurn {&dealer};
         while (dealer.size() > 0 && nonDealer.size() > 0)
         {
+            std::cout << "\nDealer " << dealer.size() << ": ";
+            std::for_each(dealer.begin(), dealer.end(), [](Card& c) { std::cout << c.ToString() << " "; });
+            std::cout << "\nNon-dealer " << nonDealer.size() << ": ";
+            std::for_each(nonDealer.begin(), nonDealer.end(), [](Card& c) { std::cout << c.ToString() << " "; });
+            std::cout << "\n";
             std::deque<Card>* winner {StartGame(*startingPlayer, *secondTurn, pile)};
             if (winner->size() + pile.size() == 52) { break; }
             std::move(pile.begin(), pile.end(), std::back_inserter(*winner));
-            if (winner != startingPlayer) { std::swap(startingPlayer, secondTurn); }
             pile.clear();
-            std::cout << "Dealer " << dealer.size() << " Non-dealer " << nonDealer.size() << "\n";
+            if (winner != startingPlayer) { std::swap(startingPlayer, secondTurn); }
         }
 
         std::cout << (dealer.size() ? "1 " : "2 ") << (dealer.size() ? dealer.size() : nonDealer.size()) << "\n";
