@@ -111,8 +111,9 @@ int main()
             std::cout << "\n";
             std::deque<Card>* winner {StartGame(*startingPlayer, *secondTurn, pile)};
             if (winner->size() + pile.size() == 52) { break; }
-            std::move(pile.begin(), pile.end(), std::back_inserter(*winner));
+            std::move(pile.rbegin(), pile.rend(), std::back_inserter(*winner));
             pile.clear();
+            std::cout << "\nWinner: " << ((winner == &dealer) ? "dealer" : "non-dealer") << "\n";
             if (winner != startingPlayer) { std::swap(startingPlayer, secondTurn); }
         }
 
