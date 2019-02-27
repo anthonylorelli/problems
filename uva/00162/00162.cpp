@@ -6,6 +6,7 @@
 #include <string>
 #include <unordered_map>
 #include <algorithm>
+#include <iomanip>
 
 std::unordered_map<char,int> rankMap 
 {
@@ -104,19 +105,14 @@ int main()
         std::deque<Card>* secondTurn {&dealer};
         while (dealer.size() > 0 && nonDealer.size() > 0)
         {
-            std::cout << "\nDealer " << dealer.size() << ": ";
-            std::for_each(dealer.begin(), dealer.end(), [](Card& c) { std::cout << c.ToString() << " "; });
-            std::cout << "\nNon-dealer " << nonDealer.size() << ": ";
-            std::for_each(nonDealer.begin(), nonDealer.end(), [](Card& c) { std::cout << c.ToString() << " "; });
-            std::cout << "\n";
             std::deque<Card>* winner {StartGame(*startingPlayer, *secondTurn, pile)};
             if (winner->size() + pile.size() == 52) { break; }
             std::move(pile.rbegin(), pile.rend(), std::back_inserter(*winner));
             pile.clear();
-            std::cout << "\nWinner: " << ((winner == &dealer) ? "dealer" : "non-dealer") << "\n";
             if (winner != startingPlayer) { std::swap(startingPlayer, secondTurn); }
         }
 
-        std::cout << (dealer.size() ? "1 " : "2 ") << (dealer.size() ? dealer.size() : nonDealer.size()) << "\n";
+        std::cout << (dealer.size() ? "1" : "2") << std::right << std::setw(3) << 
+            (dealer.size() ? dealer.size() : nonDealer.size()) << "\n";
     }
 }
