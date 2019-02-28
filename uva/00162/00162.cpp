@@ -105,6 +105,10 @@ int main()
         std::deque<Card>* secondTurn {&dealer};
         while (dealer.size() > 0 && nonDealer.size() > 0)
         {
+            //std::cout << "\nDealer:\n";
+            //std::for_each(dealer.begin(), dealer.end(), [](auto& c) { std::cout << c.ToString() << " "; });
+            //std::cout << "\nNon-dealer:\n";
+            //std::for_each(nonDealer.begin(), nonDealer.end(), [](auto& c) { std::cout << c.ToString() << " "; });
             std::deque<Card>* winner {StartGame(*startingPlayer, *secondTurn, pile)};
             if (winner->size() + pile.size() == 52) { break; }
             std::move(pile.rbegin(), pile.rend(), std::back_inserter(*winner));
