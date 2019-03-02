@@ -1,5 +1,5 @@
 // Problem definition: https://uva.onlinejudge.org/external/1/162.pdf
-// Accepted ?
+// Accepted 2019-03-02
 
 #include <iostream>
 #include <deque>
@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <algorithm>
 #include <iomanip>
+#include <tuple>
 
 std::unordered_map<char,int> rankMap 
 {
@@ -45,44 +46,43 @@ int CalculateDraw(std::deque<Card>& pile)
     return (c == Jack) ? 1 : (c == Queen) ? 2 : (c == King) ? 3 : (c == Ace) ? 4 : 1;
 }
 
-std::deque<Card>* RespondToFace(std::deque<Card>& p1, std::deque<Card>& p2, std::deque<Card>& pile)
+std::pair<bool,std::deque<Card>*> CoverFace(std::deque<Card>& p1, std::deque<Card>& p2, std::deque<Card>& pile)
 {
     int draw {CalculateDraw(pile)};
 
-    for (int i {0}; i < draw && p1.size() > 0; ++i)
+    for (int i {0}; i < draw; ++i)
     {
+        if (p1.size() == 0) { return std::make_pair(false, &p2); }
+
         pile.push_front(p1.front());
         p1.pop_front();
 
         Card c {pile.front()};
         if (c >= Jack) 
         { 
-            return RespondToFace(p2, p1, pile);
+            return CoverFace(p2, p1, pile);
         }
     }
 
-    return &p2;
+    return std::make_pair(true, &p2);
 }
 
-std::deque<Card>* StartGame(std::deque<Card>& p1, std::deque<Card>& p2, std::deque<Card>& pile)
+std::pair<bool,std::deque<Card>*> PlayGame(std::deque<Card>& p1, std::deque<Card>& p2, std::deque<Card>& pile)
 {
-    if (p1.size() > 0)
-    {
-        pile.push_front(p1.front());
-        p1.pop_front();
+    if (p1.size() == 0) { return std::make_pair(false, &p2); }
 
-        Card c {pile.front()};
-        return (c >= Jack) ? RespondToFace(p2, p1, pile) : StartGame(p2, p1, pile);
-    }
-    else
-    {
-        return &p2;
-    }    
+    pile.push_front(p1.front());
+    p1.pop_front();
+
+    Card c {pile.front()};
+    return (c >= Jack) ? CoverFace(p2, p1, pile) : PlayGame(p2, p1, pile);
 }
 
 int main()
 {
     std::ios_base::sync_with_stdio(false);
+
+    constexpr int deckSize {52};
 
     std::string card;
     while (std::cin >> card && card[0] != '#')
@@ -92,7 +92,7 @@ int main()
 
         nonDealer.push_front(Card{card[0], card[1]});
 
-        for (int i {1}; i < 52; ++i)
+        for (int i {1}; i < deckSize; ++i)
         {
             auto& p {i % 2 ? dealer : nonDealer};
             std::cin >> card;
@@ -100,20 +100,20 @@ int main()
         }
 
         std::deque<Card> pile;
-
         std::deque<Card>* startingPlayer {&nonDealer};
         std::deque<Card>* secondTurn {&dealer};
-        std::deque<Card>* winner {nullptr};
-        while (dealer.size() > 0 && nonDealer.size() > 0)
+        std::pair<bool, std::deque<Card>*> result;
+
+        while (true)
         {
-            winner = StartGame(*startingPlayer, *secondTurn, pile);
-            if (winner->size() + pile.size() == 52) { break; }
-            std::move(pile.rbegin(), pile.rend(), std::back_inserter(*winner));
+            result = PlayGame(*startingPlayer, *secondTurn, pile);
+            if (!result.first) { break; }
+            std::move(pile.rbegin(), pile.rend(), std::back_inserter(*result.second));
             pile.clear();
-            if (winner != startingPlayer) { std::swap(startingPlayer, secondTurn); }
+            if (result.second != startingPlayer) { std::swap(startingPlayer, secondTurn); }
         }
 
-        std::cout << (winner == &dealer ? "1" : "2") << std::right << std::setw(3) << 
-            (winner == &dealer ? dealer.size() : nonDealer.size()) << "\n";
+        std::cout << (result.second == &dealer ? "1" : "2") << std::right << std::setw(3) << 
+            (result.second == &dealer ? dealer.size() : nonDealer.size()) << "\n";
     }
 }
