@@ -103,20 +103,17 @@ int main()
 
         std::deque<Card>* startingPlayer {&nonDealer};
         std::deque<Card>* secondTurn {&dealer};
+        std::deque<Card>* winner {nullptr};
         while (dealer.size() > 0 && nonDealer.size() > 0)
         {
-            //std::cout << "\nDealer:\n";
-            //std::for_each(dealer.begin(), dealer.end(), [](auto& c) { std::cout << c.ToString() << " "; });
-            //std::cout << "\nNon-dealer:\n";
-            //std::for_each(nonDealer.begin(), nonDealer.end(), [](auto& c) { std::cout << c.ToString() << " "; });
-            std::deque<Card>* winner {StartGame(*startingPlayer, *secondTurn, pile)};
+            winner = StartGame(*startingPlayer, *secondTurn, pile);
             if (winner->size() + pile.size() == 52) { break; }
             std::move(pile.rbegin(), pile.rend(), std::back_inserter(*winner));
             pile.clear();
             if (winner != startingPlayer) { std::swap(startingPlayer, secondTurn); }
         }
 
-        std::cout << (dealer.size() ? "1" : "2") << std::right << std::setw(3) << 
-            (dealer.size() ? dealer.size() : nonDealer.size()) << "\n";
+        std::cout << (winner == &dealer ? "1" : "2") << std::right << std::setw(3) << 
+            (winner == &dealer ? dealer.size() : nonDealer.size()) << "\n";
     }
 }
