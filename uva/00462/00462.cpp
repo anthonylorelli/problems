@@ -25,8 +25,8 @@ int main()
         { {'J',1}, {'Q',2}, {'K',3}, {'A',4}, {'2',0}, {'3',0}, {'4',0}, {'5',0},
         {'6',0}, {'7',0}, {'8',0}, {'9',0}, {'T',0} }
     };
-    int noTrumpPoints {0};
 
+    int noTrumpPoints {0};
     std::pair<char,char> card;
     std::vector<std::pair<char,char>> hand;
 
@@ -39,6 +39,7 @@ int main()
 
     while (std::cin >> card.first && std::cin >> card.second)
     {
+        noTrumpPoints = 0;
         ProcessCard(card);
         for (int i = 1; i < handSize; ++i)
         {
