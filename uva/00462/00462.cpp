@@ -40,6 +40,8 @@ int main()
     while (std::cin >> card.first && std::cin >> card.second)
     {
         noTrumpPoints = 0;
+        std::for_each(suits.begin(), suits.end(), [](std::pair<const char,int>& s) { s.second = 0; });
+        std::for_each(stopped.begin(), stopped.end(), [](std::pair<const char,bool>& s) { s.second = false; });
         ProcessCard(card);
         for (int i = 1; i < handSize; ++i)
         {
@@ -101,6 +103,7 @@ int main()
                 "H" : (suits['D'] >= suits['C']) ?
                 "D" : "C";
             
+            std::cout << "S:" << suits['S'] << " H:" << suits['H'] << " D:" << suits['D'] << " C:" << suits['C'] << "\n";
             std::cout << "BID " << s << "\n";
         }        
     }
