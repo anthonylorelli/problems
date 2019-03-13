@@ -6,4 +6,10 @@
 int main()
 {
     std::ios_base::sync_with_stdio(false);
+    char next;
+
+    while (std::cin >> next && next != '#')
+    {
+        constexpr int deckSize{52};
+    }
 }
