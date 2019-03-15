@@ -55,7 +55,8 @@ int main()
         std::for_each(list.begin(), list.end(), [&hands, &playerIndex](std::pair<const char*,char>& p)
             {
                 std::cout << p.first;
-                std::for_each(hands[playerIndex[p.second]].begin(),hands[playerIndex[p.second]].end(), PrintHand);
+                auto& h{hands[playerIndex[p.second]]};
+                std::for_each(h.begin(), h.end(), PrintHand);
             });
     }
 }
