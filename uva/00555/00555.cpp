@@ -1,5 +1,5 @@
 // Problem definition: https://uva.onlinejudge.org/external/5/555.pdf
-// Accepted ?
+// Accepted 2019-03-15
 
 #include <array>
 #include <algorithm>
@@ -26,7 +26,6 @@ int main()
         {'8', 8}, {'9', 9}, {'T', 10}, {'J', 11}, {'Q', 12}, {'K', 13}, {'A', 14} };
 
     char next;
-    bool first{true};
 
     while (std::cin >> next && next != '#')
     {
@@ -40,23 +39,23 @@ int main()
         }
 
         std::for_each(hands.begin(), hands.end(), 
-            [&](std::vector<std::pair<char,char>>& hand)
+            [&suit, &face](std::vector<std::pair<char,char>>& hand)
             {
                 std::sort(hand.begin(), hand.end(), 
-                    [&](std::pair<char,char>& a, std::pair<char,char>& b)
+                    [&suit, &face](std::pair<char,char>& a, std::pair<char,char>& b)
                     {
                         return (suit[a.first] == suit[b.first]) ? face[a.second] < face[b.second] :
                             suit[a.first] < suit[b.first];
                     });
             });
 
-        if (!first) { std::cout << "\n"; } else { first = false; }
-        std::vector<std::pair<const char*,char>> list{ {"S:", 'S'}, {"\nW:", 'W'}, {"\nN:", 'N'}, {"\nE:", 'E'} };
-        std::for_each(list.begin(), list.end(), [&hands, &playerIndex](std::pair<const char*,char>& p)
+        std::vector<char> list{ 'S', 'W', 'N', 'E' };
+        std::for_each(list.begin(), list.end(), [&hands, &playerIndex](char p)
             {
-                std::cout << p.first;
-                auto& h{hands[playerIndex[p.second]]};
+                std::cout << p << ":";
+                auto& h{hands[playerIndex[p]]};
                 std::for_each(h.begin(), h.end(), PrintHand);
+                std::cout << "\n";
             });
     }
 }
