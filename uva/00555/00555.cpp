@@ -17,8 +17,8 @@ int main()
 {
     std::ios_base::sync_with_stdio(false);
 
-    constexpr int deckSize{52};
-    constexpr int players{4};
+    constexpr size_t deckSize{52};
+    constexpr size_t players{4};
 
     std::unordered_map<char,int> playerIndex{ {'N', 0}, {'E', 1}, {'S', 2}, {'W', 3} };
     std::unordered_map<char,int> suit{ {'C', 0}, {'D', 1}, {'S', 2}, {'H', 3} };
@@ -26,17 +26,17 @@ int main()
         {'8', 8}, {'9', 9}, {'T', 10}, {'J', 11}, {'Q', 12}, {'K', 13}, {'A', 14} };
 
     char next;
-    int counter{0};
+    bool first{true};
 
     while (std::cin >> next && next != '#')
     {
         std::array<std::vector<std::pair<char,char>>, players> hands;
         std::pair<char,char> card;
-        for (size_t i{(playerIndex[next]+1) % playerIndex.size()}, j{0}; j < deckSize; ++j)
+        for (size_t i{(playerIndex[next]+1) % players}, j{0}; j < deckSize; ++j)
         {
             std::cin >> card.first >> card.second;
             hands[i].emplace_back(card);
-            i = (i + 1) % playerIndex.size();
+            i = (i + 1) % players;
         }
 
         std::for_each(hands.begin(), hands.end(), 
@@ -50,12 +50,13 @@ int main()
                     });
             });
 
-        if (counter++) { std::cout << "\n"; }
+        if (!first) { std::cout << "\n"; } else { first = false; }
         std::vector<std::pair<const char*,char>> list{ {"S:", 'S'}, {"\nW:", 'W'}, {"\nN:", 'N'}, {"\nE:", 'E'} };
         std::for_each(list.begin(), list.end(), [&hands, &playerIndex](std::pair<const char*,char>& p)
             {
                 std::cout << p.first;
-                std::for_each(hands[playerIndex[p.second]].begin(),hands[playerIndex[p.second]].end(), PrintHand);
+                auto& h{hands[playerIndex[p.second]]};
+                std::for_each(h.begin(), h.end(), PrintHand);
             });
     }
 }
