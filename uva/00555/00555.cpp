@@ -26,7 +26,6 @@ int main()
         {'8', 8}, {'9', 9}, {'T', 10}, {'J', 11}, {'Q', 12}, {'K', 13}, {'A', 14} };
 
     char next;
-    bool first{true};
 
     while (std::cin >> next && next != '#')
     {
@@ -50,13 +49,13 @@ int main()
                     });
             });
 
-        if (!first) { std::cout << "\n"; } else { first = false; }
-        std::vector<std::pair<const char*,char>> list{ {"S:", 'S'}, {"\nW:", 'W'}, {"\nN:", 'N'}, {"\nE:", 'E'} };
-        std::for_each(list.begin(), list.end(), [&hands, &playerIndex](std::pair<const char*,char>& p)
+        std::vector<char> list{ 'S', 'W', 'N', 'E' };
+        std::for_each(list.begin(), list.end(), [&hands, &playerIndex](char p)
             {
-                std::cout << p.first;
-                auto& h{hands[playerIndex[p.second]]};
+                std::cout << p << ":";
+                auto& h{hands[playerIndex[p]]};
                 std::for_each(h.begin(), h.end(), PrintHand);
+                std::cout << "\n";
             });
     }
 }
