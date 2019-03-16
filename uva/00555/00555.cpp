@@ -39,10 +39,10 @@ int main()
         }
 
         std::for_each(hands.begin(), hands.end(), 
-            [&](std::vector<std::pair<char,char>>& hand)
+            [&suit, &face](std::vector<std::pair<char,char>>& hand)
             {
                 std::sort(hand.begin(), hand.end(), 
-                    [&](std::pair<char,char>& a, std::pair<char,char>& b)
+                    [&suit, &face](std::pair<char,char>& a, std::pair<char,char>& b)
                     {
                         return (suit[a.first] == suit[b.first]) ? face[a.second] < face[b.second] :
                             suit[a.first] < suit[b.first];
