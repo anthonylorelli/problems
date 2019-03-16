@@ -1,5 +1,5 @@
 // Problem definition: https://uva.onlinejudge.org/external/5/555.pdf
-// Accepted ?
+// Accepted 2019-03-15
 
 #include <array>
 #include <algorithm>
