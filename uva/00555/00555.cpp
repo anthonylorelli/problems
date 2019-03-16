@@ -44,7 +44,7 @@ int main()
                 std::sort(hand.begin(), hand.end(), 
                     [&suit, &face](std::pair<char,char>& a, std::pair<char,char>& b)
                     {
-                        return (suit[a.first] == suit[b.first]) ? face[a.second] < face[b.second] :
+                        return (a.first == b.first) ? face[a.second] < face[b.second] :
                             suit[a.first] < suit[b.first];
                     });
             });
