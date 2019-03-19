@@ -2,6 +2,8 @@
 // Accepted ?
 
 #include <iostream>
+#include <tuple>
+#include <vector>
 
 int main()
 {
@@ -12,6 +14,7 @@ int main()
 
     int numShuffles{0};
     constexpr int deckSize{52};
+    std::vector<std::pair<char,char>> deck(deckSize);
 
     while (cases--)
     {
