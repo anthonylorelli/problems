@@ -15,8 +15,8 @@ int main()
     int cases{0};
     std::cin >> cases;
 
-    int numShuffles{0};
-    constexpr int deckSize{52};
+    size_t numShuffles{0};
+    constexpr size_t deckSize{52};
     std::deque<std::pair<char,char>> deck{deckSize};
 
     while (cases--)
@@ -24,7 +24,7 @@ int main()
         std::cin >> numShuffles;
         std::vector<std::vector<int>> shuffles{numShuffles};
         std::for_each(shuffles.begin(), shuffles.end(),
-            [](std::vector<int>& v) 
+            [&deckSize](std::vector<int>& v) 
             { 
                 int n;
                 std::generate_n(std::back_inserter(v), deckSize,
