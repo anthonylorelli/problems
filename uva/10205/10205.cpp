@@ -1,9 +1,12 @@
 // Problem definition: https://uva.onlinejudge.org/external/102/10205.pdf
 // Accepted ?
 
+#include <algorithm>
 #include <iostream>
 #include <tuple>
 #include <vector>
+#include <deque>
+#include <string>
 
 int main()
 {
@@ -14,10 +17,27 @@ int main()
 
     int numShuffles{0};
     constexpr int deckSize{52};
-    std::vector<std::pair<char,char>> deck(deckSize);
+    std::deque<std::pair<char,char>> deck{deckSize};
 
     while (cases--)
     {
         std::cin >> numShuffles;
+        std::vector<std::vector<int>> shuffles{numShuffles};
+        std::for_each(shuffles.begin(), shuffles.end(),
+            [](std::vector<int>& v) 
+            { 
+                int n;
+                std::generate_n(std::back_inserter(v), deckSize,
+                    [&n]() { std::cin >> n; return n; });
+            });
+
+        std::string s;
+        while (std::getline(std::cin, s) && s.length() > 0)
+        {
+            int shuffle{std::stoi(s)};
+            std::vector<int>& v{shuffles[shuffle]};
+            std::for_each(v.begin(), v.end(),
+                [&deck](int n) {});
+        }
     }
 }
