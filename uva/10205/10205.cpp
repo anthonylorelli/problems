@@ -80,7 +80,7 @@ int main()
             { 
                 size_t n;
                 std::generate_n(std::back_inserter(v), deckSize,
-                    [&n]() { std::cin >> n; return n; });
+                    [&n]() { std::cin >> n; return n - 1; });
             });
 
         std::string s;
@@ -90,9 +90,10 @@ int main()
             std::vector<size_t>& v{shuffles[shuffle - 1]};
             for (size_t j{0}; j < deckSize; ++j)
             {
-                size_t i{v[j] - 1};
+                size_t i{v[j]};
                 if (i != j)
                 {
+                    std::cout << i << " " << j << "\n";
                     std::pair<char,char> c{deck[i]};
                     deck.erase(deck.begin() + i);
                     deck.insert(deck.begin() + j, c);
