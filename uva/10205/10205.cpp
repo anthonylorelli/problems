@@ -93,10 +93,19 @@ int main()
                 size_t i{v[j]};
                 if (i != j)
                 {
-                    std::cout << i << " " << j << "\n";
-                    std::pair<char,char> c{deck[i]};
-                    deck.erase(deck.begin() + i);
-                    deck.insert(deck.begin() + j, c);
+                    if (i > j) 
+                    { 
+                        std::rotate(deck.rbegin() + j, deck.rbegin() + j + 1, deck.rbegin() + i + 1);
+                    }
+                    else
+                    {
+                        std::rotate(deck.begin() + i, deck.begin() + i + 1, deck.begin() + j + 1);
+                    }
+                    
+                    //std::cout << i << " " << j << "\n";
+                    //std::pair<char,char> c{deck[i]};
+                    //deck.erase(deck.begin() + i);
+                    //deck.insert(deck.begin() + j, c);
                 }
             }
         }
