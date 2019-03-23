@@ -1,7 +1,8 @@
 // Problem definition: https://uva.onlinejudge.org/external/102/10205.pdf
-// Accepted ?
+// Accepted 2019-03-22
 
 #include <algorithm>
+#include <array>
 #include <iostream>
 #include <tuple>
 #include <vector>
@@ -52,11 +53,12 @@ std::ostream& operator<<(std::ostream& o, std::pair<char,char>& p)
     return o;
 }
 
-std::deque<std::pair<char,char>> const startingDeck{
-    {'2','C'}, {'3','C'}, {'4','C'}, {'5','C'}, {'6','C'}, {'7','C'}, {'8','C'}, {'9','C'}, {'T','C'}, {'J','C'}, {'Q','C'}, {'K','C'}, {'A','C'},
+constexpr size_t deckSize{52};
+constexpr std::array<std::pair<char,char>, deckSize> referenceDeck{
+    {{'2','C'}, {'3','C'}, {'4','C'}, {'5','C'}, {'6','C'}, {'7','C'}, {'8','C'}, {'9','C'}, {'T','C'}, {'J','C'}, {'Q','C'}, {'K','C'}, {'A','C'},
     {'2','D'}, {'3','D'}, {'4','D'}, {'5','D'}, {'6','D'}, {'7','D'}, {'8','D'}, {'9','D'}, {'T','D'}, {'J','D'}, {'Q','D'}, {'K','D'}, {'A','D'},
     {'2','H'}, {'3','H'}, {'4','H'}, {'5','H'}, {'6','H'}, {'7','H'}, {'8','H'}, {'9','H'}, {'T','H'}, {'J','H'}, {'Q','H'}, {'K','H'}, {'A','H'},
-    {'2','S'}, {'3','S'}, {'4','S'}, {'5','S'}, {'6','S'}, {'7','S'}, {'8','S'}, {'9','S'}, {'T','S'}, {'J','S'}, {'Q','S'}, {'K','S'}, {'A','S'}
+    {'2','S'}, {'3','S'}, {'4','S'}, {'5','S'}, {'6','S'}, {'7','S'}, {'8','S'}, {'9','S'}, {'T','S'}, {'J','S'}, {'Q','S'}, {'K','S'}, {'A','S'}}
 };
 
 int main()
@@ -66,22 +68,26 @@ int main()
     int cases{0};
     std::cin >> cases;
 
-    constexpr size_t deckSize{52};
-    std::deque<std::pair<char,char>> deck{deckSize};
+    std::array<std::pair<char,char>, deckSize> deck1;
+    std::array<std::pair<char,char>, deckSize> deck2;
     size_t numShuffles{0};
+    bool first{true};
 
     while (cases--)
     {
-        deck = startingDeck;
+        deck1 = referenceDeck;
         std::cin >> numShuffles;
         std::vector<std::vector<size_t>> shuffles{numShuffles};
         std::for_each(shuffles.begin(), shuffles.end(),
-            [&deckSize](std::vector<size_t>& v) 
+            [](std::vector<size_t>& v) 
             { 
                 size_t n;
                 std::generate_n(std::back_inserter(v), deckSize,
                     [&n]() { std::cin >> n; return n - 1; });
             });
+
+        std::array<std::pair<char,char>, deckSize>* d1{&deck1};
+        std::array<std::pair<char,char>, deckSize>* d2{&deck2};
 
         std::string s; std::getline(std::cin, s);
         while (std::getline(std::cin, s) && s.length() > 0)
@@ -91,26 +97,13 @@ int main()
             for (size_t j{0}; j < deckSize; ++j)
             {
                 size_t i{v[j]};
-                if (i != j)
-                {
-                    if (i > j) 
-                    { 
-                        std::rotate(deck.rbegin() + j, deck.rbegin() + j + 1, deck.rbegin() + i + 1);
-                    }
-                    else
-                    {
-                        std::rotate(deck.begin() + i, deck.begin() + i + 1, deck.begin() + j + 1);
-                    }
-                    
-                    //std::cout << i << " " << j << "\n";
-                    //std::pair<char,char> c{deck[i]};
-                    //deck.erase(deck.begin() + i);
-                    //deck.insert(deck.begin() + j, c);
-                }
+                (*d2)[j] = (*d1)[i];
             }
+
+            std::swap(d1, d2);
         }
 
-        std::for_each(deck.begin(), deck.end(), 
-            [&deck](std::pair<char,char>& c) { std::cout << c; });
+        if (!first) { std::cout << "\n"; } else { first = false; }
+        std::for_each(d1->begin(), d1->end(), [](std::pair<char,char>& c) { std::cout << c; });
     }
 }
