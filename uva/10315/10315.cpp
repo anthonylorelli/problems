@@ -6,11 +6,29 @@
 #include <iostream>
 #include <algorithm>
 
+enum class HandType
+{
+    HighCard,
+    Pair,
+    TwoPairs,
+    ThreeOfAKind,
+    Straight,
+    Flush,
+    FullHouse,
+    FourOfAKind,
+    StraightFlush
+};
+
+constexpr size_t handSize{5};
+
+HandType ClassifyHand(std::array<std::pair<char,char>,handSize>& hand)
+{
+    return HandType::HighCard;
+}
+
 int main()
 {
     std::ios_base::sync_with_stdio(false);
-
-    constexpr size_t handSize{5};
 
     std::array<std::pair<char,char>,handSize> blackHand;
     std::array<std::pair<char,char>,handSize> whiteHand;
