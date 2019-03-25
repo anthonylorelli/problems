@@ -29,6 +29,13 @@ enum class HandType
     StraightFlush
 };
 
+bool IsFlush(std::array<std::pair<char,char>,handSize>& hand)
+{
+    char suit{hand[0].second};
+    return std::all_of(hand.begin()+1, hand.end(), 
+        [&suit](std::pair<char,char>& c) { return c.second == suit; });
+}
+
 HandType ClassifyHand(std::array<std::pair<char,char>,handSize>& hand)
 {
     return HandType::HighCard;
