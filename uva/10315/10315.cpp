@@ -29,6 +29,19 @@ enum class HandType
     StraightFlush
 };
 
+bool IsFourOfAKind(std::array<std::pair<char,char>,handSize>& hand)
+{
+    int count{0};
+    char rank{hand[0].first};
+    std::for_each(hand.begin()+1, hand.end(), 
+        [&count, &rank](std::pair<char,char>& c) 
+        {
+            if (c.first == rank) { count++; } else { rank = c.first; count = 0; }
+        });
+
+    return count == 4;
+}
+
 bool IsFlush(std::array<std::pair<char,char>,handSize>& hand)
 {
     char suit{hand[0].second};
