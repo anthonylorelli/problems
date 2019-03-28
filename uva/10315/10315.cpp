@@ -29,6 +29,12 @@ enum class HandType
     StraightFlush
 };
 
+bool IsFullHouse(std::array<std::pair<char,char>,handSize>& hand)
+{
+    return (hand[0].first == hand[1].first && hand[1].first == hand[2].first && hand[3].first == hand[4].first) ||
+        (hand[0].first == hand[1].first && hand[2].first == hand[3].first && hand[3].first == hand[4].first);
+}
+
 bool IsFourOfAKind(std::array<std::pair<char,char>,handSize>& hand)
 {
     int count{0};
