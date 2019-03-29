@@ -63,14 +63,14 @@ bool IsFourOfAKind(const std::array<std::pair<char,char>,handSize>& hand)
     return IsNOfAKind(hand, 4);
 }
 
-bool IsFlush(std::array<std::pair<char,char>,handSize>& hand)
+bool IsFlush(const std::array<std::pair<char,char>,handSize>& hand)
 {
-    char suit{hand[0].second};
+    const char suit{hand[0].second};
     return std::all_of(hand.begin()+1, hand.end(), 
         [&suit](const std::pair<char,char>& c) { return c.second == suit; });
 }
 
-HandType ClassifyHand(std::array<std::pair<char,char>,handSize>& hand)
+HandType ClassifyHand(const std::array<std::pair<char,char>,handSize>& hand)
 {
     return HandType::HighCard;
 }
@@ -84,7 +84,7 @@ int main()
 
     char rank, suit;
     auto assignCard{[](std::pair<char,char>& c) { std::cin >> c.first >> c.second; }};
-    auto sortHand([](std::pair<char,char>& c1, std::pair<char,char>& c2) { return c1.first < c2.first; });
+    auto sortHand([](const std::pair<char,char>& c1, const std::pair<char,char>& c2) { return c1.first < c2.first; });
 
     while (std::cin >> rank >> suit)
     {
