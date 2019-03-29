@@ -29,30 +29,45 @@ enum class HandType
     StraightFlush
 };
 
-bool IsFullHouse(std::array<std::pair<char,char>,handSize>& hand)
+bool IsNOfAKind(const std::array<std::pair<char,char>,handSize>& hand, const int n)
+{
+    int count{1};
+    char rank{hand[0].first};
+    std::for_each(hand.begin()+1, hand.end(), 
+        [&count, &rank](const std::pair<char,char>& c) 
+        {
+            if (c.first == rank) { count++; } else { rank = c.first; count = 1; }
+        });
+
+    return count == n;
+}
+
+bool IsPair(const std::array<std::pair<char,char>,handSize>& hand)
+{
+    return IsNOfAKind(hand, 2);
+}
+
+bool IsThreeOfAKind(const std::array<std::pair<char,char>,handSize>& hand)
+{
+    return IsNOfAKind(hand, 3);
+}
+
+bool IsFullHouse(const std::array<std::pair<char,char>,handSize>& hand)
 {
     return (hand[0].first == hand[1].first && hand[1].first == hand[2].first && hand[3].first == hand[4].first) ||
         (hand[0].first == hand[1].first && hand[2].first == hand[3].first && hand[3].first == hand[4].first);
 }
 
-bool IsFourOfAKind(std::array<std::pair<char,char>,handSize>& hand)
+bool IsFourOfAKind(const std::array<std::pair<char,char>,handSize>& hand)
 {
-    int count{0};
-    char rank{hand[0].first};
-    std::for_each(hand.begin()+1, hand.end(), 
-        [&count, &rank](std::pair<char,char>& c) 
-        {
-            if (c.first == rank) { count++; } else { rank = c.first; count = 0; }
-        });
-
-    return count == 4;
+    return IsNOfAKind(hand, 4);
 }
 
 bool IsFlush(std::array<std::pair<char,char>,handSize>& hand)
 {
     char suit{hand[0].second};
     return std::all_of(hand.begin()+1, hand.end(), 
-        [&suit](std::pair<char,char>& c) { return c.second == suit; });
+        [&suit](const std::pair<char,char>& c) { return c.second == suit; });
 }
 
 HandType ClassifyHand(std::array<std::pair<char,char>,handSize>& hand)
