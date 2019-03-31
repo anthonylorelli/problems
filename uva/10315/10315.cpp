@@ -42,6 +42,21 @@ bool IsNOfAKind(const std::array<std::pair<char,char>,handSize>& hand, const int
     return count == n;
 }
 
+bool IsTwoPairs(const std::array<std::pair<char,char>,handSize>& hand)
+{
+    return false;
+}
+
+bool IsStraightFlush(const std::array<std::pair<char,char>,handSize>& hand)
+{
+    return false;
+}
+
+std::pair<char,char> HighCard(const std::array<std::pair<char,char>,handSize>& hand)
+{
+    return std::make_pair<char,char>('\0','\0');
+}
+
 bool IsPair(const std::array<std::pair<char,char>,handSize>& hand)
 {
     return IsNOfAKind(hand, 2);
