@@ -55,18 +55,26 @@ bool IsNOfAKind(const std::array<std::pair<int,char>,handSize>& hand, const int 
 
 bool IsTwoPairs(const std::array<std::pair<int,char>,handSize>& hand)
 {
-
     return false;
+}
+
+bool IsStraight(const std::array<std::pair<int,char>,handSize>& hand)
+{
+    int rank{hand[0].first + 1};
+    return std::all_of(hand.begin()+1, hand.end(), 
+        [&rank](const std::pair<int,char> c) { return c.first == rank++; });
 }
 
 bool IsStraightFlush(const std::array<std::pair<int,char>,handSize>& hand)
 {
-    return false;
+    int rank{hand[0].first + 1};
+    char suit{hand[0].second};
+    return std::all_of(hand.begin()+1, hand.end(),
+        [&rank, &suit](const std::pair<int,char> c) { return c.first == rank++ && c.second == suit; });
 }
 
 std::pair<int,char> HighCard(const std::array<std::pair<int,char>,handSize>& hand)
 {
-
     return std::make_pair<int,char>('\0','\0');
 }
 
