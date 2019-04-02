@@ -43,6 +43,7 @@ enum class HandType
 
 bool IsNOfAKind(const std::array<card,handSize>& hand, const int n)
 {
+    // Could use std::search_n here instead
     int count{1};
     int rank{hand[0].first};
     std::for_each(hand.begin()+1, hand.end(), 
