@@ -55,7 +55,11 @@ bool IsNOfAKind(const std::array<std::pair<int,char>,handSize>& hand, const int 
 
 bool IsTwoPairs(const std::array<std::pair<int,char>,handSize>& hand)
 {
-    return false;
+    auto findPair{[](const std::pair<int,char>& c1, const std::pair<int,char>& c2) { return c1.first == c2.first; }};
+    auto first{std::adjacent_find(hand.begin(), hand.end(), findPair)};
+    auto second{(first != hand.end() && first + 2 != hand.end()) ?
+        std::adjacent_find(first+2, hand.end(), findPair) : hand.end()};
+    return second != hand.end();
 }
 
 bool IsStraight(const std::array<std::pair<int,char>,handSize>& hand)
