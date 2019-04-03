@@ -43,12 +43,13 @@ enum class HandType
 
 bool IsNOfAKind(const std::array<card,handSize>& hand, const int n)
 {
+    bool result{false};
     int count{1};
     int rank{hand[0].first};
-    std::for_each(hand.begin()+1, hand.end(), [&count, &rank](const std::pair<int,char>& c) 
-        { if (c.first == rank) { count++; } else { rank = c.first; count = 1; }});
+    std::for_each(hand.begin()+1, hand.end(), [&](const std::pair<int,char>& c) 
+        { if (c.first == rank) { count++; if (count == n) { result = true; }} else { rank = c.first; count = 1; }});
 
-    return count == n;
+    return result;
 }
 
 bool IsTwoPairs(const std::array<card,handSize>& hand)
