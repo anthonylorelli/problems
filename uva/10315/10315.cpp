@@ -43,14 +43,10 @@ enum class HandType
 
 bool IsNOfAKind(const std::array<card,handSize>& hand, const int n)
 {
-    // Could use std::search_n here instead
     int count{1};
     int rank{hand[0].first};
-    std::for_each(hand.begin()+1, hand.end(), 
-        [&count, &rank](const std::pair<int,char>& c) 
-        {
-            if (c.first == rank) { count++; } else { rank = c.first; count = 1; }
-        });
+    std::for_each(hand.begin()+1, hand.end(), [&count, &rank](const std::pair<int,char>& c) 
+        { if (c.first == rank) { count++; } else { rank = c.first; count = 1; }});
 
     return count == n;
 }
@@ -114,7 +110,16 @@ bool IsFlush(const std::array<card,handSize>& hand)
 
 HandType ClassifyHand(const std::array<card,handSize>& hand)
 {
-    return HandType::HighCard;
+    auto type = IsStraightFlush(hand) ? HandType::StraightFlush :
+        IsFourOfAKind(hand) ? HandType::FourOfAKind :
+        IsFullHouse(hand) ? HandType::FullHouse :
+        IsFlush(hand) ? HandType::Flush :
+        IsStraight(hand) ? HandType::Straight :
+        IsThreeOfAKind(hand) ? HandType::ThreeOfAKind :
+        IsTwoPairs(hand) ? HandType::TwoPairs :
+        IsPair(hand) ? HandType::Pair : HandType::HighCard;
+
+    return type;
 }
 
 int main()
