@@ -45,11 +45,8 @@ bool IsNOfAKind(const std::array<card,handSize>& hand, const int n)
 {
     int count{1};
     int rank{hand[0].first};
-    std::for_each(hand.begin()+1, hand.end(), 
-        [&count, &rank](const std::pair<int,char>& c) 
-        {
-            if (c.first == rank) { count++; } else { rank = c.first; count = 1; }
-        });
+    std::for_each(hand.begin()+1, hand.end(), [&count, &rank](const std::pair<int,char>& c) 
+        { if (c.first == rank) { count++; } else { rank = c.first; count = 1; }});
 
     return count == n;
 }
@@ -73,7 +70,7 @@ bool IsStraight(const std::array<card,handSize>& hand)
 bool IsStraightFlush(const std::array<card,handSize>& hand)
 {
     int rank{hand[0].first + 1};
-    char suit{hand[0].second};
+    const char suit{hand[0].second};
     return std::all_of(hand.begin()+1, hand.end(),
         [&rank, &suit](const card& c) { return c.first == rank++ && c.second == suit; });
 }
@@ -113,7 +110,16 @@ bool IsFlush(const std::array<card,handSize>& hand)
 
 HandType ClassifyHand(const std::array<card,handSize>& hand)
 {
-    return HandType::HighCard;
+    auto type = IsStraightFlush(hand) ? HandType::StraightFlush :
+        IsFourOfAKind(hand) ? HandType::FourOfAKind :
+        IsFullHouse(hand) ? HandType::FullHouse :
+        IsFlush(hand) ? HandType::Flush :
+        IsStraight(hand) ? HandType::Straight :
+        IsThreeOfAKind(hand) ? HandType::ThreeOfAKind :
+        IsTwoPairs(hand) ? HandType::TwoPairs :
+        IsPair(hand) ? HandType::Pair : HandType::HighCard;
+
+    return type;
 }
 
 int main()
