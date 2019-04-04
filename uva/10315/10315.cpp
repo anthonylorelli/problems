@@ -123,6 +123,89 @@ HandType ClassifyHand(const std::array<card,handSize>& hand)
     return type;
 }
 
+bool operator>(const HandType t1, const HandType t2)
+{
+    if (t1 == HandType::StraightFlush)
+    {
+        return !(t2 == HandType::StraightFlush);
+    }
+    else if (t2 == HandType::StraightFlush)
+    {
+        return false;
+    }
+    else if (t1 == HandType::FourOfAKind)
+    {
+        return !(t2 == HandType::FourOfAKind);
+    } 
+    else if (t2 == HandType::FourOfAKind)
+    {
+        return false;
+    }
+    else if (t1 == HandType::FullHouse)
+    {
+        return !(t2 == HandType::FullHouse);
+    }
+    else if (t2 == HandType::FullHouse)
+    {
+        return false;
+    }
+    else if (t1 == HandType::Flush)
+    {
+        return !(t2 == HandType::Flush);
+    }
+    else if (t2 == HandType::Flush)
+    {
+        return false;
+    }
+    else if (t1 == HandType::Straight)
+    {
+        return !(t2 == HandType::Straight);
+    }
+    else if (t2 == HandType::Straight)
+    {
+        return false;
+    }
+    else if (t1 == HandType::ThreeOfAKind)
+    {
+        return !(t2 == HandType::ThreeOfAKind);
+    }
+    else if (t2 == HandType::ThreeOfAKind)
+    {
+        return false;
+    }
+    else if (t1 == HandType::TwoPairs)
+    {
+        return !(t2 == HandType::TwoPairs);
+    }
+    else if (t2 == HandType::TwoPairs)
+    {
+        return false;
+    }
+    else if (t1 == HandType::Pair)
+    {
+        return !(t2 == HandType::Pair);
+    }
+    else if (t2 == HandType::Pair)
+    {
+        return false;
+    }
+    
+    return false;
+}
+
+const std::array<card,handSize>& BreakTie(const HandType blackType, const std::array<card,handSize>& blackHand, 
+    const std::array<card,handSize>& whiteHand)
+{
+    return blackHand;
+}
+
+const std::array<card,handSize>& ChooseWinner(const HandType blackType, const std::array<card,handSize>& blackHand, 
+    const HandType whiteType, const std::array<card,handSize>& whiteHand)
+{
+    return (blackType == whiteType) ? BreakTie(blackType, blackHand, whiteHand) :
+        (blackType > whiteType) ? blackHand : whiteHand;
+}
+
 int main()
 {
     std::ios_base::sync_with_stdio(false);
@@ -146,6 +229,9 @@ int main()
         std::for_each(whiteHand.begin(), whiteHand.end(), assignCard);
         std::sort(blackHand.begin(), blackHand.end(), sortHand);
         std::sort(whiteHand.begin(), whiteHand.end(), sortHand);
+        auto blackType{ClassifyHand(blackHand)};
+        auto whiteType{ClassifyHand(whiteHand)};
+        auto winner{ChooseWinner(blackType, blackHand, whiteType, whiteHand)};
         std::cout << blackHand << whiteHand;
     }
 }
