@@ -78,7 +78,7 @@ bool IsStraightFlush(const std::array<card,handSize>& hand)
 
 card HighCard(const std::array<card,handSize>& hand)
 {
-    return std::make_pair<int,char>('\0','\0');
+    return hand[handSize - 1];
 }
 
 bool IsPair(const std::array<card,handSize>& hand)
@@ -193,17 +193,34 @@ bool operator>(const HandType t1, const HandType t2)
     return false;
 }
 
-const std::array<card,handSize>& BreakTie(const HandType blackType, const std::array<card,handSize>& blackHand, 
+enum class Winner
+{
+    Black,
+    White,
+    Tie
+};
+
+const Winner BreakTie(const HandType type, const std::array<card,handSize>& blackHand, 
     const std::array<card,handSize>& whiteHand)
 {
-    return blackHand;
+    Winner winner;
+
+    if (type == HandType::Straight || type == HandType::StraightFlush)
+    {
+        const card blackHighCard{HighCard(blackHand)};
+        const card whiteHighCard{HighCard(whiteHand)};
+        winner = blackHighCard == whiteHighCard ? Winner::Tie :
+            blackHighCard > whiteHighCard ? Winner::Black : Winner::White;
+    }
+
+    return winner;
 }
 
-const std::array<card,handSize>& ChooseWinner(const HandType blackType, const std::array<card,handSize>& blackHand, 
+const Winner ChooseWinner(const HandType blackType, const std::array<card,handSize>& blackHand, 
     const HandType whiteType, const std::array<card,handSize>& whiteHand)
 {
     return (blackType == whiteType) ? BreakTie(blackType, blackHand, whiteHand) :
-        (blackType > whiteType) ? blackHand : whiteHand;
+        (blackType > whiteType) ? Winner::Black : Winner::White;
 }
 
 int main()
@@ -231,7 +248,7 @@ int main()
         std::sort(whiteHand.begin(), whiteHand.end(), sortHand);
         auto blackType{ClassifyHand(blackHand)};
         auto whiteType{ClassifyHand(whiteHand)};
-        auto winner{ChooseWinner(blackType, blackHand, whiteType, whiteHand)};
+        const auto winner{ChooseWinner(blackType, blackHand, whiteType, whiteHand)};
         std::cout << blackHand << whiteHand;
     }
 }
