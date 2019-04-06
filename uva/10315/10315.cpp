@@ -10,6 +10,57 @@
 constexpr size_t handSize{5};
 using card = std::pair<int,char>;
 
+class PokerHand
+{
+public:
+    std::array<card,handSize> cards;
+};
+
+class HighCard : public PokerHand
+{
+
+};
+
+class Pair : public PokerHand
+{
+
+};
+
+class TwoPairs : public PokerHand
+{
+
+};
+
+class ThreeOfAKind : public PokerHand
+{
+
+};
+
+class Straight : public PokerHand
+{
+
+};
+
+class Flush : public PokerHand
+{
+
+};
+
+class FullHouse : public PokerHand
+{
+
+};
+
+class FourOfAKind : public PokerHand
+{
+
+};
+
+class StraightFlush : public PokerHand
+{
+
+};
+
 std::unordered_map<char,int> rankToValue{
     {'2',2}, {'3',3}, {'4',4},{'5',5}, {'6',6}, {'7',7}, {'8',8}, 
     {'9',9}, {'T',10},{'J',11}, {'Q',12}, {'K',13}, {'A', 14}
