@@ -307,6 +307,23 @@ int execute(std::istream& in, std::ostream& out)
     return 0;
 }
 
+TEST_CASE("Hand recognition", "[Poker hands]")
+{
+    PokerHand hand;
+    SECTION("Straight flush")
+    {
+        REQUIRE(true);
+    }
+    SECTION("Four of a kind")
+    {
+        REQUIRE(true);
+    }
+    SECTION("Full house")
+    {
+        REQUIRE(true);
+    }
+}
+
 int main(int argc, char* argv[])
 {
     std::ios_base::sync_with_stdio(false);
