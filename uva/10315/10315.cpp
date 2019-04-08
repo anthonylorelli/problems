@@ -7,6 +7,9 @@
 #include <algorithm>
 #include <unordered_map>
 
+#define CATCH_CONFIG_RUNNER
+#include "../catch/catch.hpp"
+
 constexpr size_t handSize{5};
 using card = std::pair<int,char>;
 
@@ -274,22 +277,20 @@ const Winner ChooseWinner(const HandType blackType, const std::array<card,handSi
         (blackType > whiteType) ? Winner::Black : Winner::White;
 }
 
-int main()
+int execute(std::istream& in, std::ostream& out)
 {
-    std::ios_base::sync_with_stdio(false);
-
     std::array<card,handSize> blackHand;
     std::array<card,handSize> whiteHand;
 
     char rank, suit;
-    auto assignCard{[&rank](card& c) 
+    auto assignCard{[&in, &rank](card& c) 
     { 
-        std::cin >> rank >> c.second; 
+        in >> rank >> c.second; 
         c.first = rankToValue[rank];
     }};
     auto sortHand([](const card& c1, const card& c2) { return c1.first < c2.first; });
 
-    while (std::cin >> rank >> suit)
+    while (in >> rank >> suit)
     {
         blackHand[0].first = rankToValue[rank];
         blackHand[0].second = suit;
@@ -300,6 +301,17 @@ int main()
         auto blackType{ClassifyHand(blackHand)};
         auto whiteType{ClassifyHand(whiteHand)};
         const auto winner{ChooseWinner(blackType, blackHand, whiteType, whiteHand)};
-        std::cout << blackHand << whiteHand;
+        out << blackHand << whiteHand;
     }
+
+    return 0;
+}
+
+int main(int argc, char* argv[])
+{
+    std::ios_base::sync_with_stdio(false);
+
+    return (argc == 0) ?
+        execute(std::cin, std::cout) :
+        Catch::Session().run(argc, argv);
 }
