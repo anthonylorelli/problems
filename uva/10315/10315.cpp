@@ -26,17 +26,30 @@ class HighCard : public PokerHand
 
 class Pair : public PokerHand
 {
+public:
+    Pair(const int i) : m_i{i} {}
 
+private:
+    int m_i;
 };
 
 class TwoPairs : public PokerHand
 {
+public:
+    TwoPairs(const int i, const int j) : m_i{i}, m_j{j} {}
 
+private:
+    int m_i;
+    int m_j;
 };
 
 class ThreeOfAKind : public PokerHand
 {
+public:
+    ThreeOfAKind(const int i) : m_i{i} {}
 
+private:
+    int m_i;
 };
 
 class Straight : public PokerHand
@@ -51,7 +64,12 @@ class Flush : public PokerHand
 
 class FullHouse : public PokerHand
 {
+public:
+    FullHouse(const int three, const int pair) : m_three{three}, m_pair{pair} {}
 
+private:
+    int m_three;
+    int m_pair;
 };
 
 class FourOfAKind : public PokerHand
@@ -307,9 +325,12 @@ int execute(std::istream& in, std::ostream& out)
     return 0;
 }
 
-TEST_CASE("Hand recognition", "[Poker hands]")
+TEST_CASE("Hand recognition", "[PokerHands]")
 {
     PokerHand hand;
+
+    REQUIRE(hand.cards.size() == handSize);
+
     SECTION("Straight flush")
     {
         REQUIRE(true);
@@ -328,7 +349,6 @@ int main(int argc, char* argv[])
 {
     std::ios_base::sync_with_stdio(false);
 
-    return (argc == 0) ?
-        execute(std::cin, std::cout) :
-        Catch::Session().run(argc, argv);
+    return Catch::Session().run(argc, argv);
+    //return execute(std::cin, std::cout);
 }
