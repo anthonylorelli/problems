@@ -83,6 +83,21 @@ class StraightFlush : public PokerHand
 };
 
 template <typename T>
+bool operator>(const Straight& s, const T& t) { return true; }
+bool operator>(const Straight& s1, const Straight& s2) { return false; }
+bool operator>(const Straight& s, const Flush& f2) { return false; }
+bool operator>(const Straight& s, const FullHouse& fh) { return false; }
+bool operator>(const Straight& s, const FourOfAKind& foak) { return false; }
+bool operator>(const Straight& s, const StraightFlush& sf) { return false; }
+
+template <typename T>
+bool operator>(const Flush& f, const T& t) { return true; }
+bool operator>(const Flush& f1, const Flush& f2) { return false; }
+bool operator>(const Flush& f1, const FullHouse& fh) { return false; }
+bool operator>(const Flush& f1, const FourOfAKind& foak) { return false; }
+bool operator>(const Flush& f1, const StraightFlush& sf) { return false; }
+
+template <typename T>
 bool operator>(const FullHouse& f, const T& t) { return true; }
 bool operator>(const FullHouse& f, const FullHouse& t) { return false; }
 bool operator>(const FullHouse& f, const FourOfAKind& t) { return false; }
@@ -397,11 +412,47 @@ TEST_CASE("Hand comparisons", "[PokerHands]")
         REQUIRE(!(foak > sf));
         REQUIRE(!(foak > foak));
         REQUIRE(foak > fh);
+        REQUIRE(foak > f);
+        REQUIRE(foak > s);
+        REQUIRE(foak > toak);
+        REQUIRE(foak > tp);
+        REQUIRE(foak > p);
+        REQUIRE(foak > hc);
     }
     SECTION("Full house")
     {
         REQUIRE(!(fh > sf));
         REQUIRE(!(fh > foak));
         REQUIRE(!(fh > fh));
+        REQUIRE(fh > f);
+        REQUIRE(fh > s);
+        REQUIRE(fh > toak);
+        REQUIRE(fh > tp);
+        REQUIRE(fh > p);
+        REQUIRE(fh > hc);
+    }
+    SECTION("Flush")
+    {
+        REQUIRE(!(f > sf));
+        REQUIRE(!(f > foak));
+        REQUIRE(!(f > fh));
+        REQUIRE(!(f > f));
+        REQUIRE(f > s);
+        REQUIRE(f > toak);
+        REQUIRE(f > tp);
+        REQUIRE(f > p);
+        REQUIRE(f > hc);
+    }
+    SECTION("Straight")
+    {
+        REQUIRE(!(s > sf));
+        REQUIRE(!(s > foak));
+        REQUIRE(!(s > fh));
+        REQUIRE(!(s > f));
+        REQUIRE(!(s > s));
+        REQUIRE(s > toak);
+        REQUIRE(s > tp);
+        REQUIRE(s > p);
+        REQUIRE(s > hc);
     }
 }
