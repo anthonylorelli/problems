@@ -82,6 +82,36 @@ class StraightFlush : public PokerHand
 
 };
 
+template <typename T>
+bool operator>(const Straight& s, const T& t) { return true; }
+bool operator>(const Straight& s1, const Straight& s2) { return false; }
+bool operator>(const Straight& s, const Flush& f2) { return false; }
+bool operator>(const Straight& s, const FullHouse& fh) { return false; }
+bool operator>(const Straight& s, const FourOfAKind& foak) { return false; }
+bool operator>(const Straight& s, const StraightFlush& sf) { return false; }
+
+template <typename T>
+bool operator>(const Flush& f, const T& t) { return true; }
+bool operator>(const Flush& f1, const Flush& f2) { return false; }
+bool operator>(const Flush& f1, const FullHouse& fh) { return false; }
+bool operator>(const Flush& f1, const FourOfAKind& foak) { return false; }
+bool operator>(const Flush& f1, const StraightFlush& sf) { return false; }
+
+template <typename T>
+bool operator>(const FullHouse& f, const T& t) { return true; }
+bool operator>(const FullHouse& f, const FullHouse& t) { return false; }
+bool operator>(const FullHouse& f, const FourOfAKind& t) { return false; }
+bool operator>(const FullHouse& f, const StraightFlush& t) { return false; }
+
+template <typename T>
+bool operator>(const FourOfAKind& f, const T& t) { return true; }
+bool operator>(const FourOfAKind& f1, const FourOfAKind& f2) { return false; }
+bool operator>(const FourOfAKind& f, const StraightFlush& sf) { return false; }
+
+template <typename T>
+bool operator>(const StraightFlush& sf, const T& t) { return true; }
+bool operator>(const StraightFlush& sf1, const StraightFlush& sf2) { return false; }
+
 std::unordered_map<char,int> rankToValue{
     {'2',2}, {'3',3}, {'4',4},{'5',5}, {'6',6}, {'7',7}, {'8',8}, 
     {'9',9}, {'T',10},{'J',11}, {'Q',12}, {'K',13}, {'A', 14}
@@ -148,7 +178,7 @@ bool IsStraightFlush(const std::array<card,handSize>& hand)
         [&rank, &suit](const card& c) { return c.first == rank++ && c.second == suit; });
 }
 
-card HighCard(const std::array<card,handSize>& hand)
+card GetHighCard(const std::array<card,handSize>& hand)
 {
     return hand[handSize - 1];
 }
@@ -279,8 +309,8 @@ const Winner BreakTie(const HandType type, const std::array<card,handSize>& blac
 
     if (type == HandType::Straight || type == HandType::StraightFlush)
     {
-        const card blackHighCard{HighCard(blackHand)};
-        const card whiteHighCard{HighCard(whiteHand)};
+        const card blackHighCard{GetHighCard(blackHand)};
+        const card whiteHighCard{GetHighCard(whiteHand)};
         winner = blackHighCard == whiteHighCard ? Winner::Tie :
             blackHighCard > whiteHighCard ? Winner::Black : Winner::White;
     }
@@ -325,6 +355,14 @@ int execute(std::istream& in, std::ostream& out)
     return 0;
 }
 
+int main(int argc, char* argv[])
+{
+    std::ios_base::sync_with_stdio(false);
+
+    return Catch::Session().run(argc, argv);
+    //return execute(std::cin, std::cout);
+}
+
 TEST_CASE("Hand recognition", "[PokerHands]")
 {
     PokerHand hand;
@@ -345,10 +383,76 @@ TEST_CASE("Hand recognition", "[PokerHands]")
     }
 }
 
-int main(int argc, char* argv[])
+TEST_CASE("Hand comparisons", "[PokerHands]")
 {
-    std::ios_base::sync_with_stdio(false);
+    StraightFlush sf;
+    FourOfAKind foak;
+    FullHouse fh{0, 3};
+    Flush f;
+    Straight s;
+    ThreeOfAKind toak{2};
+    TwoPairs tp{1, 3};
+    Pair p{0};
+    HighCard hc;
 
-    return Catch::Session().run(argc, argv);
-    //return execute(std::cin, std::cout);
+    SECTION("Straight flush")
+    {
+        REQUIRE(!(sf > sf));
+        REQUIRE(sf > foak);
+        REQUIRE(sf > fh);
+        REQUIRE(sf > f);
+        REQUIRE(sf > s);
+        REQUIRE(sf > toak);
+        REQUIRE(sf > tp);
+        REQUIRE(sf > p);
+        REQUIRE(sf > hc);
+    }
+    SECTION("Four of a kind")
+    {
+        REQUIRE(!(foak > sf));
+        REQUIRE(!(foak > foak));
+        REQUIRE(foak > fh);
+        REQUIRE(foak > f);
+        REQUIRE(foak > s);
+        REQUIRE(foak > toak);
+        REQUIRE(foak > tp);
+        REQUIRE(foak > p);
+        REQUIRE(foak > hc);
+    }
+    SECTION("Full house")
+    {
+        REQUIRE(!(fh > sf));
+        REQUIRE(!(fh > foak));
+        REQUIRE(!(fh > fh));
+        REQUIRE(fh > f);
+        REQUIRE(fh > s);
+        REQUIRE(fh > toak);
+        REQUIRE(fh > tp);
+        REQUIRE(fh > p);
+        REQUIRE(fh > hc);
+    }
+    SECTION("Flush")
+    {
+        REQUIRE(!(f > sf));
+        REQUIRE(!(f > foak));
+        REQUIRE(!(f > fh));
+        REQUIRE(!(f > f));
+        REQUIRE(f > s);
+        REQUIRE(f > toak);
+        REQUIRE(f > tp);
+        REQUIRE(f > p);
+        REQUIRE(f > hc);
+    }
+    SECTION("Straight")
+    {
+        REQUIRE(!(s > sf));
+        REQUIRE(!(s > foak));
+        REQUIRE(!(s > fh));
+        REQUIRE(!(s > f));
+        REQUIRE(!(s > s));
+        REQUIRE(s > toak);
+        REQUIRE(s > tp);
+        REQUIRE(s > p);
+        REQUIRE(s > hc);
+    }
 }
