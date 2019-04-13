@@ -5,6 +5,7 @@
 #include <tuple>
 #include <iostream>
 #include <algorithm>
+#include <initializer_list>
 #include <unordered_map>
 
 #define CATCH_CONFIG_RUNNER
@@ -128,7 +129,10 @@ bool operator>(const FourOfAKind& f, const StraightFlush& sf) { return false; }
 
 template <typename T>
 bool operator>(const StraightFlush& sf, const T& t) { return true; }
-bool operator>(const StraightFlush& sf1, const StraightFlush& sf2) { return false; }
+bool operator>(const StraightFlush& sf1, const StraightFlush& sf2) 
+{ 
+    return sf1.cards[sf1.cards.size()-1].first > sf2.cards[sf2.cards.size()-1].first;
+}
 
 std::unordered_map<char,int> rankToValue{
     {'2',2}, {'3',3}, {'4',4},{'5',5}, {'6',6}, {'7',7}, {'8',8}, 
@@ -401,7 +405,7 @@ TEST_CASE("Hand recognition", "[PokerHands]")
     }
 }
 
-TEST_CASE("Hand comparisons", "[PokerHands]")
+TEST_CASE("Hand greater than comparisons", "[PokerHands]")
 {
     StraightFlush sf;
     FourOfAKind foak;
@@ -415,6 +419,9 @@ TEST_CASE("Hand comparisons", "[PokerHands]")
 
     SECTION("Straight flush")
     {
+        StraightFlush sf1;
+        StraightFlush sf2;
+
         REQUIRE(!(sf > sf));
         REQUIRE(sf > foak);
         REQUIRE(sf > fh);
