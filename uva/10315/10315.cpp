@@ -5,6 +5,7 @@
 #include <tuple>
 #include <iostream>
 #include <algorithm>
+#include <initializer_list>
 #include <unordered_map>
 
 #define CATCH_CONFIG_RUNNER
@@ -83,6 +84,24 @@ class StraightFlush : public PokerHand
 };
 
 template <typename T>
+bool operator>(const HighCard& hc, const T& t) { return false; }
+
+bool operator>(const Pair& p, const HighCard& hc) { return true; }
+template <typename T>
+bool operator>(const Pair& p, const T& t) { return false; }
+
+bool operator>(const TwoPairs& tp, const HighCard& hc) { return true; }
+bool operator>(const TwoPairs& tp, const Pair& p) { return true; }
+template <typename T>
+bool operator>(const TwoPairs& tp, const T& t) { return false; }
+
+bool operator>(const ThreeOfAKind& toak, const HighCard& hc) { return true; }
+bool operator>(const ThreeOfAKind& toak, const Pair& p) { return true; }
+bool operator>(const ThreeOfAKind& toak, const TwoPairs& tp) { return true; }
+template <typename T>
+bool operator>(const ThreeOfAKind& toak, const T& t) { return false; }
+
+template <typename T>
 bool operator>(const Straight& s, const T& t) { return true; }
 bool operator>(const Straight& s1, const Straight& s2) { return false; }
 bool operator>(const Straight& s, const Flush& f2) { return false; }
@@ -110,7 +129,10 @@ bool operator>(const FourOfAKind& f, const StraightFlush& sf) { return false; }
 
 template <typename T>
 bool operator>(const StraightFlush& sf, const T& t) { return true; }
-bool operator>(const StraightFlush& sf1, const StraightFlush& sf2) { return false; }
+bool operator>(const StraightFlush& sf1, const StraightFlush& sf2) 
+{ 
+    return sf1.cards[sf1.cards.size()-1].first > sf2.cards[sf2.cards.size()-1].first;
+}
 
 std::unordered_map<char,int> rankToValue{
     {'2',2}, {'3',3}, {'4',4},{'5',5}, {'6',6}, {'7',7}, {'8',8}, 
@@ -383,7 +405,7 @@ TEST_CASE("Hand recognition", "[PokerHands]")
     }
 }
 
-TEST_CASE("Hand comparisons", "[PokerHands]")
+TEST_CASE("Hand greater than comparisons", "[PokerHands]")
 {
     StraightFlush sf;
     FourOfAKind foak;
@@ -397,6 +419,9 @@ TEST_CASE("Hand comparisons", "[PokerHands]")
 
     SECTION("Straight flush")
     {
+        StraightFlush sf1;
+        StraightFlush sf2;
+
         REQUIRE(!(sf > sf));
         REQUIRE(sf > foak);
         REQUIRE(sf > fh);
@@ -454,5 +479,53 @@ TEST_CASE("Hand comparisons", "[PokerHands]")
         REQUIRE(s > tp);
         REQUIRE(s > p);
         REQUIRE(s > hc);
+    }
+    SECTION("Three of a kind")
+    {
+        REQUIRE(!(toak > sf));
+        REQUIRE(!(toak > foak));
+        REQUIRE(!(toak > fh));
+        REQUIRE(!(toak > f));
+        REQUIRE(!(toak > s));
+        REQUIRE(!(toak > toak));
+        REQUIRE(toak > tp);
+        REQUIRE(toak > p);
+        REQUIRE(toak > hc);
+    }
+    SECTION("Two pairs")
+    {
+        REQUIRE(!(tp > sf));
+        REQUIRE(!(tp > foak));
+        REQUIRE(!(tp > fh));
+        REQUIRE(!(tp > f));
+        REQUIRE(!(tp > s));
+        REQUIRE(!(tp > toak));
+        REQUIRE(!(tp > tp));
+        REQUIRE(tp > p);
+        REQUIRE(tp > hc);
+    }
+    SECTION("Pair")
+    {
+        REQUIRE(!(p > sf));
+        REQUIRE(!(p > foak));
+        REQUIRE(!(p > fh));
+        REQUIRE(!(p > f));
+        REQUIRE(!(p > s));
+        REQUIRE(!(p > toak));
+        REQUIRE(!(p > tp));
+        REQUIRE(!(p > p));
+        REQUIRE(p > hc);
+    }
+    SECTION("High card")
+    {
+        REQUIRE(!(hc > sf));
+        REQUIRE(!(hc > foak));
+        REQUIRE(!(hc > fh));
+        REQUIRE(!(hc > f));
+        REQUIRE(!(hc > s));
+        REQUIRE(!(hc > toak));
+        REQUIRE(!(hc > tp));
+        REQUIRE(!(hc > p));
+        REQUIRE(!(hc > hc));
     }
 }
