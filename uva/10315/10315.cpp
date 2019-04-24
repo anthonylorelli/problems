@@ -17,6 +17,7 @@ using card = std::pair<int,char>;
 class PokerHand
 {
 public:
+    PokerHand(const std::array<card,handSize>& hand) : cards{hand} {}
     std::array<card,handSize> cards;
 };
 
@@ -28,7 +29,7 @@ class HighCard : public PokerHand
 class Pair : public PokerHand
 {
 public:
-    Pair(const int i) : m_i{i} {}
+    Pair(const std::array<card,handSize>& hand, const int i) : PokerHand{hand}, m_i{i} {}
 
 private:
     int m_i;
@@ -37,7 +38,7 @@ private:
 class TwoPairs : public PokerHand
 {
 public:
-    TwoPairs(const int i, const int j) : m_i{i}, m_j{j} {}
+    TwoPairs(const std::array<card,handSize>& hand, const int i, const int j) : PokerHand{hand}, m_i{i}, m_j{j} {}
 
 private:
     int m_i;
@@ -47,7 +48,7 @@ private:
 class ThreeOfAKind : public PokerHand
 {
 public:
-    ThreeOfAKind(const int i) : m_i{i} {}
+    ThreeOfAKind(const std::array<card,handSize>& hand, const int i) : PokerHand{hand}, m_i{i} {}
 
 private:
     int m_i;
@@ -55,18 +56,20 @@ private:
 
 class Straight : public PokerHand
 {
-
+public:
+    Straight(const std::array<card,handSize>& hand) : PokerHand{hand} {}
 };
 
 class Flush : public PokerHand
 {
-
+public:
+    Flush(const std::array<card,handSize>& hand) : PokerHand{hand} {}
 };
 
 class FullHouse : public PokerHand
 {
 public:
-    FullHouse(const int three, const int pair) : m_three{three}, m_pair{pair} {}
+    FullHouse(const std::array<card,handSize>& hand, const int three, const int pair) : PokerHand{hand}, m_three{three}, m_pair{pair} {}
 
 private:
     int m_three;
@@ -75,12 +78,14 @@ private:
 
 class FourOfAKind : public PokerHand
 {
-
+public:
+    FourOfAKind(const std::array<card,handSize>& hand) : PokerHand{hand} {}
 };
 
 class StraightFlush : public PokerHand
 {
-
+public:
+    StraightFlush(const std::array<card,handSize>& hand) : PokerHand{hand} {}
 };
 
 template <typename T>
@@ -103,7 +108,10 @@ bool operator>(const ThreeOfAKind& toak, const T& t) { return false; }
 
 template <typename T>
 bool operator>(const Straight& s, const T& t) { return true; }
-bool operator>(const Straight& s1, const Straight& s2) { return false; }
+bool operator>(const Straight& s1, const Straight& s2) 
+{ 
+    return s1.cards.rbegin()->first > s2.cards.rbegin()->first;
+}
 bool operator>(const Straight& s, const Flush& f2) { return false; }
 bool operator>(const Straight& s, const FullHouse& fh) { return false; }
 bool operator>(const Straight& s, const FourOfAKind& foak) { return false; }
@@ -131,7 +139,7 @@ template <typename T>
 bool operator>(const StraightFlush& sf, const T& t) { return true; }
 bool operator>(const StraightFlush& sf1, const StraightFlush& sf2) 
 { 
-    return sf1.cards[sf1.cards.size()-1].first > sf2.cards[sf2.cards.size()-1].first;
+    return sf1.cards.rbegin()->first > sf2.cards.rbegin()->first;
 }
 
 std::unordered_map<char,int> rankToValue{
@@ -164,6 +172,11 @@ enum class HandType
     FourOfAKind,
     StraightFlush
 };
+
+PokerHand MakeHand(const std::array<card,handSize>& hand)
+{
+    return HighCard{hand};
+}
 
 bool IsNOfAKind(const std::array<card,handSize>& hand, const int n)
 {
