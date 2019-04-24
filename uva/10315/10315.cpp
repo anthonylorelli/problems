@@ -104,6 +104,13 @@ public:
     StraightFlush(const card_list& hand) : PokerHand{hand} {}
 };
 
+bool operator==(const PokerHand& p1, const PokerHand& p2)
+{
+    return std::equal(p1.cards.begin(), p1.cards.end(),
+        p2.cards.begin(), p2.cards.end(), 
+        [](const card& c1, const card& c2) { return c1.first == c2.first && c1.second == c2.second; });
+}
+
 template <typename T>
 bool operator>(const HighCard& hc, const T& t) { return false; }
 
@@ -438,10 +445,14 @@ TEST_CASE("Hand greater than comparisons", "[PokerHands]")
 
     SECTION("Straight flush")
     {
-        StraightFlush sf1{{'2','H'},{'3','H'},{'4','H'},{'5','H'},{'6','H'}};
+        StraightFlush sf1{{'3','H'},{'4','H'},{'5','H'},{'6','H'},{'7','H'}};
         StraightFlush sf2{{'2','H'},{'3','H'},{'4','H'},{'5','H'},{'6','H'}};
+        StraightFlush sf3{{'2','H'},{'3','H'},{'4','H'},{'5','H'},{'6','H'}};
 
-        REQUIRE(!(sf > sf));
+        REQUIRE(sf1 > sf2);
+        REQUIRE(!(sf2 > sf1));
+        REQUIRE(!(sf2 > sf3));
+        REQUIRE(sf2 == sf3);
         REQUIRE(sf > foak);
         REQUIRE(sf > fh);
         REQUIRE(sf > f);
