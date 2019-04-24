@@ -11,25 +11,41 @@
 #define CATCH_CONFIG_RUNNER
 #include "../catch/catch.hpp"
 
+std::unordered_map<char,int> rankToValue{
+    {'2',2}, {'3',3}, {'4',4},{'5',5}, {'6',6}, {'7',7}, {'8',8}, 
+    {'9',9}, {'T',10},{'J',11}, {'Q',12}, {'K',13}, {'A', 14}
+};
+
+std::unordered_map<int,char> valueToRank{
+    {2,'2'}, {3,'3'}, {4,'4'},{5,'5'}, {6,'6'}, {7,'7'}, {8,'8'}, 
+    {9,'9'}, {10,'T'}, {11,'J'}, {12,'Q'}, {13,'K'}, {14,'A'}
+};
+
 constexpr size_t handSize{5};
 using card = std::pair<int,char>;
+using card_list = std::initializer_list<std::initializer_list<char>>;
 
 class PokerHand
 {
 public:
-    PokerHand(const std::array<card,handSize>& hand) : cards{hand} {}
+    PokerHand(const card_list& hand)
+    {
+        std::transform(hand.begin(), hand.end(), cards.begin(), 
+            [](const std::initializer_list<char>& c) { return std::make_pair(rankToValue[*c.begin()], *(c.begin()+1)); });
+    }
     std::array<card,handSize> cards;
 };
 
 class HighCard : public PokerHand
 {
-
+public:
+    HighCard(const card_list& hand) : PokerHand{hand} {}
 };
 
 class Pair : public PokerHand
 {
 public:
-    Pair(const std::array<card,handSize>& hand, const int i) : PokerHand{hand}, m_i{i} {}
+    Pair(const card_list& hand, const int i) : PokerHand{hand}, m_i{i} {}
 
 private:
     int m_i;
@@ -38,7 +54,7 @@ private:
 class TwoPairs : public PokerHand
 {
 public:
-    TwoPairs(const std::array<card,handSize>& hand, const int i, const int j) : PokerHand{hand}, m_i{i}, m_j{j} {}
+    TwoPairs(const card_list& hand, const int i, const int j) : PokerHand{hand}, m_i{i}, m_j{j} {}
 
 private:
     int m_i;
@@ -48,7 +64,7 @@ private:
 class ThreeOfAKind : public PokerHand
 {
 public:
-    ThreeOfAKind(const std::array<card,handSize>& hand, const int i) : PokerHand{hand}, m_i{i} {}
+    ThreeOfAKind(const card_list& hand, const int i) : PokerHand{hand}, m_i{i} {}
 
 private:
     int m_i;
@@ -57,19 +73,19 @@ private:
 class Straight : public PokerHand
 {
 public:
-    Straight(const std::array<card,handSize>& hand) : PokerHand{hand} {}
+    Straight(const card_list& hand) : PokerHand{hand} {}
 };
 
 class Flush : public PokerHand
 {
 public:
-    Flush(const std::array<card,handSize>& hand) : PokerHand{hand} {}
+    Flush(const card_list& hand) : PokerHand{hand} {}
 };
 
 class FullHouse : public PokerHand
 {
 public:
-    FullHouse(const std::array<card,handSize>& hand, const int three, const int pair) : PokerHand{hand}, m_three{three}, m_pair{pair} {}
+    FullHouse(const card_list& hand, const int three, const int pair) : PokerHand{hand}, m_three{three}, m_pair{pair} {}
 
 private:
     int m_three;
@@ -79,13 +95,13 @@ private:
 class FourOfAKind : public PokerHand
 {
 public:
-    FourOfAKind(const std::array<card,handSize>& hand) : PokerHand{hand} {}
+    FourOfAKind(const card_list& hand) : PokerHand{hand} {}
 };
 
 class StraightFlush : public PokerHand
 {
 public:
-    StraightFlush(const std::array<card,handSize>& hand) : PokerHand{hand} {}
+    StraightFlush(const card_list& hand) : PokerHand{hand} {}
 };
 
 template <typename T>
@@ -142,16 +158,6 @@ bool operator>(const StraightFlush& sf1, const StraightFlush& sf2)
     return sf1.cards.rbegin()->first > sf2.cards.rbegin()->first;
 }
 
-std::unordered_map<char,int> rankToValue{
-    {'2',2}, {'3',3}, {'4',4},{'5',5}, {'6',6}, {'7',7}, {'8',8}, 
-    {'9',9}, {'T',10},{'J',11}, {'Q',12}, {'K',13}, {'A', 14}
-};
-
-std::unordered_map<int,char> valueToRank{
-    {2,'2'}, {3,'3'}, {4,'4'},{5,'5'}, {6,'6'}, {7,'7'}, {8,'8'}, 
-    {9,'9'}, {10,'T'}, {11,'J'}, {12,'Q'}, {13,'K'}, {14,'A'}
-};
-
 std::ostream& operator<<(std::ostream& o, std::array<card,handSize> hand)
 {
     o << "Hand: ";
@@ -173,9 +179,9 @@ enum class HandType
     StraightFlush
 };
 
-PokerHand MakeHand(const std::array<card,handSize>& hand)
+PokerHand MakeHand(const card_list& hand)
 {
-    return HighCard{hand};
+    return HighCard(hand);
 }
 
 bool IsNOfAKind(const std::array<card,handSize>& hand, const int n)
@@ -400,9 +406,9 @@ int main(int argc, char* argv[])
 
 TEST_CASE("Hand recognition", "[PokerHands]")
 {
-    PokerHand hand;
+    card_list hand{{'2','H'},{'3','H'},{'4','H'},{'5','H'},{'6','H'}};
 
-    REQUIRE(hand.cards.size() == handSize);
+    REQUIRE(hand.size() == handSize);
 
     SECTION("Straight flush")
     {
@@ -420,20 +426,20 @@ TEST_CASE("Hand recognition", "[PokerHands]")
 
 TEST_CASE("Hand greater than comparisons", "[PokerHands]")
 {
-    StraightFlush sf;
-    FourOfAKind foak;
-    FullHouse fh{0, 3};
-    Flush f;
-    Straight s;
-    ThreeOfAKind toak{2};
-    TwoPairs tp{1, 3};
-    Pair p{0};
-    HighCard hc;
+    StraightFlush sf{{'2','H'},{'3','H'},{'4','H'},{'5','H'},{'6','H'}};
+    FourOfAKind foak{{'2','C'},{'2','D'},{'2','H'},{'2','S'},{'6','H'}};
+    FullHouse fh{{{'2','C'},{'2','D'},{'2','C'},{'5','H'},{'5','S'}}, 0, 3};
+    Flush f{{'2','H'},{'6','H'},{'9','H'},{'J','H'},{'K','H'}};
+    Straight s{{'2','H'},{'3','S'},{'4','D'},{'5','C'},{'6','C'}};
+    ThreeOfAKind toak{{{'2','H'},{'3','H'},{'4','D'},{'4','H'},{'4','S'}}, 2};
+    TwoPairs tp{{{'2','H'},{'3','H'},{'3','S'},{'6','H'},{'6','S'}}, 1, 3};
+    Pair p{{{'2','H'},{'2','S'},{'4','H'},{'5','H'},{'6','H'}}, 0};
+    HighCard hc{{'2','S'},{'5','H'},{'6','D'},{'9','H'},{'J','S'}};
 
     SECTION("Straight flush")
     {
-        StraightFlush sf1;
-        StraightFlush sf2;
+        StraightFlush sf1{{'2','H'},{'3','H'},{'4','H'},{'5','H'},{'6','H'}};
+        StraightFlush sf2{{'2','H'},{'3','H'},{'4','H'},{'5','H'},{'6','H'}};
 
         REQUIRE(!(sf > sf));
         REQUIRE(sf > foak);
