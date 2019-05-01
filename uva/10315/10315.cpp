@@ -1,15 +1,16 @@
 // Problem definition: https://uva.onlinejudge.org/external/103/10315.pdf
 // Accepted ?
 
+#define CATCH_CONFIG_RUNNER
+#include "../catch/catch.hpp"
+
 #include <array>
 #include <tuple>
 #include <iostream>
 #include <algorithm>
 #include <initializer_list>
 #include <unordered_map>
-
-#define CATCH_CONFIG_RUNNER
-#include "../catch/catch.hpp"
+#include <memory>
 
 std::unordered_map<char,int> rankToValue{
     {'2',2}, {'3',3}, {'4',4},{'5',5}, {'6',6}, {'7',7}, {'8',8}, 
@@ -103,6 +104,13 @@ class StraightFlush : public PokerHand
 public:
     StraightFlush(const card_list& hand) : PokerHand{hand} {}
 };
+
+bool operator==(const PokerHand& p1, const PokerHand& p2)
+{
+    return std::equal(p1.cards.begin(), p1.cards.end(),
+        p2.cards.begin(), p2.cards.end(), 
+        [](const card& c1, const card& c2) { return c1.first == c2.first && c1.second == c2.second; });
+}
 
 template <typename T>
 bool operator>(const HighCard& hc, const T& t) { return false; }
@@ -252,6 +260,8 @@ bool IsFlush(const std::array<card,handSize>& hand)
         [&suit](const card& c) { return c.second == suit; });
 }
 
+
+
 HandType ClassifyHand(const std::array<card,handSize>& hand)
 {
     auto type = IsStraightFlush(hand) ? HandType::StraightFlush :
@@ -264,76 +274,6 @@ HandType ClassifyHand(const std::array<card,handSize>& hand)
         IsPair(hand) ? HandType::Pair : HandType::HighCard;
 
     return type;
-}
-
-bool operator>(const HandType t1, const HandType t2)
-{
-    if (t1 == HandType::StraightFlush)
-    {
-        return !(t2 == HandType::StraightFlush);
-    }
-    else if (t2 == HandType::StraightFlush)
-    {
-        return false;
-    }
-    else if (t1 == HandType::FourOfAKind)
-    {
-        return !(t2 == HandType::FourOfAKind);
-    } 
-    else if (t2 == HandType::FourOfAKind)
-    {
-        return false;
-    }
-    else if (t1 == HandType::FullHouse)
-    {
-        return !(t2 == HandType::FullHouse);
-    }
-    else if (t2 == HandType::FullHouse)
-    {
-        return false;
-    }
-    else if (t1 == HandType::Flush)
-    {
-        return !(t2 == HandType::Flush);
-    }
-    else if (t2 == HandType::Flush)
-    {
-        return false;
-    }
-    else if (t1 == HandType::Straight)
-    {
-        return !(t2 == HandType::Straight);
-    }
-    else if (t2 == HandType::Straight)
-    {
-        return false;
-    }
-    else if (t1 == HandType::ThreeOfAKind)
-    {
-        return !(t2 == HandType::ThreeOfAKind);
-    }
-    else if (t2 == HandType::ThreeOfAKind)
-    {
-        return false;
-    }
-    else if (t1 == HandType::TwoPairs)
-    {
-        return !(t2 == HandType::TwoPairs);
-    }
-    else if (t2 == HandType::TwoPairs)
-    {
-        return false;
-    }
-    else if (t1 == HandType::Pair)
-    {
-        return !(t2 == HandType::Pair);
-    }
-    else if (t2 == HandType::Pair)
-    {
-        return false;
-    }
-    
-    return false;
 }
 
 enum class Winner
@@ -438,10 +378,14 @@ TEST_CASE("Hand greater than comparisons", "[PokerHands]")
 
     SECTION("Straight flush")
     {
-        StraightFlush sf1{{'2','H'},{'3','H'},{'4','H'},{'5','H'},{'6','H'}};
+        StraightFlush sf1{{'3','H'},{'4','H'},{'5','H'},{'6','H'},{'7','H'}};
         StraightFlush sf2{{'2','H'},{'3','H'},{'4','H'},{'5','H'},{'6','H'}};
+        StraightFlush sf3{{'2','H'},{'3','H'},{'4','H'},{'5','H'},{'6','H'}};
 
-        REQUIRE(!(sf > sf));
+        REQUIRE(sf1 > sf2);
+        REQUIRE(!(sf2 > sf1));
+        REQUIRE(!(sf2 > sf3));
+        REQUIRE(sf2 == sf3);
         REQUIRE(sf > foak);
         REQUIRE(sf > fh);
         REQUIRE(sf > f);
