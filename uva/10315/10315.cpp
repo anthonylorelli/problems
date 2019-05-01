@@ -1,15 +1,16 @@
 // Problem definition: https://uva.onlinejudge.org/external/103/10315.pdf
 // Accepted ?
 
+#define CATCH_CONFIG_RUNNER
+#include "../catch/catch.hpp"
+
 #include <array>
 #include <tuple>
 #include <iostream>
 #include <algorithm>
 #include <initializer_list>
 #include <unordered_map>
-
-#define CATCH_CONFIG_RUNNER
-#include "../catch/catch.hpp"
+#include <memory>
 
 std::unordered_map<char,int> rankToValue{
     {'2',2}, {'3',3}, {'4',4},{'5',5}, {'6',6}, {'7',7}, {'8',8}, 
@@ -259,6 +260,8 @@ bool IsFlush(const std::array<card,handSize>& hand)
         [&suit](const card& c) { return c.second == suit; });
 }
 
+
+
 HandType ClassifyHand(const std::array<card,handSize>& hand)
 {
     auto type = IsStraightFlush(hand) ? HandType::StraightFlush :
@@ -271,76 +274,6 @@ HandType ClassifyHand(const std::array<card,handSize>& hand)
         IsPair(hand) ? HandType::Pair : HandType::HighCard;
 
     return type;
-}
-
-bool operator>(const HandType t1, const HandType t2)
-{
-    if (t1 == HandType::StraightFlush)
-    {
-        return !(t2 == HandType::StraightFlush);
-    }
-    else if (t2 == HandType::StraightFlush)
-    {
-        return false;
-    }
-    else if (t1 == HandType::FourOfAKind)
-    {
-        return !(t2 == HandType::FourOfAKind);
-    } 
-    else if (t2 == HandType::FourOfAKind)
-    {
-        return false;
-    }
-    else if (t1 == HandType::FullHouse)
-    {
-        return !(t2 == HandType::FullHouse);
-    }
-    else if (t2 == HandType::FullHouse)
-    {
-        return false;
-    }
-    else if (t1 == HandType::Flush)
-    {
-        return !(t2 == HandType::Flush);
-    }
-    else if (t2 == HandType::Flush)
-    {
-        return false;
-    }
-    else if (t1 == HandType::Straight)
-    {
-        return !(t2 == HandType::Straight);
-    }
-    else if (t2 == HandType::Straight)
-    {
-        return false;
-    }
-    else if (t1 == HandType::ThreeOfAKind)
-    {
-        return !(t2 == HandType::ThreeOfAKind);
-    }
-    else if (t2 == HandType::ThreeOfAKind)
-    {
-        return false;
-    }
-    else if (t1 == HandType::TwoPairs)
-    {
-        return !(t2 == HandType::TwoPairs);
-    }
-    else if (t2 == HandType::TwoPairs)
-    {
-        return false;
-    }
-    else if (t1 == HandType::Pair)
-    {
-        return !(t2 == HandType::Pair);
-    }
-    else if (t2 == HandType::Pair)
-    {
-        return false;
-    }
-    
-    return false;
 }
 
 enum class Winner
