@@ -26,6 +26,16 @@ constexpr size_t handSize{5};
 using card = std::pair<int,char>;
 using card_list = std::initializer_list<std::initializer_list<char>>;
 
+class HighCard;
+class Pair;
+class TwoPairs;
+class ThreeOfAKind;
+class Straight;
+class Flush;
+class FullHouse;
+class FourOfAKind;
+class StraightFlush;
+
 class PokerHand
 {
 public:
@@ -35,18 +45,48 @@ public:
             [](const std::initializer_list<char>& c) { return std::make_pair(rankToValue[*c.begin()], *(c.begin()+1)); });
     }
     std::array<card,handSize> cards;
+    virtual bool Compare(const PokerHand& hand) const = 0;
+    virtual bool operator>(const HighCard& hc) const  = 0;
+    virtual bool operator>(const Pair& p) const = 0;
+    virtual bool operator>(const TwoPairs& tp) const = 0;
+    virtual bool operator>(const ThreeOfAKind& toak) const = 0;
+    virtual bool operator>(const Straight& s) const = 0;
+    virtual bool operator>(const Flush& f) const = 0;
+    virtual bool operator>(const FullHouse& fh) const = 0;
+    virtual bool operator>(const FourOfAKind& foak) const = 0;
+    virtual bool operator>(const StraightFlush& sf) const = 0;
 };
 
 class HighCard : public PokerHand
 {
 public:
     HighCard(const card_list& hand) : PokerHand{hand} {}
+    bool Compare(const PokerHand& hand) const override { return hand > *this; }
+    bool operator>(const HighCard& hc) const override { return cards.rbegin()->first > hc.cards.rbegin()->first; }
+    bool operator>(const Pair& p) const override { return false; }
+    bool operator>(const TwoPairs& tp) const override { return false; }
+    bool operator>(const ThreeOfAKind& toak) const override { return false; }
+    bool operator>(const Straight& s) const override { return false; }
+    bool operator>(const Flush& f) const override { return false; }
+    bool operator>(const FullHouse& fh) const override { return false; }
+    bool operator>(const FourOfAKind& foak) const override { return false; }
+    bool operator>(const StraightFlush& sf) const override { return false; }
 };
 
 class Pair : public PokerHand
 {
 public:
     Pair(const card_list& hand, const int i) : PokerHand{hand}, m_i{i} {}
+    bool Compare(const PokerHand& hand) const override { return hand > *this; }
+    bool operator>(const HighCard& hc) const override { return true; }
+    bool operator>(const Pair& p) const override { return false; }
+    bool operator>(const TwoPairs& tp) const override { return false; }
+    bool operator>(const ThreeOfAKind& toak) const override { return false; }
+    bool operator>(const Straight& s) const override { return false; }
+    bool operator>(const Flush& f) const override { return false; }
+    bool operator>(const FullHouse& fh) const override { return false; }
+    bool operator>(const FourOfAKind& foak) const override { return false; }
+    bool operator>(const StraightFlush& sf) const override { return false; }
 
 private:
     int m_i;
@@ -56,6 +96,16 @@ class TwoPairs : public PokerHand
 {
 public:
     TwoPairs(const card_list& hand, const int i, const int j) : PokerHand{hand}, m_i{i}, m_j{j} {}
+    bool Compare(const PokerHand& hand) const override { return hand > *this; }
+    bool operator>(const HighCard& hc) const override { return true; }
+    bool operator>(const Pair& p) const override { return true; }
+    bool operator>(const TwoPairs& tp) const override { return false; }
+    bool operator>(const ThreeOfAKind& toak) const override { return false; }
+    bool operator>(const Straight& s) const override { return false; }
+    bool operator>(const Flush& f) const override { return false; }
+    bool operator>(const FullHouse& fh) const override { return false; }
+    bool operator>(const FourOfAKind& foak) const override { return false; }
+    bool operator>(const StraightFlush& sf) const override { return false; }
 
 private:
     int m_i;
@@ -66,6 +116,16 @@ class ThreeOfAKind : public PokerHand
 {
 public:
     ThreeOfAKind(const card_list& hand, const int i) : PokerHand{hand}, m_i{i} {}
+    bool Compare(const PokerHand& hand) const override { return hand > *this; }
+    bool operator>(const HighCard& hc) const override { return true; }
+    bool operator>(const Pair& p) const override { return true; }
+    bool operator>(const TwoPairs& tp) const override { return true; }
+    bool operator>(const ThreeOfAKind& toak) const override { return false; }
+    bool operator>(const Straight& s) const override { return false; }
+    bool operator>(const Flush& f) const override { return false; }
+    bool operator>(const FullHouse& fh) const override { return false; }
+    bool operator>(const FourOfAKind& foak) const override { return false; }
+    bool operator>(const StraightFlush& sf) const override { return false; }
 
 private:
     int m_i;
@@ -75,18 +135,48 @@ class Straight : public PokerHand
 {
 public:
     Straight(const card_list& hand) : PokerHand{hand} {}
+    bool Compare(const PokerHand& hand) const override { return hand > *this; }
+    bool operator>(const HighCard& hc) const override { return true; }
+    bool operator>(const Pair& p) const override { return true; }
+    bool operator>(const TwoPairs& tp) const override { return true; }
+    bool operator>(const ThreeOfAKind& toak) const override { return true; }
+    bool operator>(const Straight& s) const override { return cards.rbegin()->first > s.cards.rbegin()->first; }
+    bool operator>(const Flush& f) const override { return false; }
+    bool operator>(const FullHouse& fh) const override { return false; }
+    bool operator>(const FourOfAKind& foak) const override { return false; }
+    bool operator>(const StraightFlush& sf) const override { return false; }
 };
 
 class Flush : public PokerHand
 {
 public:
     Flush(const card_list& hand) : PokerHand{hand} {}
+    bool Compare(const PokerHand& hand) const override { return hand > *this; }
+    bool operator>(const HighCard& hc) const override { return true; }
+    bool operator>(const Pair& p) const override { return true; }
+    bool operator>(const TwoPairs& tp) const override { return true; }
+    bool operator>(const ThreeOfAKind& toak) const override { return true; }
+    bool operator>(const Straight& s) const override { return true; }
+    bool operator>(const Flush& f) const override { return false; }
+    bool operator>(const FullHouse& fh) const override { return false; }
+    bool operator>(const FourOfAKind& foak) const override { return false; }
+    bool operator>(const StraightFlush& sf) const override { return false; }
 };
 
 class FullHouse : public PokerHand
 {
 public:
     FullHouse(const card_list& hand, const int three, const int pair) : PokerHand{hand}, m_three{three}, m_pair{pair} {}
+    bool Compare(const PokerHand& hand) const override { return hand > *this; }
+    bool operator>(const HighCard& hc) const override { return true; }
+    bool operator>(const Pair& p) const override { return true; }
+    bool operator>(const TwoPairs& tp) const override { return true; }
+    bool operator>(const ThreeOfAKind& toak) const override { return true; }
+    bool operator>(const Straight& s) const override { return true; }
+    bool operator>(const Flush& f) const override { return true; }
+    bool operator>(const FullHouse& fh) const override { return false; }
+    bool operator>(const FourOfAKind& foak) const override { return false; }
+    bool operator>(const StraightFlush& sf) const override { return false; }
 
 private:
     int m_three;
@@ -97,12 +187,32 @@ class FourOfAKind : public PokerHand
 {
 public:
     FourOfAKind(const card_list& hand) : PokerHand{hand} {}
+    bool Compare(const PokerHand& hand) const override { return hand > *this; }
+    bool operator>(const HighCard& hc) const override { return true; }
+    bool operator>(const Pair& p) const override { return true; }
+    bool operator>(const TwoPairs& tp) const override { return true; }
+    bool operator>(const ThreeOfAKind& toak) const override { return true; }
+    bool operator>(const Straight& s) const override { return true; }
+    bool operator>(const Flush& f) const override { return true; }
+    bool operator>(const FullHouse& fh) const override { return true; }
+    bool operator>(const FourOfAKind& foak) const override { return false; }
+    bool operator>(const StraightFlush& sf) const override { return false; }
 };
 
 class StraightFlush : public PokerHand
 {
 public:
     StraightFlush(const card_list& hand) : PokerHand{hand} {}
+    bool Compare(const PokerHand& hand) const override { return hand > *this; }
+    bool operator>(const HighCard& hc) const override { return true; }
+    bool operator>(const Pair& p) const override { return true; }
+    bool operator>(const TwoPairs& tp) const override { return true; }
+    bool operator>(const ThreeOfAKind& toak) const override { return true; }
+    bool operator>(const Straight& s) const override { return true; }
+    bool operator>(const Flush& f) const override { return true; }
+    bool operator>(const FullHouse& fh) const override { return true; }
+    bool operator>(const FourOfAKind& foak) const override { return true; }
+    bool operator>(const StraightFlush& sf) const override { return cards.rbegin()->first > sf.cards.rbegin()->first; }
 };
 
 bool operator==(const PokerHand& p1, const PokerHand& p2)
@@ -112,59 +222,6 @@ bool operator==(const PokerHand& p1, const PokerHand& p2)
         [](const card& c1, const card& c2) { return c1.first == c2.first && c1.second == c2.second; });
 }
 
-template <typename T>
-bool operator>(const HighCard& hc, const T& t) { return false; }
-
-bool operator>(const Pair& p, const HighCard& hc) { return true; }
-template <typename T>
-bool operator>(const Pair& p, const T& t) { return false; }
-
-bool operator>(const TwoPairs& tp, const HighCard& hc) { return true; }
-bool operator>(const TwoPairs& tp, const Pair& p) { return true; }
-template <typename T>
-bool operator>(const TwoPairs& tp, const T& t) { return false; }
-
-bool operator>(const ThreeOfAKind& toak, const HighCard& hc) { return true; }
-bool operator>(const ThreeOfAKind& toak, const Pair& p) { return true; }
-bool operator>(const ThreeOfAKind& toak, const TwoPairs& tp) { return true; }
-template <typename T>
-bool operator>(const ThreeOfAKind& toak, const T& t) { return false; }
-
-template <typename T>
-bool operator>(const Straight& s, const T& t) { return true; }
-bool operator>(const Straight& s1, const Straight& s2) 
-{ 
-    return s1.cards.rbegin()->first > s2.cards.rbegin()->first;
-}
-bool operator>(const Straight& s, const Flush& f2) { return false; }
-bool operator>(const Straight& s, const FullHouse& fh) { return false; }
-bool operator>(const Straight& s, const FourOfAKind& foak) { return false; }
-bool operator>(const Straight& s, const StraightFlush& sf) { return false; }
-
-template <typename T>
-bool operator>(const Flush& f, const T& t) { return true; }
-bool operator>(const Flush& f1, const Flush& f2) { return false; }
-bool operator>(const Flush& f1, const FullHouse& fh) { return false; }
-bool operator>(const Flush& f1, const FourOfAKind& foak) { return false; }
-bool operator>(const Flush& f1, const StraightFlush& sf) { return false; }
-
-template <typename T>
-bool operator>(const FullHouse& f, const T& t) { return true; }
-bool operator>(const FullHouse& f, const FullHouse& t) { return false; }
-bool operator>(const FullHouse& f, const FourOfAKind& t) { return false; }
-bool operator>(const FullHouse& f, const StraightFlush& t) { return false; }
-
-template <typename T>
-bool operator>(const FourOfAKind& f, const T& t) { return true; }
-bool operator>(const FourOfAKind& f1, const FourOfAKind& f2) { return false; }
-bool operator>(const FourOfAKind& f, const StraightFlush& sf) { return false; }
-
-template <typename T>
-bool operator>(const StraightFlush& sf, const T& t) { return true; }
-bool operator>(const StraightFlush& sf1, const StraightFlush& sf2) 
-{ 
-    return sf1.cards.rbegin()->first > sf2.cards.rbegin()->first;
-}
 
 std::ostream& operator<<(std::ostream& o, std::array<card,handSize> hand)
 {
@@ -186,11 +243,6 @@ enum class HandType
     FourOfAKind,
     StraightFlush
 };
-
-PokerHand MakeHand(const card_list& hand)
-{
-    return HighCard(hand);
-}
 
 bool IsNOfAKind(const std::array<card,handSize>& hand, const int n)
 {
