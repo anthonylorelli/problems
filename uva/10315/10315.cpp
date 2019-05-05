@@ -44,6 +44,7 @@ public:
         std::transform(hand.begin(), hand.end(), cards.begin(), 
             [](const std::initializer_list<char>& c) { return std::make_pair(rankToValue[*c.begin()], *(c.begin()+1)); });
     }
+    PokerHand(const std::array<card,handSize>& hand) : cards{hand} {}
     std::array<card,handSize> cards;
     virtual bool Compare(const PokerHand& hand) const = 0;
     virtual bool operator>(const HighCard& hc) const  = 0;
@@ -61,6 +62,7 @@ class HighCard : public PokerHand
 {
 public:
     HighCard(const card_list& hand) : PokerHand{hand} {}
+    HighCard(const std::array<card,handSize>& hand) : PokerHand{hand} {}
     bool Compare(const PokerHand& hand) const override { return hand > *this; }
     bool operator>(const HighCard& hc) const override { return cards.rbegin()->first > hc.cards.rbegin()->first; }
     bool operator>(const Pair& p) const override { return false; }
@@ -203,6 +205,7 @@ class StraightFlush : public PokerHand
 {
 public:
     StraightFlush(const card_list& hand) : PokerHand{hand} {}
+    StraightFlush(const std::array<card,handSize>& hand) : PokerHand{hand} {}
     bool Compare(const PokerHand& hand) const override { return hand > *this; }
     bool operator>(const HighCard& hc) const override { return true; }
     bool operator>(const Pair& p) const override { return true; }
@@ -356,6 +359,20 @@ const Winner ChooseWinner(const HandType blackType, const std::array<card,handSi
 {
     return (blackType == whiteType) ? BreakTie(blackType, blackHand, whiteHand) :
         (blackType > whiteType) ? Winner::Black : Winner::White;
+}
+
+std::unique_ptr<PokerHand> MakeHand(std::array<card,handSize>& hand)
+{
+    // straight flush
+    int rank{hand[0].first + 1};
+    const char suit{hand[0].second};
+    if (std::all_of(hand.begin()+1, hand.end(),
+        [&rank, &suit](const card& c) { return c.first == rank++ && c.second == suit; }))
+    {
+        return std::make_unique<StraightFlush>(hand);
+    }
+
+    return std::make_unique<HighCard>(hand);
 }
 
 int execute(std::istream& in, std::ostream& out)
