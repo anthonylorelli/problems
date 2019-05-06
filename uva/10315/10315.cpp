@@ -189,6 +189,7 @@ class FourOfAKind : public PokerHand
 {
 public:
     FourOfAKind(const card_list& hand) : PokerHand{hand} {}
+    FourOfAKind(const std::array<card,handSize>& hand, const int four) : PokerHand{hand}, m_four{four} {}
     bool Compare(const PokerHand& hand) const override { return hand > *this; }
     bool operator>(const HighCard& hc) const override { return true; }
     bool operator>(const Pair& p) const override { return true; }
@@ -199,6 +200,9 @@ public:
     bool operator>(const FullHouse& fh) const override { return true; }
     bool operator>(const FourOfAKind& foak) const override { return false; }
     bool operator>(const StraightFlush& sf) const override { return false; }
+
+private:
+    int m_four;
 };
 
 class StraightFlush : public PokerHand
@@ -247,13 +251,17 @@ enum class HandType
     StraightFlush
 };
 
-bool IsNOfAKind(const std::array<card,handSize>& hand, const int n)
+int IsNOfAKind(const std::array<card,handSize>& hand, const int n)
 {
-    bool result{false};
+    int result{-1};
+    int index{0};
     int count{1};
     int rank{hand[0].first};
     std::for_each(hand.begin()+1, hand.end(), [&](const std::pair<int,char>& c) 
-        { if (c.first == rank) { count++; if (count == n) { result = true; }} else { rank = c.first; count = 1; }});
+        { 
+            index++; 
+            if (c.first == rank) { count++; if (count == n) { result = index; }} else { rank = c.first; count = 1; }
+        });
 
     return result;
 }
@@ -361,6 +369,7 @@ const Winner ChooseWinner(const HandType blackType, const std::array<card,handSi
         (blackType > whiteType) ? Winner::Black : Winner::White;
 }
 
+
 std::unique_ptr<PokerHand> MakeHand(std::array<card,handSize>& hand)
 {
     // straight flush
@@ -370,6 +379,15 @@ std::unique_ptr<PokerHand> MakeHand(std::array<card,handSize>& hand)
         [&rank, &suit](const card& c) { return c.first == rank++ && c.second == suit; }))
     {
         return std::make_unique<StraightFlush>(hand);
+    }
+
+    // four of a kind
+    int n{4};
+    int i{IsNOfAKind(hand, n)};
+
+    if (i >= 0)
+    {
+        return std::make_unique<FourOfAKind>(hand, i);
     }
 
     return std::make_unique<HighCard>(hand);
@@ -430,6 +448,25 @@ TEST_CASE("Hand recognition", "[PokerHands]")
     SECTION("Full house")
     {
         REQUIRE(true);
+    }
+}
+
+TEST_CASE("N of a kind", "[PokerHands]")
+{
+    std::array<card,handSize> h1{std::make_pair(2,'H'), std::make_pair(2,'D'), 
+        std::make_pair(2,'C'), std::make_pair(2, 'S'), std::make_pair(3,'H')};
+
+    SECTION("N == 4")
+    {
+        REQUIRE(IsNOfAKind(h1, 4) == 3);
+    }
+    SECTION("N == 3")
+    {
+        REQUIRE(IsNOfAKind(h1, 3) == 2);
+    }
+    SECTION("N == 2")
+    {
+        REQUIRE(IsNOfAKind(h1, 2) == 1);
     }
 }
 
