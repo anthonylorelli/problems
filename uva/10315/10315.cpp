@@ -169,6 +169,8 @@ class FullHouse : public PokerHand
 {
 public:
     FullHouse(const card_list& hand, const int three, const int pair) : PokerHand{hand}, m_three{three}, m_pair{pair} {}
+    FullHouse(const std::array<card,handSize>& hand, const int three, const int pair) :
+        PokerHand{hand}, m_three{three}, m_pair{pair} {}
     bool Compare(const PokerHand& hand) const override { return hand > *this; }
     bool operator>(const HighCard& hc) const override { return true; }
     bool operator>(const Pair& p) const override { return true; }
@@ -384,10 +386,19 @@ std::unique_ptr<PokerHand> MakeHand(std::array<card,handSize>& hand)
     // four of a kind
     int n{4};
     int i{IsNOfAKind(hand, n)};
-
     if (i >= 0)
     {
         return std::make_unique<FourOfAKind>(hand, i);
+    }
+
+    // full house
+    if (hand[0].first == hand[1].first && hand[1].first == hand[2].first && hand[3].first == hand[4].first)
+    {
+        return std::make_unique<FullHouse>(hand, 0, 3);
+    }
+    else if (hand[0].first == hand[1].first && hand[2].first == hand[3].first && hand[3].first == hand[4].first)
+    {
+        return std::make_unique<FullHouse>(hand, 2, 0);
     }
 
     return std::make_unique<HighCard>(hand);
