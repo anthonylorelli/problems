@@ -468,6 +468,38 @@ TEST_CASE("N of a kind", "[PokerHands]")
     {
         REQUIRE(IsNOfAKind(h1, 2) == 1);
     }
+
+    std::array<card,handSize> h2{std::make_pair(11,'H'), std::make_pair(2,'D'), 
+        std::make_pair(2,'C'), std::make_pair(2, 'S'), std::make_pair(3,'H')};
+
+    SECTION("N == 4")
+    {
+        REQUIRE(IsNOfAKind(h2, 4) == -1);
+    }
+    SECTION("N == 3")
+    {
+        REQUIRE(IsNOfAKind(h2, 3) == 3);
+    }
+    SECTION("N == 2")
+    {
+        REQUIRE(IsNOfAKind(h2, 2) == 2);
+    }
+
+    std::array<card,handSize> h3{std::make_pair(11,'H'), std::make_pair(3,'D'), 
+        std::make_pair(4,'C'), std::make_pair(2, 'S'), std::make_pair(2,'H')};
+
+    SECTION("N == 4")
+    {
+        REQUIRE(IsNOfAKind(h3, 4) == -1);
+    }
+    SECTION("N == 3")
+    {
+        REQUIRE(IsNOfAKind(h3, 3) == -1);
+    }
+    SECTION("N == 2")
+    {
+        REQUIRE(IsNOfAKind(h3, 2) == 4);
+    }
 }
 
 TEST_CASE("Hand greater than comparisons", "[PokerHands]")
