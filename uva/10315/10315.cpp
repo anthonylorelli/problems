@@ -401,6 +401,17 @@ std::unique_ptr<PokerHand> MakeHand(std::array<card,handSize>& hand)
         return std::make_unique<FullHouse>(hand, 2, 0);
     }
 
+    // flush
+
+    // straight
+
+    // three of a kind
+
+    // two pairs
+
+    // pair
+
+    // high card
     return std::make_unique<HighCard>(hand);
 }
 
