@@ -153,6 +153,7 @@ class Flush : public PokerHand
 {
 public:
     Flush(const card_list& hand) : PokerHand{hand} {}
+    Flush(const std::array<card,handSize>& hand) : PokerHand{hand} {}
     bool Compare(const PokerHand& hand) const override { return hand > *this; }
     bool operator>(const HighCard& hc) const override { return true; }
     bool operator>(const Pair& p) const override { return true; }
@@ -402,6 +403,11 @@ std::unique_ptr<PokerHand> MakeHand(std::array<card,handSize>& hand)
     }
 
     // flush
+    if (std::all_of(hand.begin()+1, hand.end(), 
+        [&suit](const card& c) { return c.second == suit; }))
+    {
+        return std::make_unique<Flush>(hand);        
+    }
 
     // straight
 
