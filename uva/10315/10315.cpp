@@ -118,6 +118,7 @@ class ThreeOfAKind : public PokerHand
 {
 public:
     ThreeOfAKind(const card_list& hand, const int i) : PokerHand{hand}, m_i{i} {}
+    ThreeOfAKind(const std::array<card,handSize>& hand, const int i) : PokerHand{hand}, m_i{i} {}
     bool Compare(const PokerHand& hand) const override { return hand > *this; }
     bool operator>(const HighCard& hc) const override { return true; }
     bool operator>(const Pair& p) const override { return true; }
@@ -419,6 +420,11 @@ std::unique_ptr<PokerHand> MakeHand(std::array<card,handSize>& hand)
     }
 
     // three of a kind
+    i = IsNOfAKind(hand, 3);
+    if (i >= 0)
+    {
+        return std::make_unique<ThreeOfAKind>(hand, i);
+    }
 
     // two pairs
 
