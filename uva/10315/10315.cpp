@@ -137,6 +137,7 @@ class Straight : public PokerHand
 {
 public:
     Straight(const card_list& hand) : PokerHand{hand} {}
+    Straight(const std::array<card,handSize>& hand) : PokerHand{hand} {}
     bool Compare(const PokerHand& hand) const override { return hand > *this; }
     bool operator>(const HighCard& hc) const override { return true; }
     bool operator>(const Pair& p) const override { return true; }
@@ -410,6 +411,12 @@ std::unique_ptr<PokerHand> MakeHand(std::array<card,handSize>& hand)
     }
 
     // straight
+    rank = hand[0].first + 1;
+    if (std::all_of(hand.begin()+1, hand.end(), 
+        [&rank](const card& c) { return c.first == rank++; }))
+    {
+        return std::make_unique<Straight>(hand);        
+    }
 
     // three of a kind
 
