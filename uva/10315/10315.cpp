@@ -229,6 +229,11 @@ public:
     bool operator>(const StraightFlush& sf) const override { return cards.rbegin()->first > sf.cards.rbegin()->first; }
 };
 
+bool operator>(const PokerHand& p1, const PokerHand& p2)
+{
+    return p2.Compare(p1);
+}
+
 bool operator==(const PokerHand& p1, const PokerHand& p2)
 {
     return std::equal(p1.cards.begin(), p1.cards.end(),
@@ -491,17 +496,57 @@ int main(int argc, char* argv[])
 
 TEST_CASE("Hand recognition", "[PokerHands]")
 {
-    card_list hand{{'2','H'},{'3','H'},{'4','H'},{'5','H'},{'6','H'}};
+//    class HighCard;
+//class Pair;
+//class TwoPairs;
+//class ThreeOfAKind;
+//class Straight;
+//class Flush;
+//class FullHouse;
+//class FourOfAKind;
+//class StraightFlush;
+    std::array<card,handSize> sf{std::make_pair(2,'H'), std::make_pair(3,'H'), 
+        std::make_pair(4,'H'), std::make_pair(5, 'H'), std::make_pair(6,'H')};
+    std::array<card,handSize> foak{std::make_pair(2,'H'), std::make_pair(2,'D'), 
+        std::make_pair(2,'C'), std::make_pair(2, 'S'), std::make_pair(3,'H')};
+    std::array<card,handSize> fh{std::make_pair(2,'H'), std::make_pair(2,'D'), 
+        std::make_pair(3,'C'), std::make_pair(3, 'S'), std::make_pair(3,'H')};
+    std::array<card,handSize> f{std::make_pair(2,'H'), std::make_pair(5,'H'), 
+        std::make_pair(6,'H'), std::make_pair(9, 'H'), std::make_pair(11,'H')};
+    std::array<card,handSize> s{std::make_pair(2,'H'), std::make_pair(3,'D'), 
+        std::make_pair(4,'C'), std::make_pair(5, 'S'), std::make_pair(6,'H')};
+    std::array<card,handSize> toak{std::make_pair(2,'H'), std::make_pair(2,'D'), 
+        std::make_pair(2,'C'), std::make_pair(3, 'S'), std::make_pair(8,'H')};
+    std::array<card,handSize> tp{std::make_pair(2,'H'), std::make_pair(2,'D'), 
+        std::make_pair(8,'C'), std::make_pair(8, 'S'), std::make_pair(10,'H')};
+    std::array<card,handSize> p{std::make_pair(2,'H'), std::make_pair(7,'D'), 
+        std::make_pair(8,'C'), std::make_pair(10, 'S'), std::make_pair(10,'H')};
+    std::array<card,handSize> hc{std::make_pair(5,'H'), std::make_pair(7,'D'), 
+        std::make_pair(8,'C'), std::make_pair(11, 'S'), std::make_pair(13,'H')};
 
-    REQUIRE(hand.size() == handSize);
+    REQUIRE(sf.size() == handSize);
 
     SECTION("Straight flush")
     {
-        REQUIRE(true);
+        auto sf1{MakeHand(sf)};
+        auto foak1{MakeHand(foak)};
+        auto fh1{MakeHand(fh)};
+        auto f1{MakeHand(f)};
+        REQUIRE(foak1->Compare(*sf1.get()));
+        REQUIRE(*sf1.get() > *foak1.get());
+        REQUIRE(!(*foak1.get() > *sf1.get()));
+        REQUIRE(*sf1.get() > *fh1.get());
+        REQUIRE(*sf1.get() > *f1.get());
     }
     SECTION("Four of a kind")
     {
-        REQUIRE(true);
+        auto sf1{MakeHand(sf)};
+        auto foak1{MakeHand(foak)};
+        auto fh1{MakeHand(fh)};
+        auto f1{MakeHand(f)};
+        REQUIRE(!(sf1->Compare(*foak1.get())));
+        REQUIRE(fh1->Compare(*foak1.get()));
+        REQUIRE(f1->Compare(*foak1.get()));
     }
     SECTION("Full house")
     {
