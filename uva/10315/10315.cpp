@@ -79,6 +79,7 @@ class Pair : public PokerHand
 {
 public:
     Pair(const card_list& hand, const int i) : PokerHand{hand}, m_i{i} {}
+    Pair(const std::array<card,handSize>& hand, const int i) : PokerHand{hand}, m_i{i} {}
     bool Compare(const PokerHand& hand) const override { return hand > *this; }
     bool operator>(const HighCard& hc) const override { return true; }
     bool operator>(const Pair& p) const override { return false; }
@@ -98,6 +99,7 @@ class TwoPairs : public PokerHand
 {
 public:
     TwoPairs(const card_list& hand, const int i, const int j) : PokerHand{hand}, m_i{i}, m_j{j} {}
+    TwoPairs(const std::array<card,handSize>& hand, const int i, const int j) : PokerHand{hand}, m_i{i}, m_j{j} {}
     bool Compare(const PokerHand& hand) const override { return hand > *this; }
     bool operator>(const HighCard& hc) const override { return true; }
     bool operator>(const Pair& p) const override { return true; }
@@ -427,8 +429,23 @@ std::unique_ptr<PokerHand> MakeHand(std::array<card,handSize>& hand)
     }
 
     // two pairs
+    auto findPair{[](const card& c1, const card& c2) { return c1.first == c2.first; }};
+    auto first{std::adjacent_find(hand.begin(), hand.end(), findPair)};
+    auto second{(first != hand.end() && first + 2 != hand.end()) ?
+        std::adjacent_find(first+2, hand.end(), findPair) : hand.end()};
+    if (second != hand.end())
+    {
+        auto i{first - hand.begin()};
+        auto j{second - hand.begin()};
+        return std::make_unique<TwoPairs>(hand, i, j);
+    }
 
     // pair
+    i = IsNOfAKind(hand, 2);
+    if (i >= 0)
+    {
+        return std::make_unique<Pair>(hand, i);
+    }
 
     // high card
     return std::make_unique<HighCard>(hand);
