@@ -496,15 +496,6 @@ int main(int argc, char* argv[])
 
 TEST_CASE("Hand recognition", "[PokerHands]")
 {
-//    class HighCard;
-//class Pair;
-//class TwoPairs;
-//class ThreeOfAKind;
-//class Straight;
-//class Flush;
-//class FullHouse;
-//class FourOfAKind;
-//class StraightFlush;
     std::array<card,handSize> sf{std::make_pair(2,'H'), std::make_pair(3,'H'), 
         std::make_pair(4,'H'), std::make_pair(5, 'H'), std::make_pair(6,'H')};
     std::array<card,handSize> foak{std::make_pair(2,'H'), std::make_pair(2,'D'), 
