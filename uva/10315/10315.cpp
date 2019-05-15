@@ -183,7 +183,7 @@ public:
     bool operator>(const ThreeOfAKind& toak) const override { return true; }
     bool operator>(const Straight& s) const override { return true; }
     bool operator>(const Flush& f) const override { return true; }
-    bool operator>(const FullHouse& fh) const override { return false; }
+    bool operator>(const FullHouse& fh) const override { return cards[m_three].first > fh.cards[fh.m_three].first; }
     bool operator>(const FourOfAKind& foak) const override { return false; }
     bool operator>(const StraightFlush& sf) const override { return false; }
 
@@ -195,7 +195,7 @@ private:
 class FourOfAKind : public PokerHand
 {
 public:
-    FourOfAKind(const card_list& hand) : PokerHand{hand} {}
+    FourOfAKind(const card_list& hand, const int four) : PokerHand{hand}, m_four{four} {}
     FourOfAKind(const std::array<card,handSize>& hand, const int four) : PokerHand{hand}, m_four{four} {}
     bool Compare(const PokerHand& hand) const override { return hand > *this; }
     bool operator>(const HighCard& hc) const override { return true; }
@@ -205,7 +205,7 @@ public:
     bool operator>(const Straight& s) const override { return true; }
     bool operator>(const Flush& f) const override { return true; }
     bool operator>(const FullHouse& fh) const override { return true; }
-    bool operator>(const FourOfAKind& foak) const override { return false; }
+    bool operator>(const FourOfAKind& foak) const override { return cards[m_four].first > foak.cards[foak.m_four].first; }
     bool operator>(const StraightFlush& sf) const override { return false; }
 
 private:
@@ -241,7 +241,6 @@ bool operator==(const PokerHand& p1, const PokerHand& p2)
         [](const card& c1, const card& c2) { return c1.first == c2.first && c1.second == c2.second; });
 }
 
-
 std::ostream& operator<<(std::ostream& o, std::array<card,handSize> hand)
 {
     o << "Hand: ";
@@ -249,19 +248,6 @@ std::ostream& operator<<(std::ostream& o, std::array<card,handSize> hand)
     o << "\n";
     return o;
 }
-
-enum class HandType
-{
-    HighCard,
-    Pair,
-    TwoPairs,
-    ThreeOfAKind,
-    Straight,
-    Flush,
-    FullHouse,
-    FourOfAKind,
-    StraightFlush
-};
 
 int IsNOfAKind(const std::array<card,handSize>& hand, const int n)
 {
@@ -277,110 +263,6 @@ int IsNOfAKind(const std::array<card,handSize>& hand, const int n)
 
     return result;
 }
-
-bool IsTwoPairs(const std::array<card,handSize>& hand)
-{
-    auto findPair{[](const card& c1, const card& c2) { return c1.first == c2.first; }};
-    auto first{std::adjacent_find(hand.begin(), hand.end(), findPair)};
-    auto second{(first != hand.end() && first + 2 != hand.end()) ?
-        std::adjacent_find(first+2, hand.end(), findPair) : hand.end()};
-    return second != hand.end();
-}
-
-bool IsStraight(const std::array<card,handSize>& hand)
-{
-    int rank{hand[0].first + 1};
-    return std::all_of(hand.begin()+1, hand.end(), 
-        [&rank](const card& c) { return c.first == rank++; });
-}
-
-bool IsStraightFlush(const std::array<card,handSize>& hand)
-{
-    int rank{hand[0].first + 1};
-    const char suit{hand[0].second};
-    return std::all_of(hand.begin()+1, hand.end(),
-        [&rank, &suit](const card& c) { return c.first == rank++ && c.second == suit; });
-}
-
-card GetHighCard(const std::array<card,handSize>& hand)
-{
-    return hand[handSize - 1];
-}
-
-bool IsPair(const std::array<card,handSize>& hand)
-{
-    return IsNOfAKind(hand, 2);
-}
-
-bool IsThreeOfAKind(const std::array<card,handSize>& hand)
-{
-    return IsNOfAKind(hand, 3);
-}
-
-bool IsFullHouse(const std::array<card,handSize>& hand)
-{
-    return (hand[0].first == hand[1].first && hand[1].first == hand[2].first && hand[3].first == hand[4].first) ||
-        (hand[0].first == hand[1].first && hand[2].first == hand[3].first && hand[3].first == hand[4].first);
-}
-
-bool IsFourOfAKind(const std::array<card,handSize>& hand)
-{
-    return IsNOfAKind(hand, 4);
-}
-
-bool IsFlush(const std::array<card,handSize>& hand)
-{
-    const char suit{hand[0].second};
-    return std::all_of(hand.begin()+1, hand.end(), 
-        [&suit](const card& c) { return c.second == suit; });
-}
-
-
-
-HandType ClassifyHand(const std::array<card,handSize>& hand)
-{
-    auto type = IsStraightFlush(hand) ? HandType::StraightFlush :
-        IsFourOfAKind(hand) ? HandType::FourOfAKind :
-        IsFullHouse(hand) ? HandType::FullHouse :
-        IsFlush(hand) ? HandType::Flush :
-        IsStraight(hand) ? HandType::Straight :
-        IsThreeOfAKind(hand) ? HandType::ThreeOfAKind :
-        IsTwoPairs(hand) ? HandType::TwoPairs :
-        IsPair(hand) ? HandType::Pair : HandType::HighCard;
-
-    return type;
-}
-
-enum class Winner
-{
-    Black,
-    White,
-    Tie
-};
-
-const Winner BreakTie(const HandType type, const std::array<card,handSize>& blackHand, 
-    const std::array<card,handSize>& whiteHand)
-{
-    Winner winner;
-
-    if (type == HandType::Straight || type == HandType::StraightFlush)
-    {
-        const card blackHighCard{GetHighCard(blackHand)};
-        const card whiteHighCard{GetHighCard(whiteHand)};
-        winner = blackHighCard == whiteHighCard ? Winner::Tie :
-            blackHighCard > whiteHighCard ? Winner::Black : Winner::White;
-    }
-
-    return winner;
-}
-
-const Winner ChooseWinner(const HandType blackType, const std::array<card,handSize>& blackHand, 
-    const HandType whiteType, const std::array<card,handSize>& whiteHand)
-{
-    return (blackType == whiteType) ? BreakTie(blackType, blackHand, whiteHand) :
-        (blackType > whiteType) ? Winner::Black : Winner::White;
-}
-
 
 std::unique_ptr<PokerHand> MakeHand(std::array<card,handSize>& hand)
 {
@@ -458,8 +340,8 @@ std::unique_ptr<PokerHand> MakeHand(std::array<card,handSize>& hand)
 
 int execute(std::istream& in, std::ostream& out)
 {
-    std::array<card,handSize> blackHand;
-    std::array<card,handSize> whiteHand;
+    std::array<card,handSize> blackCards;
+    std::array<card,handSize> whiteCards;
 
     char rank, suit;
     auto assignCard{[&in, &rank](card& c) 
@@ -471,15 +353,16 @@ int execute(std::istream& in, std::ostream& out)
 
     while (in >> rank >> suit)
     {
-        blackHand[0].first = rankToValue[rank];
-        blackHand[0].second = suit;
-        std::for_each(blackHand.begin() + 1, blackHand.end(), assignCard);
-        std::for_each(whiteHand.begin(), whiteHand.end(), assignCard);
-        std::sort(blackHand.begin(), blackHand.end(), sortHand);
-        std::sort(whiteHand.begin(), whiteHand.end(), sortHand);
-        auto blackType{ClassifyHand(blackHand)};
-        auto whiteType{ClassifyHand(whiteHand)};
-        const auto winner{ChooseWinner(blackType, blackHand, whiteType, whiteHand)};
+        blackCards[0].first = rankToValue[rank];
+        blackCards[0].second = suit;
+        std::for_each(blackCards.begin() + 1, blackCards.end(), assignCard);
+        std::for_each(whiteCards.begin(), whiteCards.end(), assignCard);
+        std::sort(blackCards.begin(), blackCards.end(), sortHand);
+        std::sort(whiteCards.begin(), whiteCards.end(), sortHand);
+        auto blackHand{MakeHand(blackCards)};
+        auto whiteHand{MakeHand(whiteCards)};
+        std::cout <<((*blackHand.get() > *whiteHand.get()) ? "Black wins." : 
+            (*whiteHand.get() > *blackHand.get()) ? "White wins." : "Tie.") << "\n";
         out << blackHand << whiteHand;
     }
 
@@ -496,15 +379,6 @@ int main(int argc, char* argv[])
 
 TEST_CASE("Hand recognition", "[PokerHands]")
 {
-//    class HighCard;
-//class Pair;
-//class TwoPairs;
-//class ThreeOfAKind;
-//class Straight;
-//class Flush;
-//class FullHouse;
-//class FourOfAKind;
-//class StraightFlush;
     std::array<card,handSize> sf{std::make_pair(2,'H'), std::make_pair(3,'H'), 
         std::make_pair(4,'H'), std::make_pair(5, 'H'), std::make_pair(6,'H')};
     std::array<card,handSize> foak{std::make_pair(2,'H'), std::make_pair(2,'D'), 
@@ -526,31 +400,51 @@ TEST_CASE("Hand recognition", "[PokerHands]")
 
     REQUIRE(sf.size() == handSize);
 
+    auto sf1{MakeHand(sf)};
+    auto foak1{MakeHand(foak)};
+    auto fh1{MakeHand(fh)};
+    auto f1{MakeHand(f)};
+    auto s1{MakeHand(s)};
+    auto toak1{MakeHand(toak)};
+    auto tp1{MakeHand(tp)};
+    auto p1{MakeHand(p)};
+    auto hc1{MakeHand(hc)};
+
     SECTION("Straight flush")
     {
-        auto sf1{MakeHand(sf)};
-        auto foak1{MakeHand(foak)};
-        auto fh1{MakeHand(fh)};
-        auto f1{MakeHand(f)};
         REQUIRE(foak1->Compare(*sf1.get()));
         REQUIRE(*sf1.get() > *foak1.get());
         REQUIRE(!(*foak1.get() > *sf1.get()));
         REQUIRE(*sf1.get() > *fh1.get());
         REQUIRE(*sf1.get() > *f1.get());
+        REQUIRE(*sf1.get() > *s1.get());
+        REQUIRE(*sf1.get() > *toak1.get());
+        REQUIRE(*sf1.get() > *tp1.get());
+        REQUIRE(*sf1.get() > *p1.get());
+        REQUIRE(*sf1.get() > *hc1.get());
     }
     SECTION("Four of a kind")
     {
-        auto sf1{MakeHand(sf)};
-        auto foak1{MakeHand(foak)};
-        auto fh1{MakeHand(fh)};
-        auto f1{MakeHand(f)};
         REQUIRE(!(sf1->Compare(*foak1.get())));
+        REQUIRE(!(*foak1.get() > *foak1.get()));
         REQUIRE(fh1->Compare(*foak1.get()));
         REQUIRE(f1->Compare(*foak1.get()));
+        REQUIRE(*f1.get() > *s1.get());
+        REQUIRE(*f1.get() > *toak1.get());
+        REQUIRE(*f1.get() > *tp1.get());
+        REQUIRE(*f1.get() > *p1.get());
+        REQUIRE(*f1.get() > *hc1.get());
     }
     SECTION("Full house")
     {
-        REQUIRE(true);
+        REQUIRE(!(*fh1.get() > *sf1.get()));
+        REQUIRE(!(*fh1.get() > *foak1.get()));
+        REQUIRE(!(*fh1.get() > *fh1.get()));
+        REQUIRE(*fh1.get() > *s1.get());
+        REQUIRE(*fh1.get() > *toak1.get());
+        REQUIRE(*fh1.get() > *tp1.get());
+        REQUIRE(*fh1.get() > *p1.get());
+        REQUIRE(*fh1.get() > *hc1.get());
     }
 }
 
@@ -608,7 +502,7 @@ TEST_CASE("N of a kind", "[PokerHands]")
 TEST_CASE("Hand greater than comparisons", "[PokerHands]")
 {
     StraightFlush sf{{'2','H'},{'3','H'},{'4','H'},{'5','H'},{'6','H'}};
-    FourOfAKind foak{{'2','C'},{'2','D'},{'2','H'},{'2','S'},{'6','H'}};
+    FourOfAKind foak{{{'2','C'},{'2','D'},{'2','H'},{'2','S'},{'6','H'}}, 0};
     FullHouse fh{{{'2','C'},{'2','D'},{'2','C'},{'5','H'},{'5','S'}}, 0, 3};
     Flush f{{'2','H'},{'6','H'},{'9','H'},{'J','H'},{'K','H'}};
     Straight s{{'2','H'},{'3','S'},{'4','D'},{'5','C'},{'6','C'}};
