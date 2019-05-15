@@ -195,7 +195,7 @@ private:
 class FourOfAKind : public PokerHand
 {
 public:
-    FourOfAKind(const card_list& hand) : PokerHand{hand} {}
+    FourOfAKind(const card_list& hand, const int four) : PokerHand{hand}, m_four{four} {}
     FourOfAKind(const std::array<card,handSize>& hand, const int four) : PokerHand{hand}, m_four{four} {}
     bool Compare(const PokerHand& hand) const override { return hand > *this; }
     bool operator>(const HighCard& hc) const override { return true; }
@@ -205,7 +205,7 @@ public:
     bool operator>(const Straight& s) const override { return true; }
     bool operator>(const Flush& f) const override { return true; }
     bool operator>(const FullHouse& fh) const override { return true; }
-    bool operator>(const FourOfAKind& foak) const override { return false; }
+    bool operator>(const FourOfAKind& foak) const override { return cards[m_four].first > foak.cards[foak.m_four].first; }
     bool operator>(const StraightFlush& sf) const override { return false; }
 
 private:
@@ -426,6 +426,7 @@ TEST_CASE("Hand recognition", "[PokerHands]")
     SECTION("Four of a kind")
     {
         REQUIRE(!(sf1->Compare(*foak1.get())));
+        REQUIRE(!(*foak1.get() > *foak1.get()));
         REQUIRE(fh1->Compare(*foak1.get()));
         REQUIRE(f1->Compare(*foak1.get()));
         REQUIRE(*f1.get() > *s1.get());
@@ -501,7 +502,7 @@ TEST_CASE("N of a kind", "[PokerHands]")
 TEST_CASE("Hand greater than comparisons", "[PokerHands]")
 {
     StraightFlush sf{{'2','H'},{'3','H'},{'4','H'},{'5','H'},{'6','H'}};
-    FourOfAKind foak{{'2','C'},{'2','D'},{'2','H'},{'2','S'},{'6','H'}};
+    FourOfAKind foak{{{'2','C'},{'2','D'},{'2','H'},{'2','S'},{'6','H'}}, 0};
     FullHouse fh{{{'2','C'},{'2','D'},{'2','C'},{'5','H'},{'5','S'}}, 0, 3};
     Flush f{{'2','H'},{'6','H'},{'9','H'},{'J','H'},{'K','H'}};
     Straight s{{'2','H'},{'3','S'},{'4','D'},{'5','C'},{'6','C'}};
