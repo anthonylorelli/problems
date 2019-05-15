@@ -183,7 +183,7 @@ public:
     bool operator>(const ThreeOfAKind& toak) const override { return true; }
     bool operator>(const Straight& s) const override { return true; }
     bool operator>(const Flush& f) const override { return true; }
-    bool operator>(const FullHouse& fh) const override { return false; }
+    bool operator>(const FullHouse& fh) const override { return cards[m_three].first > fh.cards[fh.m_three].first; }
     bool operator>(const FourOfAKind& foak) const override { return false; }
     bool operator>(const StraightFlush& sf) const override { return false; }
 
@@ -240,7 +240,6 @@ bool operator==(const PokerHand& p1, const PokerHand& p2)
         p2.cards.begin(), p2.cards.end(), 
         [](const card& c1, const card& c2) { return c1.first == c2.first && c1.second == c2.second; });
 }
-
 
 std::ostream& operator<<(std::ostream& o, std::array<card,handSize> hand)
 {
@@ -360,11 +359,8 @@ int execute(std::istream& in, std::ostream& out)
         std::for_each(whiteCards.begin(), whiteCards.end(), assignCard);
         std::sort(blackCards.begin(), blackCards.end(), sortHand);
         std::sort(whiteCards.begin(), whiteCards.end(), sortHand);
-        //auto blackType{ClassifyHand(blackHand)};
-        //auto whiteType{ClassifyHand(whiteHand)};
         auto blackHand{MakeHand(blackCards)};
         auto whiteHand{MakeHand(whiteCards)};
-        //const auto winner{ChooseWinner(blackType, blackHand, whiteType, whiteHand)};
         std::cout <<((*blackHand.get() > *whiteHand.get()) ? "Black wins." : 
             (*whiteHand.get() > *blackHand.get()) ? "White wins." : "Tie.") << "\n";
         out << blackHand << whiteHand;
@@ -404,31 +400,50 @@ TEST_CASE("Hand recognition", "[PokerHands]")
 
     REQUIRE(sf.size() == handSize);
 
+    auto sf1{MakeHand(sf)};
+    auto foak1{MakeHand(foak)};
+    auto fh1{MakeHand(fh)};
+    auto f1{MakeHand(f)};
+    auto s1{MakeHand(s)};
+    auto toak1{MakeHand(toak)};
+    auto tp1{MakeHand(tp)};
+    auto p1{MakeHand(p)};
+    auto hc1{MakeHand(hc)};
+
     SECTION("Straight flush")
     {
-        auto sf1{MakeHand(sf)};
-        auto foak1{MakeHand(foak)};
-        auto fh1{MakeHand(fh)};
-        auto f1{MakeHand(f)};
         REQUIRE(foak1->Compare(*sf1.get()));
         REQUIRE(*sf1.get() > *foak1.get());
         REQUIRE(!(*foak1.get() > *sf1.get()));
         REQUIRE(*sf1.get() > *fh1.get());
         REQUIRE(*sf1.get() > *f1.get());
+        REQUIRE(*sf1.get() > *s1.get());
+        REQUIRE(*sf1.get() > *toak1.get());
+        REQUIRE(*sf1.get() > *tp1.get());
+        REQUIRE(*sf1.get() > *p1.get());
+        REQUIRE(*sf1.get() > *hc1.get());
     }
     SECTION("Four of a kind")
     {
-        auto sf1{MakeHand(sf)};
-        auto foak1{MakeHand(foak)};
-        auto fh1{MakeHand(fh)};
-        auto f1{MakeHand(f)};
         REQUIRE(!(sf1->Compare(*foak1.get())));
         REQUIRE(fh1->Compare(*foak1.get()));
         REQUIRE(f1->Compare(*foak1.get()));
+        REQUIRE(*f1.get() > *s1.get());
+        REQUIRE(*f1.get() > *toak1.get());
+        REQUIRE(*f1.get() > *tp1.get());
+        REQUIRE(*f1.get() > *p1.get());
+        REQUIRE(*f1.get() > *hc1.get());
     }
     SECTION("Full house")
     {
-        REQUIRE(true);
+        REQUIRE(!(*fh1.get() > *sf1.get()));
+        REQUIRE(!(*fh1.get() > *foak1.get()));
+        REQUIRE(!(*fh1.get() > *fh1.get()));
+        REQUIRE(*fh1.get() > *s1.get());
+        REQUIRE(*fh1.get() > *toak1.get());
+        REQUIRE(*fh1.get() > *tp1.get());
+        REQUIRE(*fh1.get() > *p1.get());
+        REQUIRE(*fh1.get() > *hc1.get());
     }
 }
 
