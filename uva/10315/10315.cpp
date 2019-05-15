@@ -250,19 +250,6 @@ std::ostream& operator<<(std::ostream& o, std::array<card,handSize> hand)
     return o;
 }
 
-enum class HandType
-{
-    HighCard,
-    Pair,
-    TwoPairs,
-    ThreeOfAKind,
-    Straight,
-    Flush,
-    FullHouse,
-    FourOfAKind,
-    StraightFlush
-};
-
 int IsNOfAKind(const std::array<card,handSize>& hand, const int n)
 {
     int result{-1};
@@ -277,110 +264,6 @@ int IsNOfAKind(const std::array<card,handSize>& hand, const int n)
 
     return result;
 }
-
-bool IsTwoPairs(const std::array<card,handSize>& hand)
-{
-    auto findPair{[](const card& c1, const card& c2) { return c1.first == c2.first; }};
-    auto first{std::adjacent_find(hand.begin(), hand.end(), findPair)};
-    auto second{(first != hand.end() && first + 2 != hand.end()) ?
-        std::adjacent_find(first+2, hand.end(), findPair) : hand.end()};
-    return second != hand.end();
-}
-
-bool IsStraight(const std::array<card,handSize>& hand)
-{
-    int rank{hand[0].first + 1};
-    return std::all_of(hand.begin()+1, hand.end(), 
-        [&rank](const card& c) { return c.first == rank++; });
-}
-
-bool IsStraightFlush(const std::array<card,handSize>& hand)
-{
-    int rank{hand[0].first + 1};
-    const char suit{hand[0].second};
-    return std::all_of(hand.begin()+1, hand.end(),
-        [&rank, &suit](const card& c) { return c.first == rank++ && c.second == suit; });
-}
-
-card GetHighCard(const std::array<card,handSize>& hand)
-{
-    return hand[handSize - 1];
-}
-
-bool IsPair(const std::array<card,handSize>& hand)
-{
-    return IsNOfAKind(hand, 2);
-}
-
-bool IsThreeOfAKind(const std::array<card,handSize>& hand)
-{
-    return IsNOfAKind(hand, 3);
-}
-
-bool IsFullHouse(const std::array<card,handSize>& hand)
-{
-    return (hand[0].first == hand[1].first && hand[1].first == hand[2].first && hand[3].first == hand[4].first) ||
-        (hand[0].first == hand[1].first && hand[2].first == hand[3].first && hand[3].first == hand[4].first);
-}
-
-bool IsFourOfAKind(const std::array<card,handSize>& hand)
-{
-    return IsNOfAKind(hand, 4);
-}
-
-bool IsFlush(const std::array<card,handSize>& hand)
-{
-    const char suit{hand[0].second};
-    return std::all_of(hand.begin()+1, hand.end(), 
-        [&suit](const card& c) { return c.second == suit; });
-}
-
-
-
-HandType ClassifyHand(const std::array<card,handSize>& hand)
-{
-    auto type = IsStraightFlush(hand) ? HandType::StraightFlush :
-        IsFourOfAKind(hand) ? HandType::FourOfAKind :
-        IsFullHouse(hand) ? HandType::FullHouse :
-        IsFlush(hand) ? HandType::Flush :
-        IsStraight(hand) ? HandType::Straight :
-        IsThreeOfAKind(hand) ? HandType::ThreeOfAKind :
-        IsTwoPairs(hand) ? HandType::TwoPairs :
-        IsPair(hand) ? HandType::Pair : HandType::HighCard;
-
-    return type;
-}
-
-enum class Winner
-{
-    Black,
-    White,
-    Tie
-};
-
-const Winner BreakTie(const HandType type, const std::array<card,handSize>& blackHand, 
-    const std::array<card,handSize>& whiteHand)
-{
-    Winner winner;
-
-    if (type == HandType::Straight || type == HandType::StraightFlush)
-    {
-        const card blackHighCard{GetHighCard(blackHand)};
-        const card whiteHighCard{GetHighCard(whiteHand)};
-        winner = blackHighCard == whiteHighCard ? Winner::Tie :
-            blackHighCard > whiteHighCard ? Winner::Black : Winner::White;
-    }
-
-    return winner;
-}
-
-const Winner ChooseWinner(const HandType blackType, const std::array<card,handSize>& blackHand, 
-    const HandType whiteType, const std::array<card,handSize>& whiteHand)
-{
-    return (blackType == whiteType) ? BreakTie(blackType, blackHand, whiteHand) :
-        (blackType > whiteType) ? Winner::Black : Winner::White;
-}
-
 
 std::unique_ptr<PokerHand> MakeHand(std::array<card,handSize>& hand)
 {
@@ -458,8 +341,8 @@ std::unique_ptr<PokerHand> MakeHand(std::array<card,handSize>& hand)
 
 int execute(std::istream& in, std::ostream& out)
 {
-    std::array<card,handSize> blackHand;
-    std::array<card,handSize> whiteHand;
+    std::array<card,handSize> blackCards;
+    std::array<card,handSize> whiteCards;
 
     char rank, suit;
     auto assignCard{[&in, &rank](card& c) 
@@ -471,15 +354,19 @@ int execute(std::istream& in, std::ostream& out)
 
     while (in >> rank >> suit)
     {
-        blackHand[0].first = rankToValue[rank];
-        blackHand[0].second = suit;
-        std::for_each(blackHand.begin() + 1, blackHand.end(), assignCard);
-        std::for_each(whiteHand.begin(), whiteHand.end(), assignCard);
-        std::sort(blackHand.begin(), blackHand.end(), sortHand);
-        std::sort(whiteHand.begin(), whiteHand.end(), sortHand);
-        auto blackType{ClassifyHand(blackHand)};
-        auto whiteType{ClassifyHand(whiteHand)};
-        const auto winner{ChooseWinner(blackType, blackHand, whiteType, whiteHand)};
+        blackCards[0].first = rankToValue[rank];
+        blackCards[0].second = suit;
+        std::for_each(blackCards.begin() + 1, blackCards.end(), assignCard);
+        std::for_each(whiteCards.begin(), whiteCards.end(), assignCard);
+        std::sort(blackCards.begin(), blackCards.end(), sortHand);
+        std::sort(whiteCards.begin(), whiteCards.end(), sortHand);
+        //auto blackType{ClassifyHand(blackHand)};
+        //auto whiteType{ClassifyHand(whiteHand)};
+        auto blackHand{MakeHand(blackCards)};
+        auto whiteHand{MakeHand(whiteCards)};
+        //const auto winner{ChooseWinner(blackType, blackHand, whiteType, whiteHand)};
+        std::cout <<((*blackHand.get() > *whiteHand.get()) ? "Black wins." : 
+            (*whiteHand.get() > *blackHand.get()) ? "White wins." : "Tie.") << "\n";
         out << blackHand << whiteHand;
     }
 
