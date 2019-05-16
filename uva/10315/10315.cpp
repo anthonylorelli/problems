@@ -361,9 +361,8 @@ int execute(std::istream& in, std::ostream& out)
         std::sort(whiteCards.begin(), whiteCards.end(), sortHand);
         auto blackHand{MakeHand(blackCards)};
         auto whiteHand{MakeHand(whiteCards)};
-        std::cout <<((*blackHand.get() > *whiteHand.get()) ? "Black wins." : 
+        out <<((*blackHand.get() > *whiteHand.get()) ? "Black wins." : 
             (*whiteHand.get() > *blackHand.get()) ? "White wins." : "Tie.") << "\n";
-        out << blackHand << whiteHand;
     }
 
     return 0;
@@ -375,6 +374,72 @@ int main(int argc, char* argv[])
 
     return Catch::Session().run(argc, argv);
     //return execute(std::cin, std::cout);
+}
+
+TEST_CASE("Matching hand comparison", "[PokerHands]")
+{
+    SECTION("Straight flush")
+    {
+        std::array<card,handSize> sf1{std::make_pair(2,'H'), std::make_pair(3,'H'), 
+            std::make_pair(4,'H'), std::make_pair(5, 'H'), std::make_pair(6,'H')};
+        std::array<card,handSize> sf2{std::make_pair(3,'C'), std::make_pair(4,'C'), 
+            std::make_pair(5,'C'), std::make_pair(6, 'C'), std::make_pair(7,'C')};
+
+        auto sfh1{MakeHand(sf1)};
+        auto sfh2{MakeHand(sf2)};
+
+        REQUIRE(*sfh2.get() > *sfh1.get());
+        REQUIRE(!(*sfh1.get() > *sfh2.get()));
+    }
+    SECTION("Four of a kind")
+    {
+        std::array<card,handSize> foak1{std::make_pair(2,'H'), std::make_pair(2,'D'), 
+            std::make_pair(2,'C'), std::make_pair(2, 'S'), std::make_pair(3,'H')};
+        std::array<card,handSize> foak2{std::make_pair(4,'H'), std::make_pair(4,'D'), 
+            std::make_pair(4,'C'), std::make_pair(4, 'S'), std::make_pair(5,'H')};
+
+        auto foakh1{MakeHand(foak1)};
+        auto foakh2{MakeHand(foak2)};
+
+        REQUIRE(!(*foakh1.get() > *foakh2.get()));
+        REQUIRE(*foakh2.get() > *foakh1.get());
+    }
+    SECTION("Full house")
+    {
+        std::array<card,handSize> fh1{std::make_pair(2,'H'), std::make_pair(2,'D'), 
+            std::make_pair(3,'C'), std::make_pair(3, 'S'), std::make_pair(3,'H')};
+        std::array<card,handSize> fh2{std::make_pair(4,'H'), std::make_pair(4,'D'), 
+            std::make_pair(5,'C'), std::make_pair(5, 'S'), std::make_pair(5,'H')};
+
+        auto fhh1{MakeHand(fh1)};
+        auto fhh2{MakeHand(fh2)};
+
+        REQUIRE(!(*fhh1.get() > *fhh2.get()));
+        REQUIRE(*fhh2.get() > *fhh1.get());
+    }
+    SECTION("Flush")
+    {
+        std::array<card,handSize> f1{std::make_pair(2,'H'), std::make_pair(5,'H'), 
+            std::make_pair(6,'H'), std::make_pair(9, 'H'), std::make_pair(11,'H')};
+        std::array<card,handSize> f2{std::make_pair(2,'C'), std::make_pair(5,'C'), 
+            std::make_pair(6,'C'), std::make_pair(9, 'C'), std::make_pair(11,'C')};
+        
+    }
+    SECTION("Straight")
+    {
+    }
+    SECTION("Three of a kind")
+    {
+    }
+    SECTION("Two pairs")
+    {
+    }
+    SECTION("Pair")
+    {
+    }
+    SECTION("High card")
+    {
+    }
 }
 
 TEST_CASE("Hand recognition", "[PokerHands]")
@@ -445,6 +510,65 @@ TEST_CASE("Hand recognition", "[PokerHands]")
         REQUIRE(*fh1.get() > *tp1.get());
         REQUIRE(*fh1.get() > *p1.get());
         REQUIRE(*fh1.get() > *hc1.get());
+    }
+    SECTION("Flush")
+    {
+
+    }
+    SECTION("Straight")
+    {
+        REQUIRE(!(*s1.get() > *sf1.get()));
+        REQUIRE(!(*s1.get() > *foak1.get()));
+        REQUIRE(!(*s1.get() > *fh1.get()));
+        REQUIRE(!(*s1.get() > *s1.get()));
+        REQUIRE(*s1.get() > *toak1.get());
+        REQUIRE(*s1.get() > *tp1.get());
+        REQUIRE(*s1.get() > *p1.get());
+        REQUIRE(*s1.get() > *hc1.get());
+    }
+    SECTION("Three of a kind")
+    {
+        REQUIRE(!(*toak1.get() > *sf1.get()));
+        REQUIRE(!(*toak1.get() > *foak1.get()));
+        REQUIRE(!(*toak1.get() > *fh1.get()));
+        REQUIRE(!(*toak1.get() > *s1.get()));
+        REQUIRE(!(*toak1.get() > *toak1.get()));
+        REQUIRE(*s1.get() > *tp1.get());
+        REQUIRE(*s1.get() > *p1.get());
+        REQUIRE(*s1.get() > *hc1.get());
+    }
+    SECTION("Two pairs")
+    {
+        REQUIRE(!(*tp1.get() > *sf1.get()));
+        REQUIRE(!(*tp1.get() > *foak1.get()));
+        REQUIRE(!(*tp1.get() > *fh1.get()));
+        REQUIRE(!(*tp1.get() > *s1.get()));
+        REQUIRE(!(*tp1.get() > *toak1.get()));
+        REQUIRE(!(*tp1.get() > *tp1.get()));
+        REQUIRE(*s1.get() > *p1.get());
+        REQUIRE(*s1.get() > *hc1.get());
+    }
+    SECTION("Pair")
+    {
+        REQUIRE(!(*p1.get() > *sf1.get()));
+        REQUIRE(!(*p1.get() > *foak1.get()));
+        REQUIRE(!(*p1.get() > *fh1.get()));
+        REQUIRE(!(*p1.get() > *s1.get()));
+        REQUIRE(!(*p1.get() > *toak1.get()));
+        REQUIRE(!(*p1.get() > *tp1.get()));
+        REQUIRE(!(*p1.get() > *p1.get()));
+        REQUIRE(*s1.get() > *hc1.get());
+    }
+    SECTION("High card")
+    {
+        REQUIRE(!(*hc1.get() > *sf1.get()));
+        REQUIRE(!(*hc1.get() > *foak1.get()));
+        REQUIRE(!(*hc1.get() > *fh1.get()));
+        REQUIRE(!(*hc1.get() > *s1.get()));
+        REQUIRE(!(*hc1.get() > *toak1.get()));
+        REQUIRE(!(*hc1.get() > *tp1.get()));
+        REQUIRE(!(*hc1.get() > *p1.get()));
+        REQUIRE(!(*hc1.get() > *hc1.get()));
     }
 }
 
