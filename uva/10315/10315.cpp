@@ -56,6 +56,13 @@ public:
     virtual bool operator>(const FullHouse& fh) const = 0;
     virtual bool operator>(const FourOfAKind& foak) const = 0;
     virtual bool operator>(const StraightFlush& sf) const = 0;
+    bool ReverseCompare(const PokerHand& hand) const
+    {
+        auto result{std::mismatch(cards.rbegin(), cards.rend(), hand.cards.rbegin(),
+            [](const card& c1, const card& c2) { return c1.first == c2.first; })};
+
+        return !(result.first == cards.rend() || result.first->first <= result.second->first);
+    }
 };
 
 class HighCard : public PokerHand
@@ -64,7 +71,7 @@ public:
     HighCard(const card_list& hand) : PokerHand{hand} {}
     HighCard(const std::array<card,handSize>& hand) : PokerHand{hand} {}
     bool Compare(const PokerHand& hand) const override { return hand > *this; }
-    bool operator>(const HighCard& hc) const override { return cards.rbegin()->first > hc.cards.rbegin()->first; }
+    bool operator>(const HighCard& hc) const override { return ReverseCompare(hc); }
     bool operator>(const Pair& p) const override { return false; }
     bool operator>(const TwoPairs& tp) const override { return false; }
     bool operator>(const ThreeOfAKind& toak) const override { return false; }
@@ -164,7 +171,7 @@ public:
     bool operator>(const TwoPairs& tp) const override { return true; }
     bool operator>(const ThreeOfAKind& toak) const override { return true; }
     bool operator>(const Straight& s) const override { return true; }
-    bool operator>(const Flush& f) const override { return false; }
+    bool operator>(const Flush& f) const override { return ReverseCompare(f); }
     bool operator>(const FullHouse& fh) const override { return false; }
     bool operator>(const FourOfAKind& foak) const override { return false; }
     bool operator>(const StraightFlush& sf) const override { return false; }
@@ -421,9 +428,19 @@ TEST_CASE("Matching hand comparison", "[PokerHands]")
     {
         std::array<card,handSize> f1{std::make_pair(2,'H'), std::make_pair(5,'H'), 
             std::make_pair(6,'H'), std::make_pair(9, 'H'), std::make_pair(11,'H')};
-        std::array<card,handSize> f2{std::make_pair(2,'C'), std::make_pair(5,'C'), 
+        std::array<card,handSize> f2{std::make_pair(3,'C'), std::make_pair(5,'C'), 
             std::make_pair(6,'C'), std::make_pair(9, 'C'), std::make_pair(11,'C')};
-        
+        std::array<card,handSize> f3{std::make_pair(3,'D'), std::make_pair(5,'D'), 
+            std::make_pair(6,'D'), std::make_pair(9, 'D'), std::make_pair(11,'D')};
+
+        auto fh1{MakeHand(f1)};
+        auto fh2{MakeHand(f2)};
+        auto fh3{MakeHand(f3)};
+
+        REQUIRE(!(*fh1.get() > *fh2.get()));
+        REQUIRE(*fh2.get() > *fh1.get());
+        REQUIRE(!(*fh2.get() > *fh3.get()));
+        REQUIRE(!(*fh3.get() > *fh2.get()));
     }
     SECTION("Straight")
     {
