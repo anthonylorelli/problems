@@ -444,6 +444,21 @@ TEST_CASE("Matching hand comparison", "[PokerHands]")
     }
     SECTION("Straight")
     {
+        std::array<card,handSize> s1{std::make_pair(2,'H'), std::make_pair(3,'H'), 
+            std::make_pair(4,'H'), std::make_pair(5, 'H'), std::make_pair(6,'S')};
+        std::array<card,handSize> s2{std::make_pair(3,'C'), std::make_pair(4,'C'), 
+            std::make_pair(5,'C'), std::make_pair(6, 'C'), std::make_pair(7,'H')};
+        std::array<card,handSize> s3{std::make_pair(3,'C'), std::make_pair(4,'C'), 
+            std::make_pair(5,'C'), std::make_pair(6, 'C'), std::make_pair(7,'H')};
+
+        auto sh1{MakeHand(s1)};
+        auto sh2{MakeHand(s2)};
+        auto sh3{MakeHand(s3)};
+
+        REQUIRE(!(*sh1.get() > *sh2.get()));
+        REQUIRE(*sh2.get() > *sh1.get());
+        REQUIRE(!(*sh2.get() > *sh3.get()));
+        REQUIRE(!(*sh3.get() > *sh2.get()));
     }
     SECTION("Three of a kind")
     {
