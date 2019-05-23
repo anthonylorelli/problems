@@ -132,7 +132,7 @@ public:
     bool operator>(const HighCard& hc) const override { return true; }
     bool operator>(const Pair& p) const override { return true; }
     bool operator>(const TwoPairs& tp) const override { return true; }
-    bool operator>(const ThreeOfAKind& toak) const override { return false; }
+    bool operator>(const ThreeOfAKind& toak) const override { return cards[m_i].first > toak.cards[toak.m_i].first; }
     bool operator>(const Straight& s) const override { return false; }
     bool operator>(const Flush& f) const override { return false; }
     bool operator>(const FullHouse& fh) const override { return false; }
@@ -462,9 +462,44 @@ TEST_CASE("Matching hand comparison", "[PokerHands]")
     }
     SECTION("Three of a kind")
     {
+        std::array<card,handSize> toak1{std::make_pair(2,'H'), std::make_pair(3,'H'), 
+            std::make_pair(4,'H'), std::make_pair(4, 'H'), std::make_pair(4,'S')};
+        std::array<card,handSize> toak2{std::make_pair(3,'C'), std::make_pair(4,'C'), 
+            std::make_pair(5,'C'), std::make_pair(5, 'C'), std::make_pair(5,'H')};
+        std::array<card,handSize> toak3{std::make_pair(3,'C'), std::make_pair(4,'C'), 
+            std::make_pair(5,'C'), std::make_pair(5, 'C'), std::make_pair(5,'H')};
+
+        auto toakh1{MakeHand(toak1)};
+        auto toakh2{MakeHand(toak2)};
+        auto toakh3{MakeHand(toak3)};
+
+        REQUIRE(!(*toakh1.get() > *toakh2.get()));
+        REQUIRE(*toakh2.get() > *toakh1.get());
+        REQUIRE(!(*toakh2.get() > *toakh3.get()));
+        REQUIRE(!(*toakh3.get() > *toakh2.get()));
     }
     SECTION("Two pairs")
     {
+        std::array<card,handSize> tp1{std::make_pair(2,'H'), std::make_pair(2,'H'), 
+            std::make_pair(4,'H'), std::make_pair(4, 'H'), std::make_pair(8,'S')};
+        std::array<card,handSize> tp2{std::make_pair(3,'C'), std::make_pair(3,'C'), 
+            std::make_pair(5,'C'), std::make_pair(5, 'C'), std::make_pair(8,'H')};
+        std::array<card,handSize> tp3{std::make_pair(4,'C'), std::make_pair(4,'C'), 
+            std::make_pair(5,'C'), std::make_pair(5, 'C'), std::make_pair(8,'H')};
+        std::array<card,handSize> tp4{std::make_pair(4,'C'), std::make_pair(4,'C'), 
+            std::make_pair(5,'C'), std::make_pair(5, 'C'), std::make_pair(8,'H')};
+
+        auto tph1{MakeHand(tp1)};
+        auto tph2{MakeHand(tp2)};
+        auto tph3{MakeHand(tp3)};
+        auto tph4{MakeHand(tp4)};
+
+        REQUIRE(!(*tph1.get() > *tph2.get()));
+        REQUIRE(*tph2.get() > *tph1.get());
+        REQUIRE(!(*tph2.get() > *tph3.get()));
+        REQUIRE(*tph3.get() > *tph2.get());
+        REQUIRE(!(*tph3.get() > *tph4.get()));
+        REQUIRE(*tph4.get() > *tph3.get());
     }
     SECTION("Pair")
     {
