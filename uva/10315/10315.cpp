@@ -480,6 +480,26 @@ TEST_CASE("Matching hand comparison", "[PokerHands]")
     }
     SECTION("Two pairs")
     {
+        std::array<card,handSize> tp1{std::make_pair(2,'H'), std::make_pair(2,'H'), 
+            std::make_pair(4,'H'), std::make_pair(4, 'H'), std::make_pair(8,'S')};
+        std::array<card,handSize> tp2{std::make_pair(3,'C'), std::make_pair(3,'C'), 
+            std::make_pair(5,'C'), std::make_pair(5, 'C'), std::make_pair(8,'H')};
+        std::array<card,handSize> tp3{std::make_pair(4,'C'), std::make_pair(4,'C'), 
+            std::make_pair(5,'C'), std::make_pair(5, 'C'), std::make_pair(8,'H')};
+        std::array<card,handSize> tp4{std::make_pair(4,'C'), std::make_pair(4,'C'), 
+            std::make_pair(5,'C'), std::make_pair(5, 'C'), std::make_pair(8,'H')};
+
+        auto tph1{MakeHand(tp1)};
+        auto tph2{MakeHand(tp2)};
+        auto tph3{MakeHand(tp3)};
+        auto tph4{MakeHand(tp4)};
+
+        REQUIRE(!(*tph1.get() > *tph2.get()));
+        REQUIRE(*tph2.get() > *tph1.get());
+        REQUIRE(!(*tph2.get() > *tph3.get()));
+        REQUIRE(*tph3.get() > *tph2.get());
+        REQUIRE(!(*tph3.get() > *tph4.get()));
+        REQUIRE(*tph4.get() > *tph3.get());
     }
     SECTION("Pair")
     {
