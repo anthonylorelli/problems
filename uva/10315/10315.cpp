@@ -105,12 +105,25 @@ private:
 class TwoPairs : public PokerHand
 {
 public:
-    TwoPairs(const card_list& hand, const int i, const int j) : PokerHand{hand}, m_i{i}, m_j{j} {}
-    TwoPairs(const std::array<card,handSize>& hand, const int i, const int j) : PokerHand{hand}, m_i{i}, m_j{j} {}
+    TwoPairs(const card_list& hand, const int i, const int j) : PokerHand{hand}, m_i{i}, m_j{j} 
+    {
+        m_k = FindSingle();
+    }
+    TwoPairs(const std::array<card,handSize>& hand, const int i, const int j) : PokerHand{hand}, m_i{i}, m_j{j} 
+    {
+        m_k = FindSingle();
+    }
+    const int FindSingle() { return (m_i == 1) ? 0 : (m_j == 2) ? 4 : 3; }
     bool Compare(const PokerHand& hand) const override { return hand > *this; }
     bool operator>(const HighCard& hc) const override { return true; }
     bool operator>(const Pair& p) const override { return true; }
-    bool operator>(const TwoPairs& tp) const override { return false; }
+    bool operator>(const TwoPairs& tp) const override 
+    { 
+        return (cards[m_i].first == tp.cards[tp.m_i].first) ?
+            ((cards[m_j].first == tp.cards[tp.m_j].first) ? (cards[m_k].first > tp.cards[m_k].first) :
+                (cards[m_j].first > tp.cards[m_j].first)) :
+            (cards[m_i].first > tp.cards[tp.m_i].first);
+    }
     bool operator>(const ThreeOfAKind& toak) const override { return false; }
     bool operator>(const Straight& s) const override { return false; }
     bool operator>(const Flush& f) const override { return false; }
@@ -121,6 +134,7 @@ public:
 private:
     int m_i;
     int m_j;
+    int m_k;
 };
 
 class ThreeOfAKind : public PokerHand
@@ -499,7 +513,7 @@ TEST_CASE("Matching hand comparison", "[PokerHands]")
         REQUIRE(!(*tph2.get() > *tph3.get()));
         REQUIRE(*tph3.get() > *tph2.get());
         REQUIRE(!(*tph3.get() > *tph4.get()));
-        REQUIRE(*tph4.get() > *tph3.get());
+        REQUIRE(!(*tph4.get() > *tph3.get()));
     }
     SECTION("Pair")
     {
