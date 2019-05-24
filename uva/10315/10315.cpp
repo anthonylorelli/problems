@@ -46,17 +46,17 @@ public:
     }
     PokerHand(const std::array<card,handSize>& hand) : cards{hand} {}
     std::array<card,handSize> cards;
-    virtual bool Compare(const PokerHand& hand) const = 0;
-    virtual bool operator>(const HighCard& hc) const  = 0;
-    virtual bool operator>(const Pair& p) const = 0;
-    virtual bool operator>(const TwoPairs& tp) const = 0;
-    virtual bool operator>(const ThreeOfAKind& toak) const = 0;
-    virtual bool operator>(const Straight& s) const = 0;
-    virtual bool operator>(const Flush& f) const = 0;
-    virtual bool operator>(const FullHouse& fh) const = 0;
-    virtual bool operator>(const FourOfAKind& foak) const = 0;
-    virtual bool operator>(const StraightFlush& sf) const = 0;
-    bool ReverseCompare(const PokerHand& hand) const
+    virtual const bool Compare(const PokerHand& hand) const = 0;
+    virtual const bool operator>(const HighCard& hc) const  = 0;
+    virtual const bool operator>(const Pair& p) const = 0;
+    virtual const bool operator>(const TwoPairs& tp) const = 0;
+    virtual const bool operator>(const ThreeOfAKind& toak) const = 0;
+    virtual const bool operator>(const Straight& s) const = 0;
+    virtual const bool operator>(const Flush& f) const = 0;
+    virtual const bool operator>(const FullHouse& fh) const = 0;
+    virtual const bool operator>(const FourOfAKind& foak) const = 0;
+    virtual const bool operator>(const StraightFlush& sf) const = 0;
+    const bool ReverseCompare(const PokerHand& hand) const
     {
         auto result{std::mismatch(cards.rbegin(), cards.rend(), hand.cards.rbegin(),
             [](const card& c1, const card& c2) { return c1.first == c2.first; })};
@@ -70,16 +70,16 @@ class HighCard : public PokerHand
 public:
     HighCard(const card_list& hand) : PokerHand{hand} {}
     HighCard(const std::array<card,handSize>& hand) : PokerHand{hand} {}
-    bool Compare(const PokerHand& hand) const override { return hand > *this; }
-    bool operator>(const HighCard& hc) const override { return ReverseCompare(hc); }
-    bool operator>(const Pair& p) const override { return false; }
-    bool operator>(const TwoPairs& tp) const override { return false; }
-    bool operator>(const ThreeOfAKind& toak) const override { return false; }
-    bool operator>(const Straight& s) const override { return false; }
-    bool operator>(const Flush& f) const override { return false; }
-    bool operator>(const FullHouse& fh) const override { return false; }
-    bool operator>(const FourOfAKind& foak) const override { return false; }
-    bool operator>(const StraightFlush& sf) const override { return false; }
+    const bool Compare(const PokerHand& hand) const override { return hand > *this; }
+    const bool operator>(const HighCard& hc) const override { return ReverseCompare(hc); }
+    const bool operator>(const Pair& p) const override { return false; }
+    const bool operator>(const TwoPairs& tp) const override { return false; }
+    const bool operator>(const ThreeOfAKind& toak) const override { return false; }
+    const bool operator>(const Straight& s) const override { return false; }
+    const bool operator>(const Flush& f) const override { return false; }
+    const bool operator>(const FullHouse& fh) const override { return false; }
+    const bool operator>(const FourOfAKind& foak) const override { return false; }
+    const bool operator>(const StraightFlush& sf) const override { return false; }
 };
 
 class Pair : public PokerHand
@@ -87,16 +87,16 @@ class Pair : public PokerHand
 public:
     Pair(const card_list& hand, const int i) : PokerHand{hand}, m_i{i} {}
     Pair(const std::array<card,handSize>& hand, const int i) : PokerHand{hand}, m_i{i} {}
-    bool Compare(const PokerHand& hand) const override { return hand > *this; }
-    bool operator>(const HighCard& hc) const override { return true; }
-    bool operator>(const Pair& p) const override { return false; }
-    bool operator>(const TwoPairs& tp) const override { return false; }
-    bool operator>(const ThreeOfAKind& toak) const override { return false; }
-    bool operator>(const Straight& s) const override { return false; }
-    bool operator>(const Flush& f) const override { return false; }
-    bool operator>(const FullHouse& fh) const override { return false; }
-    bool operator>(const FourOfAKind& foak) const override { return false; }
-    bool operator>(const StraightFlush& sf) const override { return false; }
+    const bool Compare(const PokerHand& hand) const override { return hand > *this; }
+    const bool operator>(const HighCard& hc) const override { return true; }
+    const bool operator>(const Pair& p) const override { return false; }
+    const bool operator>(const TwoPairs& tp) const override { return false; }
+    const bool operator>(const ThreeOfAKind& toak) const override { return false; }
+    const bool operator>(const Straight& s) const override { return false; }
+    const bool operator>(const Flush& f) const override { return false; }
+    const bool operator>(const FullHouse& fh) const override { return false; }
+    const bool operator>(const FourOfAKind& foak) const override { return false; }
+    const bool operator>(const StraightFlush& sf) const override { return false; }
 
 private:
     int m_i;
@@ -114,22 +114,22 @@ public:
         m_k = FindSingle();
     }
     const int FindSingle() { return (m_i == 1) ? 0 : (m_j == 2) ? 4 : 3; }
-    bool Compare(const PokerHand& hand) const override { return hand > *this; }
-    bool operator>(const HighCard& hc) const override { return true; }
-    bool operator>(const Pair& p) const override { return true; }
-    bool operator>(const TwoPairs& tp) const override 
+    const bool Compare(const PokerHand& hand) const override { return hand > *this; }
+    const bool operator>(const HighCard& hc) const override { return true; }
+    const bool operator>(const Pair& p) const override { return true; }
+    const bool operator>(const TwoPairs& tp) const override 
     { 
         return (cards[m_i].first == tp.cards[tp.m_i].first) ?
             ((cards[m_j].first == tp.cards[tp.m_j].first) ? (cards[m_k].first > tp.cards[m_k].first) :
                 (cards[m_j].first > tp.cards[m_j].first)) :
             (cards[m_i].first > tp.cards[tp.m_i].first);
     }
-    bool operator>(const ThreeOfAKind& toak) const override { return false; }
-    bool operator>(const Straight& s) const override { return false; }
-    bool operator>(const Flush& f) const override { return false; }
-    bool operator>(const FullHouse& fh) const override { return false; }
-    bool operator>(const FourOfAKind& foak) const override { return false; }
-    bool operator>(const StraightFlush& sf) const override { return false; }
+    const bool operator>(const ThreeOfAKind& toak) const override { return false; }
+    const bool operator>(const Straight& s) const override { return false; }
+    const bool operator>(const Flush& f) const override { return false; }
+    const bool operator>(const FullHouse& fh) const override { return false; }
+    const bool operator>(const FourOfAKind& foak) const override { return false; }
+    const bool operator>(const StraightFlush& sf) const override { return false; }
 
 private:
     int m_i;
@@ -142,16 +142,16 @@ class ThreeOfAKind : public PokerHand
 public:
     ThreeOfAKind(const card_list& hand, const int i) : PokerHand{hand}, m_i{i} {}
     ThreeOfAKind(const std::array<card,handSize>& hand, const int i) : PokerHand{hand}, m_i{i} {}
-    bool Compare(const PokerHand& hand) const override { return hand > *this; }
-    bool operator>(const HighCard& hc) const override { return true; }
-    bool operator>(const Pair& p) const override { return true; }
-    bool operator>(const TwoPairs& tp) const override { return true; }
-    bool operator>(const ThreeOfAKind& toak) const override { return cards[m_i].first > toak.cards[toak.m_i].first; }
-    bool operator>(const Straight& s) const override { return false; }
-    bool operator>(const Flush& f) const override { return false; }
-    bool operator>(const FullHouse& fh) const override { return false; }
-    bool operator>(const FourOfAKind& foak) const override { return false; }
-    bool operator>(const StraightFlush& sf) const override { return false; }
+    const bool Compare(const PokerHand& hand) const override { return hand > *this; }
+    const bool operator>(const HighCard& hc) const override { return true; }
+    const bool operator>(const Pair& p) const override { return true; }
+    const bool operator>(const TwoPairs& tp) const override { return true; }
+    const bool operator>(const ThreeOfAKind& toak) const override { return cards[m_i].first > toak.cards[toak.m_i].first; }
+    const bool operator>(const Straight& s) const override { return false; }
+    const bool operator>(const Flush& f) const override { return false; }
+    const bool operator>(const FullHouse& fh) const override { return false; }
+    const bool operator>(const FourOfAKind& foak) const override { return false; }
+    const bool operator>(const StraightFlush& sf) const override { return false; }
 
 private:
     int m_i;
@@ -162,16 +162,16 @@ class Straight : public PokerHand
 public:
     Straight(const card_list& hand) : PokerHand{hand} {}
     Straight(const std::array<card,handSize>& hand) : PokerHand{hand} {}
-    bool Compare(const PokerHand& hand) const override { return hand > *this; }
-    bool operator>(const HighCard& hc) const override { return true; }
-    bool operator>(const Pair& p) const override { return true; }
-    bool operator>(const TwoPairs& tp) const override { return true; }
-    bool operator>(const ThreeOfAKind& toak) const override { return true; }
-    bool operator>(const Straight& s) const override { return cards.rbegin()->first > s.cards.rbegin()->first; }
-    bool operator>(const Flush& f) const override { return false; }
-    bool operator>(const FullHouse& fh) const override { return false; }
-    bool operator>(const FourOfAKind& foak) const override { return false; }
-    bool operator>(const StraightFlush& sf) const override { return false; }
+    const bool Compare(const PokerHand& hand) const override { return hand > *this; }
+    const bool operator>(const HighCard& hc) const override { return true; }
+    const bool operator>(const Pair& p) const override { return true; }
+    const bool operator>(const TwoPairs& tp) const override { return true; }
+    const bool operator>(const ThreeOfAKind& toak) const override { return true; }
+    const bool operator>(const Straight& s) const override { return cards.rbegin()->first > s.cards.rbegin()->first; }
+    const bool operator>(const Flush& f) const override { return false; }
+    const bool operator>(const FullHouse& fh) const override { return false; }
+    const bool operator>(const FourOfAKind& foak) const override { return false; }
+    const bool operator>(const StraightFlush& sf) const override { return false; }
 };
 
 class Flush : public PokerHand
@@ -179,16 +179,16 @@ class Flush : public PokerHand
 public:
     Flush(const card_list& hand) : PokerHand{hand} {}
     Flush(const std::array<card,handSize>& hand) : PokerHand{hand} {}
-    bool Compare(const PokerHand& hand) const override { return hand > *this; }
-    bool operator>(const HighCard& hc) const override { return true; }
-    bool operator>(const Pair& p) const override { return true; }
-    bool operator>(const TwoPairs& tp) const override { return true; }
-    bool operator>(const ThreeOfAKind& toak) const override { return true; }
-    bool operator>(const Straight& s) const override { return true; }
-    bool operator>(const Flush& f) const override { return ReverseCompare(f); }
-    bool operator>(const FullHouse& fh) const override { return false; }
-    bool operator>(const FourOfAKind& foak) const override { return false; }
-    bool operator>(const StraightFlush& sf) const override { return false; }
+    const bool Compare(const PokerHand& hand) const override { return hand > *this; }
+    const bool operator>(const HighCard& hc) const override { return true; }
+    const bool operator>(const Pair& p) const override { return true; }
+    const bool operator>(const TwoPairs& tp) const override { return true; }
+    const bool operator>(const ThreeOfAKind& toak) const override { return true; }
+    const bool operator>(const Straight& s) const override { return true; }
+    const bool operator>(const Flush& f) const override { return ReverseCompare(f); }
+    const bool operator>(const FullHouse& fh) const override { return false; }
+    const bool operator>(const FourOfAKind& foak) const override { return false; }
+    const bool operator>(const StraightFlush& sf) const override { return false; }
 };
 
 class FullHouse : public PokerHand
@@ -197,16 +197,16 @@ public:
     FullHouse(const card_list& hand, const int three, const int pair) : PokerHand{hand}, m_three{three}, m_pair{pair} {}
     FullHouse(const std::array<card,handSize>& hand, const int three, const int pair) :
         PokerHand{hand}, m_three{three}, m_pair{pair} {}
-    bool Compare(const PokerHand& hand) const override { return hand > *this; }
-    bool operator>(const HighCard& hc) const override { return true; }
-    bool operator>(const Pair& p) const override { return true; }
-    bool operator>(const TwoPairs& tp) const override { return true; }
-    bool operator>(const ThreeOfAKind& toak) const override { return true; }
-    bool operator>(const Straight& s) const override { return true; }
-    bool operator>(const Flush& f) const override { return true; }
-    bool operator>(const FullHouse& fh) const override { return cards[m_three].first > fh.cards[fh.m_three].first; }
-    bool operator>(const FourOfAKind& foak) const override { return false; }
-    bool operator>(const StraightFlush& sf) const override { return false; }
+    const bool Compare(const PokerHand& hand) const override { return hand > *this; }
+    const bool operator>(const HighCard& hc) const override { return true; }
+    const bool operator>(const Pair& p) const override { return true; }
+    const bool operator>(const TwoPairs& tp) const override { return true; }
+    const bool operator>(const ThreeOfAKind& toak) const override { return true; }
+    const bool operator>(const Straight& s) const override { return true; }
+    const bool operator>(const Flush& f) const override { return true; }
+    const bool operator>(const FullHouse& fh) const override { return cards[m_three].first > fh.cards[fh.m_three].first; }
+    const bool operator>(const FourOfAKind& foak) const override { return false; }
+    const bool operator>(const StraightFlush& sf) const override { return false; }
 
 private:
     int m_three;
@@ -218,16 +218,16 @@ class FourOfAKind : public PokerHand
 public:
     FourOfAKind(const card_list& hand, const int four) : PokerHand{hand}, m_four{four} {}
     FourOfAKind(const std::array<card,handSize>& hand, const int four) : PokerHand{hand}, m_four{four} {}
-    bool Compare(const PokerHand& hand) const override { return hand > *this; }
-    bool operator>(const HighCard& hc) const override { return true; }
-    bool operator>(const Pair& p) const override { return true; }
-    bool operator>(const TwoPairs& tp) const override { return true; }
-    bool operator>(const ThreeOfAKind& toak) const override { return true; }
-    bool operator>(const Straight& s) const override { return true; }
-    bool operator>(const Flush& f) const override { return true; }
-    bool operator>(const FullHouse& fh) const override { return true; }
-    bool operator>(const FourOfAKind& foak) const override { return cards[m_four].first > foak.cards[foak.m_four].first; }
-    bool operator>(const StraightFlush& sf) const override { return false; }
+    const bool Compare(const PokerHand& hand) const override { return hand > *this; }
+    const bool operator>(const HighCard& hc) const override { return true; }
+    const bool operator>(const Pair& p) const override { return true; }
+    const bool operator>(const TwoPairs& tp) const override { return true; }
+    const bool operator>(const ThreeOfAKind& toak) const override { return true; }
+    const bool operator>(const Straight& s) const override { return true; }
+    const bool operator>(const Flush& f) const override { return true; }
+    const bool operator>(const FullHouse& fh) const override { return true; }
+    const bool operator>(const FourOfAKind& foak) const override { return cards[m_four].first > foak.cards[foak.m_four].first; }
+    const bool operator>(const StraightFlush& sf) const override { return false; }
 
 private:
     int m_four;
@@ -238,24 +238,24 @@ class StraightFlush : public PokerHand
 public:
     StraightFlush(const card_list& hand) : PokerHand{hand} {}
     StraightFlush(const std::array<card,handSize>& hand) : PokerHand{hand} {}
-    bool Compare(const PokerHand& hand) const override { return hand > *this; }
-    bool operator>(const HighCard& hc) const override { return true; }
-    bool operator>(const Pair& p) const override { return true; }
-    bool operator>(const TwoPairs& tp) const override { return true; }
-    bool operator>(const ThreeOfAKind& toak) const override { return true; }
-    bool operator>(const Straight& s) const override { return true; }
-    bool operator>(const Flush& f) const override { return true; }
-    bool operator>(const FullHouse& fh) const override { return true; }
-    bool operator>(const FourOfAKind& foak) const override { return true; }
-    bool operator>(const StraightFlush& sf) const override { return cards.rbegin()->first > sf.cards.rbegin()->first; }
+    const bool Compare(const PokerHand& hand) const override { return hand > *this; }
+    const bool operator>(const HighCard& hc) const override { return true; }
+    const bool operator>(const Pair& p) const override { return true; }
+    const bool operator>(const TwoPairs& tp) const override { return true; }
+    const bool operator>(const ThreeOfAKind& toak) const override { return true; }
+    const bool operator>(const Straight& s) const override { return true; }
+    const bool operator>(const Flush& f) const override { return true; }
+    const bool operator>(const FullHouse& fh) const override { return true; }
+    const bool operator>(const FourOfAKind& foak) const override { return true; }
+    const bool operator>(const StraightFlush& sf) const override { return cards.rbegin()->first > sf.cards.rbegin()->first; }
 };
 
-bool operator>(const PokerHand& p1, const PokerHand& p2)
+const bool operator>(const PokerHand& p1, const PokerHand& p2)
 {
     return p2.Compare(p1);
 }
 
-bool operator==(const PokerHand& p1, const PokerHand& p2)
+const bool operator==(const PokerHand& p1, const PokerHand& p2)
 {
     return std::equal(p1.cards.begin(), p1.cards.end(),
         p2.cards.begin(), p2.cards.end(), 
@@ -270,7 +270,7 @@ std::ostream& operator<<(std::ostream& o, std::array<card,handSize> hand)
     return o;
 }
 
-int IsNOfAKind(const std::array<card,handSize>& hand, const int n)
+const int IsNOfAKind(const std::array<card,handSize>& hand, const int n)
 {
     int result{-1};
     int index{0};
