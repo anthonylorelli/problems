@@ -89,7 +89,28 @@ public:
     Pair(const std::array<card,handSize>& hand, const int i) : PokerHand{hand}, m_i{i} {}
     const bool Compare(const PokerHand& hand) const override { return hand > *this; }
     const bool operator>(const HighCard& hc) const override { return true; }
-    const bool operator>(const Pair& p) const override { return false; }
+    const bool operator>(const Pair& p) const override
+    {
+        bool result{false};
+
+        if (cards[m_i].first != p.cards[p.m_i].first)
+        {
+            result = cards[m_i].first > p.cards[p.m_i].first;
+        }
+        else
+        {
+            for (auto i{0}; i >= 0; --i)
+            {
+                if (i == m_i || i == (m_i+1)) { continue; }
+                if (cards[i].first != p.cards[i].first)
+                {
+                    result = cards[i].first > p.cards[i].first;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
     const bool operator>(const TwoPairs& tp) const override { return false; }
     const bool operator>(const ThreeOfAKind& toak) const override { return false; }
     const bool operator>(const Straight& s) const override { return false; }
@@ -517,6 +538,31 @@ TEST_CASE("Matching hand comparison", "[PokerHands]")
     }
     SECTION("Pair")
     {
+        std::array<card,handSize> p1{std::make_pair(2,'H'), std::make_pair(2,'H'), 
+            std::make_pair(4,'H'), std::make_pair(5, 'H'), std::make_pair(8,'S')};
+        std::array<card,handSize> p2{std::make_pair(3,'C'), std::make_pair(3,'C'), 
+            std::make_pair(5,'C'), std::make_pair(6, 'C'), std::make_pair(8,'H')};
+        std::array<card,handSize> p3{std::make_pair(4,'C'), std::make_pair(4,'C'), 
+            std::make_pair(5,'C'), std::make_pair(6, 'C'), std::make_pair(8,'H')};
+        std::array<card,handSize> p4{std::make_pair(4,'C'), std::make_pair(4,'C'), 
+            std::make_pair(5,'C'), std::make_pair(7, 'C'), std::make_pair(8,'H')};
+        std::array<card,handSize> p5{std::make_pair(4,'C'), std::make_pair(4,'C'), 
+            std::make_pair(5,'C'), std::make_pair(7, 'C'), std::make_pair(8,'H')};
+
+        auto ph1{MakeHand(p1)};
+        auto ph2{MakeHand(p2)};
+        auto ph3{MakeHand(p3)};
+        auto ph4{MakeHand(p4)};
+        auto ph5{MakeHand(p5)};
+
+        REQUIRE(!(*ph1.get() > *ph2.get()));
+        REQUIRE(*ph2.get() > *ph1.get());
+        REQUIRE(!(*ph2.get() > *ph3.get()));
+        REQUIRE(*ph3.get() > *ph2.get());
+        REQUIRE(!(*ph3.get() > *ph4.get()));
+        REQUIRE(*ph4.get() > *ph3.get());
+        REQUIRE(!(*ph4.get() > *ph5.get()));
+        REQUIRE(!(*ph5.get() > *ph4.get()));
     }
     SECTION("High card")
     {
