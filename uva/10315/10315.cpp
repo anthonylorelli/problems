@@ -99,7 +99,7 @@ public:
         }
         else
         {
-            for (auto i{0}; i >= 0; --i)
+            for (auto i{4}; i >= 0; --i)
             {
                 if (i == m_i || i == (m_i+1)) { continue; }
                 if (cards[i].first != p.cards[i].first)
@@ -300,7 +300,7 @@ const int IsNOfAKind(const std::array<card,handSize>& hand, const int n)
     std::for_each(hand.begin()+1, hand.end(), [&](const std::pair<int,char>& c) 
         { 
             index++; 
-            if (c.first == rank) { count++; if (count == n) { result = index; }} else { rank = c.first; count = 1; }
+            if (c.first == rank) { count++; if (count == n) { result = index - n + 1; }} else { rank = c.first; count = 1; }
         });
 
     return result;
@@ -706,15 +706,15 @@ TEST_CASE("N of a kind", "[PokerHands]")
 
     SECTION("N == 4")
     {
-        REQUIRE(IsNOfAKind(h1, 4) == 3);
+        REQUIRE(IsNOfAKind(h1, 4) == 0);
     }
     SECTION("N == 3")
     {
-        REQUIRE(IsNOfAKind(h1, 3) == 2);
+        REQUIRE(IsNOfAKind(h1, 3) == 0);
     }
     SECTION("N == 2")
     {
-        REQUIRE(IsNOfAKind(h1, 2) == 1);
+        REQUIRE(IsNOfAKind(h1, 2) == 0);
     }
 
     std::array<card,handSize> h2{std::make_pair(11,'H'), std::make_pair(2,'D'), 
@@ -726,11 +726,11 @@ TEST_CASE("N of a kind", "[PokerHands]")
     }
     SECTION("N == 3")
     {
-        REQUIRE(IsNOfAKind(h2, 3) == 3);
+        REQUIRE(IsNOfAKind(h2, 3) == 1);
     }
     SECTION("N == 2")
     {
-        REQUIRE(IsNOfAKind(h2, 2) == 2);
+        REQUIRE(IsNOfAKind(h2, 2) == 1);
     }
 
     std::array<card,handSize> h3{std::make_pair(11,'H'), std::make_pair(3,'D'), 
@@ -746,7 +746,7 @@ TEST_CASE("N of a kind", "[PokerHands]")
     }
     SECTION("N == 2")
     {
-        REQUIRE(IsNOfAKind(h3, 2) == 4);
+        REQUIRE(IsNOfAKind(h3, 2) == 3);
     }
 }
 
