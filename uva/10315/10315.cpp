@@ -548,12 +548,16 @@ TEST_CASE("Matching hand comparison", "[PokerHands]")
             std::make_pair(5,'C'), std::make_pair(7, 'C'), std::make_pair(8,'H')};
         std::array<card,handSize> p5{std::make_pair(4,'C'), std::make_pair(4,'C'), 
             std::make_pair(5,'C'), std::make_pair(7, 'C'), std::make_pair(8,'H')};
+        std::array<card,handSize> p6{std::make_pair(4,'C'), std::make_pair(4,'C'), 
+            std::make_pair(6,'C'), std::make_pair(7, 'C'), std::make_pair(8,'H')};
+
 
         auto ph1{MakeHand(p1)};
         auto ph2{MakeHand(p2)};
         auto ph3{MakeHand(p3)};
         auto ph4{MakeHand(p4)};
         auto ph5{MakeHand(p5)};
+        auto ph6{MakeHand(p6)};
 
         REQUIRE(!(*ph1.get() > *ph2.get()));
         REQUIRE(*ph2.get() > *ph1.get());
@@ -563,6 +567,8 @@ TEST_CASE("Matching hand comparison", "[PokerHands]")
         REQUIRE(*ph4.get() > *ph3.get());
         REQUIRE(!(*ph4.get() > *ph5.get()));
         REQUIRE(!(*ph5.get() > *ph4.get()));
+        REQUIRE(!(*ph5.get() > *ph6.get()));
+        REQUIRE(*ph6.get() > *ph5.get());
     }
     SECTION("High card")
     {
