@@ -418,6 +418,23 @@ int main(int argc, char* argv[])
     //return execute(std::cin, std::cout);
 }
 
+TEST_CASE("Game logic test", "[PokerHand]")
+{
+    std::string input{"2H 3D 5S 9C KD 2C 3H 4S 8C AH\n"
+        "2H 4S 4C 2D 4H 2S 8S AS QS 3S\n"
+        "2H 3D 5S 9C KD 2C 3H 4S 8C KH\n"
+        "2H 3D 5S 9C KD 2D 3H 5C 9S KH\n"};
+    std::string output{"White wins.\n"
+        "Black wins.\n"
+        "Black wins.\n"
+        "Tie.\n"};
+    std::istringstream i{input};
+    std::ostringstream o;
+
+    REQUIRE(execute(i, o) == 0);
+    REQUIRE(o.str() == output);
+}
+
 TEST_CASE("Matching hand comparison", "[PokerHands]")
 {
     SECTION("Straight flush")
@@ -548,12 +565,16 @@ TEST_CASE("Matching hand comparison", "[PokerHands]")
             std::make_pair(5,'C'), std::make_pair(7, 'C'), std::make_pair(8,'H')};
         std::array<card,handSize> p5{std::make_pair(4,'C'), std::make_pair(4,'C'), 
             std::make_pair(5,'C'), std::make_pair(7, 'C'), std::make_pair(8,'H')};
+        std::array<card,handSize> p6{std::make_pair(4,'C'), std::make_pair(4,'C'), 
+            std::make_pair(6,'C'), std::make_pair(7, 'C'), std::make_pair(8,'H')};
+
 
         auto ph1{MakeHand(p1)};
         auto ph2{MakeHand(p2)};
         auto ph3{MakeHand(p3)};
         auto ph4{MakeHand(p4)};
         auto ph5{MakeHand(p5)};
+        auto ph6{MakeHand(p6)};
 
         REQUIRE(!(*ph1.get() > *ph2.get()));
         REQUIRE(*ph2.get() > *ph1.get());
@@ -563,9 +584,31 @@ TEST_CASE("Matching hand comparison", "[PokerHands]")
         REQUIRE(*ph4.get() > *ph3.get());
         REQUIRE(!(*ph4.get() > *ph5.get()));
         REQUIRE(!(*ph5.get() > *ph4.get()));
+        REQUIRE(!(*ph5.get() > *ph6.get()));
+        REQUIRE(*ph6.get() > *ph5.get());
     }
     SECTION("High card")
     {
+        std::array<card,handSize> hc1{std::make_pair(2,'H'), std::make_pair(4,'H'), 
+            std::make_pair(5,'H'), std::make_pair(7, 'H'), std::make_pair(8,'S')};
+        std::array<card,handSize> hc2{std::make_pair(3,'C'), std::make_pair(4,'C'), 
+            std::make_pair(5,'C'), std::make_pair(7, 'C'), std::make_pair(8,'H')};
+        std::array<card,handSize> hc3{std::make_pair(4,'C'), std::make_pair(4,'C'), 
+            std::make_pair(5,'C'), std::make_pair(6, 'C'), std::make_pair(9,'H')};
+        std::array<card,handSize> hc4{std::make_pair(4,'C'), std::make_pair(4,'C'), 
+            std::make_pair(5,'C'), std::make_pair(6, 'C'), std::make_pair(9,'H')};
+
+        auto hch1{MakeHand(hc1)};
+        auto hch2{MakeHand(hc2)};
+        auto hch3{MakeHand(hc3)};
+        auto hch4{MakeHand(hc4)};
+
+        REQUIRE(!(*hch1.get() > *hch2.get()));
+        REQUIRE(*hch2.get() > *hch1.get());
+        REQUIRE(!(*hch2.get() > *hch3.get()));
+        REQUIRE(*hch3.get() > *hch2.get());
+        REQUIRE(!(*hch3.get() > *hch3.get()));
+        REQUIRE(!(*hch4.get() > *hch3.get()));
     }
 }
 
