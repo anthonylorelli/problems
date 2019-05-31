@@ -418,6 +418,23 @@ int main(int argc, char* argv[])
     //return execute(std::cin, std::cout);
 }
 
+TEST_CASE("Game logic test", "[PokerHand]")
+{
+    std::string input{"2H 3D 5S 9C KD 2C 3H 4S 8C AH\n"
+        "2H 4S 4C 2D 4H 2S 8S AS QS 3S\n"
+        "2H 3D 5S 9C KD 2C 3H 4S 8C KH\n"
+        "2H 3D 5S 9C KD 2D 3H 5C 9S KH\n"};
+    std::string output{"White wins.\n"
+        "Black wins.\n"
+        "Black wins.\n"
+        "Tie.\n"};
+    std::istringstream i{input};
+    std::ostringstream o;
+
+    REQUIRE(execute(i, o) == 0);
+    REQUIRE(o.str() == output);
+}
+
 TEST_CASE("Matching hand comparison", "[PokerHands]")
 {
     SECTION("Straight flush")
