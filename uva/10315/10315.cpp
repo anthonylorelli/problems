@@ -814,7 +814,6 @@ TEST_CASE("Hand greater than comparisons", "[PokerHands]")
         REQUIRE(sf1 > sf2);
         REQUIRE(!(sf2 > sf1));
         REQUIRE(!(sf2 > sf3));
-        //REQUIRE(sf2 == sf3);
         REQUIRE(sf > foak);
         REQUIRE(sf > fh);
         REQUIRE(sf > f);
