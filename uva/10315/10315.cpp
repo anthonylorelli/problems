@@ -276,12 +276,12 @@ const bool operator>(const PokerHand& p1, const PokerHand& p2)
     return p2.Compare(p1);
 }
 
-const bool operator==(const PokerHand& p1, const PokerHand& p2)
-{
-    return std::equal(p1.cards.begin(), p1.cards.end(),
-        p2.cards.begin(), p2.cards.end(), 
-        [](const card& c1, const card& c2) { return c1.first == c2.first && c1.second == c2.second; });
-}
+//const bool operator==(const PokerHand& p1, const PokerHand& p2)
+//{
+//    return std::equal(p1.cards.begin(), p1.cards.end(),
+//        p2.cards.begin(), p2.cards.end(), 
+//        [](const card& c1, const card& c2) { return c1.first == c2.first && c1.second == c2.second; });
+//}
 
 std::ostream& operator<<(std::ostream& o, std::array<card,handSize> hand)
 {
@@ -314,7 +314,7 @@ std::unique_ptr<PokerHand> MakeHand(std::array<card,handSize>& hand)
     if (std::all_of(hand.begin()+1, hand.end(),
         [&rank, &suit](const card& c) { return c.first == rank++ && c.second == suit; }))
     {
-        return std::make_unique<StraightFlush>(hand);
+        return std::unique_ptr<StraightFlush>(new StraightFlush(hand));
     }
 
     // four of a kind
@@ -322,24 +322,24 @@ std::unique_ptr<PokerHand> MakeHand(std::array<card,handSize>& hand)
     int i{IsNOfAKind(hand, n)};
     if (i >= 0)
     {
-        return std::make_unique<FourOfAKind>(hand, i);
+        return std::unique_ptr<FourOfAKind>(new FourOfAKind(hand, i));
     }
 
     // full house
     if (hand[0].first == hand[1].first && hand[1].first == hand[2].first && hand[3].first == hand[4].first)
     {
-        return std::make_unique<FullHouse>(hand, 0, 3);
+        return std::unique_ptr<FullHouse>(new FullHouse(hand, 0, 3));
     }
     else if (hand[0].first == hand[1].first && hand[2].first == hand[3].first && hand[3].first == hand[4].first)
     {
-        return std::make_unique<FullHouse>(hand, 2, 0);
+        return std::unique_ptr<FullHouse>(new FullHouse(hand, 2, 0));
     }
 
     // flush
     if (std::all_of(hand.begin()+1, hand.end(), 
         [&suit](const card& c) { return c.second == suit; }))
     {
-        return std::make_unique<Flush>(hand);        
+        return std::unique_ptr<Flush>(new Flush(hand));
     }
 
     // straight
@@ -347,14 +347,14 @@ std::unique_ptr<PokerHand> MakeHand(std::array<card,handSize>& hand)
     if (std::all_of(hand.begin()+1, hand.end(), 
         [&rank](const card& c) { return c.first == rank++; }))
     {
-        return std::make_unique<Straight>(hand);        
+        return std::unique_ptr<Straight>(new Straight(hand));
     }
 
     // three of a kind
     i = IsNOfAKind(hand, 3);
     if (i >= 0)
     {
-        return std::make_unique<ThreeOfAKind>(hand, i);
+        return std::unique_ptr<ThreeOfAKind>(new ThreeOfAKind(hand, i));
     }
 
     // two pairs
@@ -366,18 +366,18 @@ std::unique_ptr<PokerHand> MakeHand(std::array<card,handSize>& hand)
     {
         auto i{first - hand.begin()};
         auto j{second - hand.begin()};
-        return std::make_unique<TwoPairs>(hand, i, j);
+        return std::unique_ptr<TwoPairs>(new TwoPairs(hand, i, j));
     }
 
     // pair
     i = IsNOfAKind(hand, 2);
     if (i >= 0)
     {
-        return std::make_unique<Pair>(hand, i);
+        return std::unique_ptr<Pair>(new Pair(hand, i));
     }
 
     // high card
-    return std::make_unique<HighCard>(hand);
+    return std::unique_ptr<HighCard>(new HighCard(hand));
 }
 
 int execute(std::istream& in, std::ostream& out)
@@ -414,8 +414,8 @@ int main(int argc, char* argv[])
 {
     std::ios_base::sync_with_stdio(false);
 
-    return Catch::Session().run(argc, argv);
-    //return execute(std::cin, std::cout);
+    //return Catch::Session().run(argc, argv);
+    return execute(std::cin, std::cout);
 }
 
 TEST_CASE("Game logic test", "[PokerHand]")
@@ -814,7 +814,6 @@ TEST_CASE("Hand greater than comparisons", "[PokerHands]")
         REQUIRE(sf1 > sf2);
         REQUIRE(!(sf2 > sf1));
         REQUIRE(!(sf2 > sf3));
-        REQUIRE(sf2 == sf3);
         REQUIRE(sf > foak);
         REQUIRE(sf > fh);
         REQUIRE(sf > f);
