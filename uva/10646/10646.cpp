@@ -16,8 +16,6 @@ class Deck
 {
 public:
     void fill(std::istream& i) {
-        //std::generate_n(m_deck.rbegin(), deckSize,
-         //   [&i](){ card c; i >> c.first; i >> c.second; return c; });
         std::for_each(m_deck.rbegin(), m_deck.rend(),
             [&i](card& c){ i >> c.first; i >> c.second; });
     }
