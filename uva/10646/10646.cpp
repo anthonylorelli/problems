@@ -8,8 +8,6 @@
 #include <iostream>
 #include <tuple>
 
-constexpr int deckSize{52};
-
 using card = std::pair<char,char>;
 
 class Deck
@@ -23,12 +21,13 @@ public:
     const card operator[](const int i) { return m_deck[i]; }
 
 private:
-    std::array<card,deckSize> m_deck;
+    static constexpr int m_deckSize{52};
+    std::array<card,m_deckSize> m_deck;
 };
 
 
 int execute(std::istream& in, std::ostream& out) {
-    std::array<std::pair<char,char>,deckSize> deck;
+    Deck deck;
     return 0;
 }
 
