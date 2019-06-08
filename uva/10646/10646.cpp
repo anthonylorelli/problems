@@ -18,15 +18,15 @@ public:
             [&i](card& c){ i >> c.first; i >> c.second; });
     }
 
-    int value(const card& c) {
+    const int value(const card& c) const {
         return (c.first >= '2' && c.first <= '9') ? c.first - '0' : 10;
     }
 
-    int yIndex() {
+    const int yIndex() const {
         int y{0};
         int index{0}; 
         for (int i = 0; i < 3; ++i) {
-            card& c{m_deck[index]};
+            const card& c{m_deck[index]};
             auto v{value(c)};
             y += v;
             index += (10 - v);
