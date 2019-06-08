@@ -1,5 +1,5 @@
 // Problem definition: https://uva.onlinejudge.org/external/106/10646.pdf
-// Accepted ?
+// Accepted 2019-06-08
 
 #define CATCH_CONFIG_RUNNER
 #include "../catch/catch.hpp"
