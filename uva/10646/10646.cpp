@@ -4,11 +4,17 @@
 #define CATCH_CONFIG_RUNNER
 #include "../catch/catch.hpp"
 
+#include <algorithm>
 #include <array>
 #include <iostream>
 #include <tuple>
 
 using card = std::pair<char,char>;
+
+std::ostream& operator<<(std::ostream& o, const card& c)
+{
+    return o << c.first << c.second;
+}
 
 class Deck
 {
@@ -22,29 +28,28 @@ public:
         return (c.first >= '2' && c.first <= '9') ? c.first - '0' : 10;
     }
 
-    const int yIndex() const {
+    const int yIndex() {
         int y{0};
-        int index{0}; 
+        int index{25};
         for (int i = 0; i < 3; ++i) {
             const card& c{m_deck[index]};
             auto v{value(c)};
             y += v;
-            index += (10 - v);
+            index += 10 - v + 1;
         }
-        return m_deckSize - y;
+
+        std::copy_n(m_deck.rbegin() + 27, 25, m_deck.rbegin() + (52 - index));
+
+        return y;
     }
 
+    constexpr int size() const { return m_deckSize; }
     const card operator[](const int i) { return m_deck[i]; }
 
 private:
     static constexpr int m_deckSize{52};
     std::array<card,m_deckSize> m_deck;
 };
-
-std::ostream& operator<<(std::ostream& o, const card& c)
-{
-    return o << c.first << c.second;
-}
 
 int execute(std::istream& in, std::ostream& out) {
     int count{0};
@@ -53,7 +58,7 @@ int execute(std::istream& in, std::ostream& out) {
     Deck deck;
     for (int i{1}; i <= count; ++i) {
         deck.fill(in);
-        out << "Case " << i << ": " << deck[deck.yIndex()] << "\n";
+        out << "Case " << i << ": " << deck[deck.size() - deck.yIndex()] << "\n";
     }
 
     return 0;
@@ -62,28 +67,23 @@ int execute(std::istream& in, std::ostream& out) {
 int main(int argc, char* argv[]) {
     std::ios_base::sync_with_stdio(false);
 
-    return Catch::Session().run(argc, argv);
-    //return execute(std::cin, std::cout);
+    //return Catch::Session().run(argc, argv);
+    return execute(std::cin, std::cout);
 }
 
 TEST_CASE("Execute unit tests", "[What is the Card?]"){
     std::istringstream i{"2\n"
         "AC KC QC JC TC 9C 8C 7C 6C 5C 4C 3C 2C AD KD QD JD TD 9D 8D 7D 6D 5D 4D 3D 2D AH KH QH JH TH 9H 8H 7H 6H "
+        "5H 4H 3H 2H AS KS QS JS TS 9S 8S 7S 6S 5S 4S 3S 2S"
+        "AC KC QC JC TC 9C 8C 7C 6C 5C 4C 3C 2C AD KD QD JD TD 9D 8D 7D 6D 5D 4D 3D 2D AH KH QH JH TH 9H 8H 7H 6H "
         "5H 4H 3H 2H AS KS QS JS TS 9S 8S 7S 6S 5S 4S 3S 2S"};
     std::ostringstream o;
     REQUIRE(execute(i, o) == 0);
-
-    //SECTION("Stream interfaces") {
-    //    std::istringstream i{""};
-    //    std::ostringstream o{""};
-    //    REQUIRE(execute(i, o) == 0);
-    //    REQUIRE(i.str() == "");
-    //    REQUIRE(o.str() == "");
-    //}
+    REQUIRE(o.str() == "Case 1: 8H\nCase 2: 8H\n");
 }
 
 TEST_CASE("Fill deck test", "[What is the Card?]") {
-    std::istringstream i{"AC KC QC JC TC 9C 8C 7C 6C 5C 4C 3C 2C AD KD QD JD TD 9D 8D 7D 6D 5D 4D 3D 2D AH KH"
+    std::istringstream i{"AC KC QC JC TC 9C 8C 7C 6C 5C 4C 3C 2C AD KD QD JD TD 9D 8D 7D 6D 5D 4D 3D 2D AH KH "
         "QH JH TH 9H 8H 7H 6H 5H 4H 3H 2H AS KS QS JS TS 9S 8S 7S 6S 5S 4S 3S 2S"};
     Deck d;
     d.fill(i);
@@ -95,7 +95,7 @@ TEST_CASE("Fill deck test", "[What is the Card?]") {
 }
 
 TEST_CASE("Card value", "[What is the Card?]") {
-    std::istringstream i{"AC KC QC JC TC 9C 8C 7C 6C 5C 4C 3C 2C AD KD QD JD TD 9D 8D 7D 6D 5D 4D 3D 2D AH KH"
+    std::istringstream i{"AC KC QC JC TC 9C 8C 7C 6C 5C 4C 3C 2C AD KD QD JD TD 9D 8D 7D 6D 5D 4D 3D 2D AH KH "
         "QH JH TH 9H 8H 7H 6H 5H 4H 3H 2H AS KS QS JS TS 9S 8S 7S 6S 5S 4S 3S 2S"};
     Deck d;
     d.fill(i);
@@ -105,6 +105,9 @@ TEST_CASE("Card value", "[What is the Card?]") {
     REQUIRE(d.value(d[2]) == 4);
     REQUIRE(d.value(d[3]) == 5);
     REQUIRE(d.value(d[4]) == 6);
+    REQUIRE(d.value(d[5]) == 7);
+    REQUIRE(d.value(d[6]) == 8);
+    REQUIRE(d.value(d[7]) == 9);
     REQUIRE(d.value(d[47]) == 10);
     REQUIRE(d.value(d[48]) == 10);
     REQUIRE(d.value(d[49]) == 10);
@@ -113,10 +116,23 @@ TEST_CASE("Card value", "[What is the Card?]") {
 }
 
 TEST_CASE("Y index", "[What is the Card?]") {
-    std::istringstream i{"AC KC QC JC TC 9C 8C 7C 6C 5C 4C 3C 2C AD KD QD JD TD 9D 8D 7D 6D 5D 4D 3D 2D AH KH"
-        "QH JH TH 9H 8H 7H 6H 5H 4H 3H 2H AS KS QS JS TS 9S 8S 7S 6S 5S 4S 3S 2S"};
     Deck d;
-    d.fill(i);
+    std::istringstream i1{"AC KC QC JC TC 9C 8C 7C 6C 5C 4C 3C 2C AD KD QD JD TD 9D 8D 7D 6D 5D 4D 3D 2D AH KH "
+        "QH JH TH 9H 8H 7H 6H 5H 4H 3H 2H AS KS QS JS TS 9S 8S 7S 6S 5S 4S 3S 2S"};
+    d.fill(i1);
 
-    REQUIRE(d.yIndex() == 32);
+    auto y1{d.yIndex()};
+    REQUIRE(y1 == 22);
+    auto c1{d.size() - y1};
+    REQUIRE(d[c1].first == '8');
+    REQUIRE(d[c1].second == 'H');
+
+    std::istringstream i2{"9C 8C 7C 6C 5C 4C 3C 2C AC KC QC JC TC 9D 8D 7D 6D 5D 4D 3D 2D AD KD QD JD TD 9H 8H "
+        "7H 6H 5H 4H 3H 2H AH KH QH JH TH 9S 8S 7S 6S 5S 4S 3S 2S AS KS QS JS TS"};
+    d.fill(i2);
+    auto y2{d.yIndex()};
+    REQUIRE(y2 == 29);
+    auto c2{d.size() - y2};
+    REQUIRE(d[c2].first == '3');
+    REQUIRE(d[c2].second == 'H');
 }
