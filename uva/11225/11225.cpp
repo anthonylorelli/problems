@@ -1,3 +1,4 @@
+// Tarot scores
 // Problem definition: https://uva.onlinejudge.org/external/112/11225.pdf
 // Accepted ?
 
