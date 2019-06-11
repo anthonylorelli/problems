@@ -11,7 +11,7 @@
 class TarotHand
 {
 public:
-    TarotHand(std::istream& i, int n) : m_threshold{0}, m_score{0.0} {
+    TarotHand(std::istream& i, const int n) : m_threshold{0}, m_score{0.0} {
         int oudlers{0};
         for (int j{0}; j < n; ++j) {
             std::string rank, conj, suit;
@@ -28,7 +28,7 @@ public:
         m_threshold = oudlers == 3 ? 36 : oudlers == 2 ? 41 : oudlers == 1 ? 51 : 56;
     }
 
-    int parse(const std::string& r, const std::string& s) {
+    const int parse(const std::string& r, const std::string& s) {
         bool isOudler{false};
         if (s == "trumps") {
             if (r == "one" || r == "twenty-one") {
@@ -50,9 +50,12 @@ public:
         return isOudler ? 1 : 0;
     }
 
-    double compare() {
+    const double compare() const {
         return m_score - m_threshold;
     }
+
+    const double score() const { return m_score; }
+    const int threshold() const { return m_threshold; }
 
 private:
     int m_threshold;
@@ -70,9 +73,18 @@ int main(int argc, char* argv[]) {
     //return execute(std::cin, std::cout);
 }
 
-TEST_CASE("Execute unit tests", "[Tarot scores]"){
+TEST_CASE("Execute unit tests", "[Tarot scores]") {
     std::istringstream i{""};
     std::ostringstream o;
     REQUIRE(execute(i, o) == 0);
     REQUIRE(o.str() == "");
+}
+
+TEST_CASE("Tarot hand tests", "[Tarot scores]") {
+    std::istringstream i{"fool\n"
+        "two of clubs\nthree of hearts\none of trumps"};
+    TarotHand hand{i, 4};
+
+    REQUIRE(hand.threshold() == 41);
+    REQUIRE(hand.score() == 10);
 }
