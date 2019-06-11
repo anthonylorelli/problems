@@ -73,9 +73,18 @@ int main(int argc, char* argv[]) {
     //return execute(std::cin, std::cout);
 }
 
-TEST_CASE("Execute unit tests", "[Tarot scores]"){
+TEST_CASE("Execute unit tests", "[Tarot scores]") {
     std::istringstream i{""};
     std::ostringstream o;
     REQUIRE(execute(i, o) == 0);
     REQUIRE(o.str() == "");
+}
+
+TEST_CASE("Tarot hand tests", "[Tarot scores]") {
+    std::istringstream i{"fool\n"
+        "two of clubs\nthree of hearts\none of trumps"};
+    TarotHand hand{i, 4};
+
+    REQUIRE(hand.threshold() == 41);
+    REQUIRE(hand.score() == 10);
 }
