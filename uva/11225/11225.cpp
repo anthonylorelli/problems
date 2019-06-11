@@ -63,6 +63,7 @@ private:
 };
 
 int execute(std::istream& in, std::ostream& out) {
+
     return 0;
 }
 
@@ -81,10 +82,36 @@ TEST_CASE("Execute unit tests", "[Tarot scores]") {
 }
 
 TEST_CASE("Tarot hand tests", "[Tarot scores]") {
-    std::istringstream i{"fool\n"
-        "two of clubs\nthree of hearts\none of trumps"};
-    TarotHand hand{i, 4};
+    SECTION("Three oudlers") {
+        std::istringstream i{"fool\n"
+            "two of clubs\nthree of hearts\n"
+            "one of trumps\ntwenty-one of trumps\n"};
+        TarotHand hand{i, 5};
 
-    REQUIRE(hand.threshold() == 41);
-    REQUIRE(hand.score() == 10);
+        REQUIRE(hand.threshold() == 36);
+        REQUIRE(hand.score() == 14.5);
+    }
+    SECTION("Two oudlers") {
+        std::istringstream i{"fool\n"
+            "two of clubs\nthree of hearts\none of trumps"};
+        TarotHand hand{i, 4};
+
+        REQUIRE(hand.threshold() == 41);
+        REQUIRE(hand.score() == 10);
+    }
+    SECTION("One oudler") {
+        std::istringstream i{"fool\n"
+            "two of clubs\nthree of hearts\n"};
+        TarotHand hand{i, 3};
+
+        REQUIRE(hand.threshold() == 51);
+        REQUIRE(hand.score() == 5.5);
+    }
+    SECTION("No oudlers") {
+        std::istringstream i{"two of clubs\nthree of hearts\n"};
+        TarotHand hand{i, 2};
+
+        REQUIRE(hand.threshold() == 56);
+        REQUIRE(hand.score() == 1.0);
+    }
 }
