@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <string>
+#include <cmath>
 
 class TarotHand
 {
@@ -34,6 +35,8 @@ public:
             if (r == "one" || r == "twenty-one") {
                 isOudler = true;
                 m_score += 4.5;
+            } else {
+                m_score += 0.5;
             }
         } else if (r == "king") {
             m_score += 4.5;
@@ -63,6 +66,18 @@ private:
 };
 
 int execute(std::istream& in, std::ostream& out) {
+    int cases{0};
+    in >> cases;
+
+    for (int i{1}; i <= cases; ++i) {
+        int cards{0};
+        in >> cards;
+        TarotHand hand{in, cards};
+        double delta{hand.compare()};
+        if (i > 1) { out << "\n"; }
+        out << "Hand #" << i << "\n" << "Game " << ((delta >= 0) ? "won" : "lost") << 
+            " by " << std::abs(delta) << " point(s).\n";
+    }
 
     return 0;
 }
@@ -70,15 +85,8 @@ int execute(std::istream& in, std::ostream& out) {
 int main(int argc, char* argv[]) {
     std::ios_base::sync_with_stdio(false);
 
-    return Catch::Session().run(argc, argv);
-    //return execute(std::cin, std::cout);
-}
-
-TEST_CASE("Execute unit tests", "[Tarot scores]") {
-    std::istringstream i{""};
-    std::ostringstream o;
-    REQUIRE(execute(i, o) == 0);
-    REQUIRE(o.str() == "");
+    //return Catch::Session().run(argc, argv);
+    return execute(std::cin, std::cout);
 }
 
 TEST_CASE("Tarot hand tests", "[Tarot scores]") {
@@ -114,4 +122,117 @@ TEST_CASE("Tarot hand tests", "[Tarot scores]") {
         REQUIRE(hand.threshold() == 56);
         REQUIRE(hand.score() == 1.0);
     }
+    SECTION("Only trumps") {
+        std::istringstream i("one of trumps\ntwo of trumps\nthree of trumps\n");
+        TarotHand hand{i, 3};
+
+        REQUIRE(hand.threshold() == 51);
+        REQUIRE(hand.score() == 5.5);
+    }
+    SECTION("Large hand") {
+        std::istringstream i{"ace of diamonds\n"
+            "ace of hearts\n"
+            "eight of clubs\n"
+            "eight of diamonds\n"
+            "eight of spades\n"
+            "eight of trumps\n"
+            "eleven of trumps\n"
+            "five of clubs\n"
+            "five of diamonds\n"
+            "four of clubs\n"
+            "four of spades\n"
+            "four of trumps\n"
+            "fourteen of trumps\n"
+            "jack of clubs\n"
+            "jack of hearts\n"
+            "jack of spades\n"
+            "king of clubs\n"
+            "king of hearts\n"
+            "knight of clubs\n"
+            "knight of diamonds\n"
+            "knight of hearts\n"
+            "nine of diamonds\n"
+            "nineteen of trumps\n"
+            "one of trumps\n"
+            "queen of clubs\n"
+            "queen of diamonds\n"
+            "queen of spades\n"
+            "seven of spades\n"
+            "seven of trumps\n"
+            "six of clubs\n"
+            "six of hearts\n"
+            "six of trumps\n"
+            "sixteen of trumps\n"
+            "ten of clubs\n"
+            "ten of diamonds\n"
+            "three of clubs\n"
+            "three of diamonds\n"
+            "three of hearts\n"
+            "three of spades\n"
+            "three of trumps\n"
+            "two of diamonds\n"
+            "two of spades\n"};
+        TarotHand hand{i, 42};
+
+        REQUIRE(hand.threshold() == 51);
+        REQUIRE(hand.score() == 51);
+    }
+}
+
+TEST_CASE("Execute unit tests", "[Tarot scores]") {
+    std::istringstream i{"2\n"
+        "4\n"
+        "ace of spades\n"
+        "eight of diamonds\n"
+        "fool\n"
+        "twenty-one of trumps\n"
+        "42\n"
+        "ace of diamonds\n"
+        "ace of hearts\n"
+        "eight of clubs\n"
+        "eight of diamonds\n"
+        "eight of spades\n"
+        "eight of trumps\n"
+        "eleven of trumps\n"
+        "five of clubs\n"
+        "five of diamonds\n"
+        "four of clubs\n"
+        "four of spades\n"
+        "four of trumps\n"
+        "fourteen of trumps\n"
+        "jack of clubs\n"
+        "jack of hearts\n"
+        "jack of spades\n"
+        "king of clubs\n"
+        "king of hearts\n"
+        "knight of clubs\n"
+        "knight of diamonds\n"
+        "knight of hearts\n"
+        "nine of diamonds\n"
+        "nineteen of trumps\n"
+        "one of trumps\n"
+        "queen of clubs\n"
+        "queen of diamonds\n"
+        "queen of spades\n"
+        "seven of spades\n"
+        "seven of trumps\n"
+        "six of clubs\n"
+        "six of hearts\n"
+        "six of trumps\n"
+        "sixteen of trumps\n"
+        "ten of clubs\n"
+        "ten of diamonds\n"
+        "three of clubs\n"
+        "three of diamonds\n"
+        "three of hearts\n"
+        "three of spades\n"
+        "three of trumps\n"
+        "two of diamonds\n"
+        "two of spades\n"};
+    std::ostringstream o;
+    REQUIRE(execute(i, o) == 0);
+    REQUIRE(o.str() == "Hand #1\n"
+        "Game lost by 31 point(s).\n\n"
+        "Hand #2\n"
+        "Game won by 0 point(s).\n");
 }
