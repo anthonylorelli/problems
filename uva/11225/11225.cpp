@@ -1,6 +1,6 @@
 // Tarot scores
 // Problem definition: https://uva.onlinejudge.org/external/112/11225.pdf
-// Accepted ?
+// Accepted 2019-06-11
 
 #define CATCH_CONFIG_RUNNER
 #include "../catch/catch.hpp"
