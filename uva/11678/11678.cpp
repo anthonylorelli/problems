@@ -9,22 +9,56 @@
 #include <iostream>
 #include <iterator>
 #include <set>
+#include <unordered_map>
+
+enum class Hand
+{
+    Alice,
+    Betty,
+    Both
+};
 
 class Trade
 {
 public:
-    Trade(int alice, int betty, std::istream& i) {
-        auto extract{[&i]() -> int { int c; i >> c; return c; }};
-        std::generate_n(std::inserter(m_alice, m_alice.end()), alice, extract);
-        std::generate_n(std::inserter(m_betty, m_betty.end()), betty, extract);
+    Trade(size_t alice, size_t betty, std::istream& i) {
+        std::unordered_map<size_t,Hand> cards;
+        size_t uniqueAlice{0};
+        size_t uniqueBetty{0};
+
+        size_t c;
+        for (size_t j{0}; j < alice; ++j) {
+            i >> c;
+            if (cards.find(c) == cards.end()) {
+                cards[c] = Hand::Alice;
+                uniqueAlice++;
+            }
+        }
+
+        for (size_t j{0}; j < betty; ++j) {
+            i >> c;
+            if (cards.find(c) == cards.end()) {
+                cards[c] = Hand::Betty;
+                uniqueBetty++;
+            } else if (cards[c] == Hand::Alice) {
+                cards[c] = Hand::Both;
+                if (uniqueAlice > 0) { uniqueAlice--; }
+            }
+        }
+
+        m_uniqueAlice = uniqueAlice;
+        m_uniqueBetty = uniqueBetty;
+        m_min = std::min(uniqueAlice, uniqueBetty);
     }
 
-    const size_t alice() const { return m_alice.size(); }
-    const size_t betty() const { return m_betty.size(); }
+    const size_t min() const { return m_min; }
+    const size_t alice() const { return m_uniqueAlice; }
+    const size_t betty() const { return m_uniqueBetty; }
 
 private:
-    std::set<int> m_alice;
-    std::set<int> m_betty;
+    size_t m_uniqueAlice;
+    size_t m_uniqueBetty;
+    size_t m_min;
 };
 
 int execute(std::istream& in, std::ostream& out) {
@@ -43,20 +77,30 @@ TEST_CASE("Size", "[Exchanging cards]") {
     SECTION("No repeats") {
         std::istringstream i{"1\n1 2 3 4 5 10 100 1000 10000 100000\n"};
         Trade t{1, 10, i};
-        REQUIRE(t.alice() == 1);
-        REQUIRE(t.betty() == 10);
+        REQUIRE(t.alice() == 0);
+        REQUIRE(t.betty() == 9);
+        REQUIRE(t.min() == 0);
     }
     SECTION("Alice repeats") {
         std::istringstream i{"1 1 1 1 1 1 2 3\n1 2 3 4 5 10 100 1000 10000 100000\n"};
         Trade t{8, 10, i};
-        REQUIRE(t.alice() == 3);
-        REQUIRE(t.betty() == 10);
+        REQUIRE(t.alice() == 0);
+        REQUIRE(t.betty() == 7);
+        REQUIRE(t.min() == 0);
     }
     SECTION("Betty repeats") {
         std::istringstream i{"1 2 3\n1 1 2 2 3 3 4 4 5 5 10 10 100 100 1000 1000 10000 10000 100000 100000\n"};
         Trade t{3, 20, i};
-        REQUIRE(t.alice() == 3);
-        REQUIRE(t.betty() == 10);
+        REQUIRE(t.alice() == 0);
+        REQUIRE(t.betty() == 7);
+        REQUIRE(t.min() == 0);
+    }
+    SECTION("Alice has more") {
+        std::istringstream i{"1 2 3 4 5 6\n3 4 5 6 7\n"};
+        Trade t{6, 5, i};
+        REQUIRE(t.alice() == 2);
+        REQUIRE(t.betty() == 1);
+        REQUIRE(t.min() == 1);
     }
 }
 
