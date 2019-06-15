@@ -8,15 +8,9 @@
 #include <algorithm>
 #include <iostream>
 #include <iterator>
-#include <set>
 #include <unordered_map>
 
-enum class Hand
-{
-    Alice,
-    Betty,
-    Both
-};
+enum class Hand { Alice, Betty, Both };
 
 class Trade
 {
@@ -62,15 +56,19 @@ private:
 };
 
 int execute(std::istream& in, std::ostream& out) {
-
+    size_t alice, betty;
+    while (in >> alice >> betty && alice != 0 && betty != 0) {
+        Trade t(alice, betty, in);
+        out << t.min() << "\n";
+    }
     return 0;
 }
 
 int main(int argc, char* argv[]) {
     std::ios_base::sync_with_stdio(false);
 
-    return Catch::Session().run(argc, argv);
-    //return execute(std::cin, std::cout);
+    //return Catch::Session().run(argc, argv);
+    return execute(std::cin, std::cout);
 }
 
 TEST_CASE("Size", "[Exchanging cards]") {
@@ -105,7 +103,17 @@ TEST_CASE("Size", "[Exchanging cards]") {
 }
 
 TEST_CASE("Execute unit tests", "[Exchanging cards]") {
-    std::istringstream i{""};
+    std::istringstream i{"1 1\n"
+        "1000\n"
+        "1000\n"
+        "3 4\n"
+        "1 3 5\n"
+        "2 4 6 8\n"
+        "10 9\n"
+        "1 1 2 3 5 7 8 8 9 15\n"
+        "2 2 2 3 4 6 10 11 11\n"
+        "0 0\n"};
     std::ostringstream o;
     REQUIRE(execute(i, o) == 0);
+    REQUIRE(o.str() == "0\n3\n4\n");
 }
