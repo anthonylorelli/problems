@@ -1,6 +1,6 @@
 // Exchanging cards
 // Problem definition: https://uva.onlinejudge.org/external/116/11678.pdf
-// Accepted ?
+// Accepted 2019-06-14
 
 #define CATCH_CONFIG_RUNNER
 #include "../catch/catch.hpp"
