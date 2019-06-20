@@ -26,7 +26,7 @@ public:
             return noAnswer;
         } else if (m_son[1] > m_sister[2] && m_son[0] > m_sister[1]) {
             // return lowest available card in deck
-            return noAnswer;
+            return next(m_sister[0]);
         }
         return noAnswer;
     }
@@ -57,8 +57,23 @@ int main(int argc, char* argv[]) {
 }
 
 TEST_CASE("Card tests", "[Jollo]") {
-    std::istringstream i{"1 2 3 4 5"};
-    SECTION("Simple") {
+    SECTION("Both greater than") {
+        std::istringstream i{"1 2 3 4 5"};
+        JolloGame g{i};
+        REQUIRE(g.card() == 6);
+    }
+    SECTION("Both less than") {
+        std::istringstream i{"4 5 3 1 2"};
+        JolloGame g{i};
+        REQUIRE(g.card() == JolloGame::noAnswer);
+    }
+    SECTION("First sample input") {
+        std::istringstream i{"28 51 29 50 52"};
+        JolloGame g{i};
+        REQUIRE(g.card() == 30);
+    }
+    SECTION("Second sample input") {
+        std::istringstream i{"50 26 19 10 27"};
         JolloGame g{i};
         REQUIRE(g.card() == JolloGame::noAnswer);
     }
@@ -79,6 +94,16 @@ TEST_CASE("Next tests", "[Jollo]") {
         REQUIRE(g.next(9) == 10);
         REQUIRE(g.next(0) == 0);
         REQUIRE(g.next(10) == 10);
+    }
+    SECTION("Sequence") {
+        std::istringstream i{"1 2 3 4 7"};
+        JolloGame g{i};
+        REQUIRE(g.next(1) == 5);
+        REQUIRE(g.next(2) == 5);
+        REQUIRE(g.next(3) == 5);
+        REQUIRE(g.next(4) == 5);
+        REQUIRE(g.next(5) == 5);
+        REQUIRE(g.next(1) == 5);
     }
 }
 
