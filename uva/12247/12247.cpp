@@ -24,6 +24,10 @@ public:
         // Both cards are smaller or both are larger
         if (m_son[1] < m_sister[2] && m_son[0] < m_sister[1])  {
             return noAnswer;
+        } else if (m_son[1] < m_sister[2] && m_son[0] > m_sister[1]) {
+            return (m_son[0] > (m_sister[1] + 1)) ? next(m_sister[1]) : next(m_sister[0]);
+        } else if (m_son[1] > m_sister[2] && m_son[0] < m_sister[1]) {
+            return next(m_sister[1]);
         } else if (m_son[1] > m_sister[2] && m_son[0] > m_sister[1]) {
             // return lowest available card in deck
             return next(m_sister[0]);
@@ -76,6 +80,16 @@ TEST_CASE("Card tests", "[Jollo]") {
         std::istringstream i{"50 26 19 10 27"};
         JolloGame g{i};
         REQUIRE(g.card() == JolloGame::noAnswer);
+    }
+    SECTION("Third sample input") {
+        std::istringstream i{"10 20 30 24 26"};
+        JolloGame g{i};
+        REQUIRE(g.card() == 21);
+    }
+    SECTION("Fourth sample input") {
+        std::istringstream i{"46 48 49 47 50"};
+        JolloGame g{i};
+        REQUIRE(g.card() == 51);
     }
 }
 
