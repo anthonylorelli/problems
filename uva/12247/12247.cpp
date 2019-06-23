@@ -21,16 +21,20 @@ public:
     }
 
     const int card() const {
-        // Both cards are smaller or both are larger
         if (m_son[1] < m_sister[2] && m_son[0] < m_sister[1])  {
+            // Both cards are smaller in the worst case so can't win
             return noAnswer;
         } else if (m_son[1] < m_sister[2] && m_son[0] > m_sister[1]) {
+            // First card is smaller but second card is larger
             return (m_son[0] > (m_sister[1] + 1)) ? next(m_sister[1]) : next(m_sister[0]);
+        } else if (m_son[1] > m_sister[2] && m_son[0] < m_sister[2] && m_son[0] > m_sister[1]) {
+            return next(m_sister[1]);
         } else if (m_son[1] > m_sister[2] && m_son[0] < m_sister[1]) {
+            // First card is larger but second card is smaller
             return next(m_sister[1]);
         } else if (m_son[1] > m_sister[2] && m_son[0] > m_sister[1]) {
-            // return lowest available card in deck
-            return next(m_sister[0]);
+            // Both cards are smaller, return lowest available card in deck
+            return next(1);
         }
         return noAnswer;
     }
