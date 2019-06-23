@@ -1,6 +1,6 @@
 // Jollo
 // Problem definition: https://uva.onlinejudge.org/external/122/12247.pdf
-// Accepted ?
+// Accepted 2019-06-23
 
 #define CATCH_CONFIG_RUNNER
 #include "../catch/catch.hpp"
@@ -21,22 +21,27 @@ public:
     }
 
     const int card() const {
-        if (m_son[1] < m_sister[2] && m_son[0] < m_sister[1])  {
-            // Both cards are smaller in the worst case so can't win
+        // Start with one guaranteed win
+        if (m_son[1] > m_sister[2]) {
+            if (m_son[0] > m_sister[2]) {
+                // If we have another guaranteed win then choose lowest card available
+                return next(1);
+            } else if (m_son[0] > m_sister[1]) {
+                // Second son card has two guaranteed wins, so choose another card
+                // with two guaranteed wins
+                return next(m_sister[1]);
+            } else {
+                // Second son card can lose against two cards, so we need another
+                // cards with three guaranteed wins
+                return next(m_sister[2]);
+            }
+        } else if (m_son[1] > m_sister[1] && m_son[0] > m_sister[1]) {
+            // Both cards are guaranteed to win against two sister cards,
+            // so we need a third card guaranteed a win against two sister cards
+            return next(m_sister[1]);
+        } else {
             return noAnswer;
-        } else if (m_son[1] < m_sister[2] && m_son[0] > m_sister[1]) {
-            // First card is smaller but second card is larger
-            return (m_son[0] > (m_sister[1] + 1)) ? next(m_sister[1]) : next(m_sister[0]);
-        } else if (m_son[1] > m_sister[2] && m_son[0] < m_sister[2] && m_son[0] > m_sister[1]) {
-            return next(m_sister[1]);
-        } else if (m_son[1] > m_sister[2] && m_son[0] < m_sister[1]) {
-            // First card is larger but second card is smaller
-            return next(m_sister[1]);
-        } else if (m_son[1] > m_sister[2] && m_son[0] > m_sister[1]) {
-            // Both cards are smaller, return lowest available card in deck
-            return next(1);
         }
-        return noAnswer;
     }
 
     static constexpr int noAnswer{-1};
@@ -68,8 +73,8 @@ int execute(std::istream& in, std::ostream& out) {
 int main(int argc, char* argv[]) {
     std::ios_base::sync_with_stdio(false);
 
-    return Catch::Session().run(argc, argv);
-    //return execute(std::cin, std::cout);
+    //return Catch::Session().run(argc, argv);
+    return execute(std::cin, std::cout);
 }
 
 TEST_CASE("Card tests", "[Jollo]") {
@@ -92,13 +97,13 @@ TEST_CASE("Card tests", "[Jollo]") {
         REQUIRE(g.card() == 30);
     }
     SECTION("Second sample input") {
-        // Both cards can lose in worst case
+        // First son card can beat second sister card
         std::istringstream i{"50 26 19 10 27"};
         JolloGame g{i};
         REQUIRE(g.card() == JolloGame::noAnswer);
     }
     SECTION("Third sample input") {
-        // Highest card can lose in worst case, which means second card wins
+        // Highest card can lose in worst case, second card can win
         std::istringstream i{"10 20 30 24 26"};
         JolloGame g{i};
         REQUIRE(g.card() == 21);
@@ -111,6 +116,8 @@ TEST_CASE("Card tests", "[Jollo]") {
     }
     SECTION("Out of bounds sample input") {
         // Highest card always wins, second card can lose in worst case
+        // but because of ordering there is no other card we can pick
+        // that wins in worst case
         std::istringstream i{"48 50 51 49 52"};
         JolloGame g{i};
         REQUIRE(g.card() == JolloGame::noAnswer);
@@ -119,6 +126,16 @@ TEST_CASE("Card tests", "[Jollo]") {
         std::istringstream i{"2 3 4 5 6"};
         JolloGame g{i};
         REQUIRE(g.card() == 1);
+    }
+    SECTION("Contiguous example") {
+        std::istringstream i{"26 27 30 28 31"};
+        JolloGame g{i};
+        REQUIRE(g.card() == 29);
+    }
+    SECTION("Spread case") {
+        std::istringstream i{"20 30 40 21 50"};
+        JolloGame g{i};
+        REQUIRE(g.card() == 41);
     }
 }
 
@@ -163,6 +180,7 @@ TEST_CASE("Execute unit tests", "[Jollo]") {
         "10 20 30 24 26\n"
         "46 48 49 47 50\n"
         "0 0 0 0 0"};
-    std::ostringstream o{"30\n-1\n21\n51\n"};
+    std::ostringstream o;
     REQUIRE(execute(i, o) == 0);
+    REQUIRE(o.str() == "30\n-1\n21\n51\n");
 }
