@@ -40,7 +40,7 @@ public:
     const int next(const int n) const {
         int next{n};
         while (m_cards.find(next) != m_cards.end()) { ++next; }
-        return next;
+        return (next > 52) ? noAnswer : next;
     }
 
     const bool done() const { return m_sister[0] == 0; }
@@ -70,34 +70,46 @@ int main(int argc, char* argv[]) {
 
 TEST_CASE("Card tests", "[Jollo]") {
     SECTION("Both greater than") {
+        // Both cards always win
         std::istringstream i{"1 2 3 4 5"};
         JolloGame g{i};
         REQUIRE(g.card() == 6);
     }
     SECTION("Both less than") {
+        // Both cards always lose
         std::istringstream i{"4 5 3 1 2"};
         JolloGame g{i};
         REQUIRE(g.card() == JolloGame::noAnswer);
     }
     SECTION("First sample input") {
+        // First card always wins, second can lose
         std::istringstream i{"28 51 29 50 52"};
         JolloGame g{i};
         REQUIRE(g.card() == 30);
     }
     SECTION("Second sample input") {
+        // Both cards can lose in worst case
         std::istringstream i{"50 26 19 10 27"};
         JolloGame g{i};
         REQUIRE(g.card() == JolloGame::noAnswer);
     }
     SECTION("Third sample input") {
+        // Highest card can lose in worst case, which means second card wins
         std::istringstream i{"10 20 30 24 26"};
         JolloGame g{i};
         REQUIRE(g.card() == 21);
     }
     SECTION("Fourth sample input") {
+        // Highest card always wins, second card can lose in worst case
         std::istringstream i{"46 48 49 47 50"};
         JolloGame g{i};
         REQUIRE(g.card() == 51);
+    }
+    SECTION("Out of bounds sample input") {
+        // Highest card always wins, second card can lose in worst case
+        std::istringstream i{"48 50 51 49 52"};
+        JolloGame g{i};
+        REQUIRE(g.card() == JolloGame::noAnswer);
     }
 }
 
@@ -128,6 +140,11 @@ TEST_CASE("Next tests", "[Jollo]") {
         REQUIRE(g.next(1) == 5);
         REQUIRE(g.next(7) == 8);
         REQUIRE(g.next(8) == 8);
+    }
+    SECTION("Out of bounds") {
+        std::istringstream i{"48 49 50 51 52"};
+        JolloGame g{i};
+        REQUIRE(g.next(52) == JolloGame::noAnswer);
     }
 }
 
