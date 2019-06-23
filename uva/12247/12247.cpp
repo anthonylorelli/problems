@@ -21,16 +21,20 @@ public:
     }
 
     const int card() const {
-        // Both cards are smaller or both are larger
         if (m_son[1] < m_sister[2] && m_son[0] < m_sister[1])  {
+            // Both cards are smaller in the worst case so can't win
             return noAnswer;
         } else if (m_son[1] < m_sister[2] && m_son[0] > m_sister[1]) {
+            // First card is smaller but second card is larger
             return (m_son[0] > (m_sister[1] + 1)) ? next(m_sister[1]) : next(m_sister[0]);
+        } else if (m_son[1] > m_sister[2] && m_son[0] < m_sister[2] && m_son[0] > m_sister[1]) {
+            return next(m_sister[1]);
         } else if (m_son[1] > m_sister[2] && m_son[0] < m_sister[1]) {
+            // First card is larger but second card is smaller
             return next(m_sister[1]);
         } else if (m_son[1] > m_sister[2] && m_son[0] > m_sister[1]) {
-            // return lowest available card in deck
-            return next(m_sister[0]);
+            // Both cards are smaller, return lowest available card in deck
+            return next(1);
         }
         return noAnswer;
     }
@@ -40,8 +44,10 @@ public:
     const int next(const int n) const {
         int next{n};
         while (m_cards.find(next) != m_cards.end()) { ++next; }
-        return next;
+        return (next > 52) ? noAnswer : next;
     }
+
+    const bool done() const { return m_sister[0] == 0; }
 
 private:
     std::array<int,3> m_sister;
@@ -50,6 +56,12 @@ private:
 };
 
 int execute(std::istream& in, std::ostream& out) {
+    while (true) {
+        JolloGame g{in};
+        if (g.done()) { break; }
+        out << g.card() << "\n";
+    }
+
     return 0;
 }
 
@@ -62,34 +74,51 @@ int main(int argc, char* argv[]) {
 
 TEST_CASE("Card tests", "[Jollo]") {
     SECTION("Both greater than") {
+        // Both cards always win
         std::istringstream i{"1 2 3 4 5"};
         JolloGame g{i};
         REQUIRE(g.card() == 6);
     }
     SECTION("Both less than") {
+        // Both cards always lose
         std::istringstream i{"4 5 3 1 2"};
         JolloGame g{i};
         REQUIRE(g.card() == JolloGame::noAnswer);
     }
     SECTION("First sample input") {
+        // First card always wins, second can lose
         std::istringstream i{"28 51 29 50 52"};
         JolloGame g{i};
         REQUIRE(g.card() == 30);
     }
     SECTION("Second sample input") {
+        // Both cards can lose in worst case
         std::istringstream i{"50 26 19 10 27"};
         JolloGame g{i};
         REQUIRE(g.card() == JolloGame::noAnswer);
     }
     SECTION("Third sample input") {
+        // Highest card can lose in worst case, which means second card wins
         std::istringstream i{"10 20 30 24 26"};
         JolloGame g{i};
         REQUIRE(g.card() == 21);
     }
     SECTION("Fourth sample input") {
+        // Highest card always wins, second card can lose in worst case
         std::istringstream i{"46 48 49 47 50"};
         JolloGame g{i};
         REQUIRE(g.card() == 51);
+    }
+    SECTION("Out of bounds sample input") {
+        // Highest card always wins, second card can lose in worst case
+        std::istringstream i{"48 50 51 49 52"};
+        JolloGame g{i};
+        REQUIRE(g.card() == JolloGame::noAnswer);
+    }
+    SECTION("Always wins, choose smallest card") {
+        std::istringstream i{"2 3 4 5 6"};
+        JolloGame g{i};
+        REQUIRE(g.card() == 1);
     }
 }
 
@@ -118,11 +147,22 @@ TEST_CASE("Next tests", "[Jollo]") {
         REQUIRE(g.next(4) == 5);
         REQUIRE(g.next(5) == 5);
         REQUIRE(g.next(1) == 5);
+        REQUIRE(g.next(7) == 8);
+        REQUIRE(g.next(8) == 8);
+    }
+    SECTION("Out of bounds") {
+        std::istringstream i{"48 49 50 51 52"};
+        JolloGame g{i};
+        REQUIRE(g.next(52) == JolloGame::noAnswer);
     }
 }
 
 TEST_CASE("Execute unit tests", "[Jollo]") {
-    std::istringstream i{""};
-    std::ostringstream o;
+    std::istringstream i{"28 51 29 50 52\n"
+        "50 26 19 10 27\n"
+        "10 20 30 24 26\n"
+        "46 48 49 47 50\n"
+        "0 0 0 0 0"};
+    std::ostringstream o{"30\n-1\n21\n51\n"};
     REQUIRE(execute(i, o) == 0);
 }
