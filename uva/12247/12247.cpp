@@ -43,6 +43,8 @@ public:
         return next;
     }
 
+    const bool done() const { return m_sister[0] == 0; }
+
 private:
     std::array<int,3> m_sister;
     std::array<int,2> m_son;
@@ -50,6 +52,12 @@ private:
 };
 
 int execute(std::istream& in, std::ostream& out) {
+    while (true) {
+        JolloGame g{in};
+        if (g.done()) { break; }
+        out << g.card() << "\n";
+    }
+
     return 0;
 }
 
@@ -118,11 +126,17 @@ TEST_CASE("Next tests", "[Jollo]") {
         REQUIRE(g.next(4) == 5);
         REQUIRE(g.next(5) == 5);
         REQUIRE(g.next(1) == 5);
+        REQUIRE(g.next(7) == 8);
+        REQUIRE(g.next(8) == 8);
     }
 }
 
 TEST_CASE("Execute unit tests", "[Jollo]") {
-    std::istringstream i{""};
-    std::ostringstream o;
+    std::istringstream i{"28 51 29 50 52\n"
+        "50 26 19 10 27\n"
+        "10 20 30 24 26\n"
+        "46 48 49 47 50\n"
+        "0 0 0 0 0"};
+    std::ostringstream o{"30\n-1\n21\n51\n"};
     REQUIRE(execute(i, o) == 0);
 }
