@@ -115,6 +115,11 @@ TEST_CASE("Card tests", "[Jollo]") {
         JolloGame g{i};
         REQUIRE(g.card() == JolloGame::noAnswer);
     }
+    SECTION("Always wins, choose smallest card") {
+        std::istringstream i{"2 3 4 5 6"};
+        JolloGame g{i};
+        REQUIRE(g.card() == 1);
+    }
 }
 
 TEST_CASE("Next tests", "[Jollo]") {
