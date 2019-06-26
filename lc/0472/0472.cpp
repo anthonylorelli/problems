@@ -14,14 +14,14 @@ class Trie
 {
 public:
     void insert(const std::string& s) {
-
+        m_root.insert(s.cbegin(), s.cend());
     }
 
 private:
     struct Node
     {
-        Node() : c{'\0'} {}
-        Node(const char c) : c{c} {}
+        Node() : c{'\0'}, terminal{false} {}
+        Node(const char c) : c{c}, terminal{false} {}
 
         void insert(const std::string::const_iterator& b, const std::string::const_iterator& e) {
             if (b != e) {
@@ -32,11 +32,14 @@ private:
                 } else {
                     n->insert(b+1, e);
                 }
+            } else {
+                terminal = true;
             }
         }
 
         std::vector<Node> children;
         char c;
+        bool terminal;
     };
 
     Node m_root;
