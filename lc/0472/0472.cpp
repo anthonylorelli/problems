@@ -16,19 +16,22 @@ public:
     void insert(const std::string& s) {
 
     }
+
 private:
     struct Node
     {
         Node() : c{'\0'} {}
         Node(const char c) : c{c} {}
 
-        void insert(std::string::iterator& i) {
-            auto n{std::find(children.begin(), children.end(), [&i](Node& n) { return n.c == *i; })};
-            if (n == children.end()) {
-                children.emplace_back(*i);
-                children.rbegin()->insert(i+1);
-            } else {
-                n->insert(i+1);
+        void insert(const std::string::const_iterator& b, const std::string::const_iterator& e) {
+            if (b != e) {
+                auto n{std::find(children.begin(), children.end(), [&b](Node& n) { return n.c == *b; })};
+                if (n == children.end()) {
+                    children.emplace_back(*b);
+                    children.rbegin()->insert(b+1, e);
+                } else {
+                    n->insert(b+1, e);
+                }
             }
         }
 
