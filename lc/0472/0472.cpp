@@ -8,6 +8,36 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <algorithm>
+
+class Trie
+{
+public:
+    void insert(const std::string& s) {
+
+    }
+private:
+    struct Node
+    {
+        Node() : c{'\0'} {}
+        Node(const char c) : c{c} {}
+
+        void insert(std::string::iterator& i) {
+            auto n{std::find(children.begin(), children.end(), [&i](Node& n) { return n.c == *i; })};
+            if (n == children.end()) {
+                children.emplace_back(*i);
+                children.rbegin()->insert(i+1);
+            } else {
+                n->insert(i+1);
+            }
+        }
+
+        std::vector<Node> children;
+        char c;
+    };
+
+    Node m_root;
+};
 
 class Solution {
 public:
