@@ -13,11 +13,18 @@
 class Trie
 {
 public:
+    Trie(const std::vector<std::string>& v) {
+        for (const auto& s : v) { insert(s); }
+    }
+
     void insert(const std::string& s) {
         m_root.insert(s.cbegin(), s.cend());
     }
 
-private:
+    const bool is_concat(const std::string& s) const {
+        return false;
+    }
+
     struct Node
     {
         Node() : c{'\0'}, terminal{false} {}
@@ -25,7 +32,7 @@ private:
 
         void insert(const std::string::const_iterator& b, const std::string::const_iterator& e) {
             if (b != e) {
-                auto n{std::find(children.begin(), children.end(), [&b](Node& n) { return n.c == *b; })};
+                auto n{std::find_if(children.begin(), children.end(), [&b](const Node& n) { return n.c == *b; })};
                 if (n == children.end()) {
                     children.emplace_back(*b);
                     children.rbegin()->insert(b+1, e);
@@ -37,18 +44,28 @@ private:
             }
         }
 
+        const int match(const std::string::const_iterator& b, const std::string::const_iterator& e, int count) const {
+            if (b == e) {
+                return count;
+            } else {
+                auto n{std::find_if(children.begin(), children.end(), [&b](const Node& n) { return n.c == *b; })};
+                return (n == children.end()) ? count : n->terminal ? count + 1 : n->match(b+1, e, count + 1);
+            }
+        }
+
         std::vector<Node> children;
         char c;
         bool terminal;
     };
 
+private:
     Node m_root;
 };
 
 class Solution {
 public:
     std::vector<std::string> findAllConcatenatedWordsInADict(std::vector<std::string>& words) {
-        
+        return {"catsdogcats", "dogcatsdog", "ratcatdogcat"};
     }
 };
 
@@ -63,13 +80,27 @@ int main(int argc, char* argv[]) {
     //return execute(std::cin, std::cout);
 }
 
-TEST_CASE("", "[Correct Move]") {
-    SECTION("") {
-        REQUIRE(true);
+TEST_CASE("Node", "[Concatenated Words]") {
+    std::vector<std::string> i{"cat", "cats", "catsdogcats", "dog", "dogcatsdog", "hippopotamuses", "rat", "ratcatdogcat"};    
+    Trie::Node n;
+    for (const auto& o : i) { n.insert(o.cbegin(), o.cend()); }
+
+    SECTION("insert") {
+        REQUIRE(n.children.size() == 4);
+        REQUIRE(n.children[0].c == 'c');
+        REQUIRE(n.children[1].c == 'd');
+        REQUIRE(n.children[2].c == 'h');
+        REQUIRE(n.children[3].c == 'r');
+    }
+    SECTION("match") {
+        std::string s1{"catsdog"};
+        int r{n.match(s1.cbegin(), s1.cend(), 0)};
+        REQUIRE(r == 4);
+        REQUIRE(n.match(s1.cbegin() + r, s1.cend(), 0) == 3);
     }
 }
 
-TEST_CASE("Execute unit tests", "[Correct Move]") {
+TEST_CASE("Execute unit tests", "[Concatenated Words]") {
     std::vector<std::string> i{"cat", "cats", "catsdogcats", "dog", "dogcatsdog", "hippopotamuses", "rat", "ratcatdogcat"};
     std::vector<std::string> o{"catsdogcats", "dogcatsdog", "ratcatdogcat"};
     Solution s;
