@@ -53,6 +53,11 @@ public:
             }
         }
 
+        const std::vector<Node>::const_iterator next(const std::vector<Node>::iterator& i, 
+            const std::string::const_iterator& b, const std::string::const_iterator& e) const {
+            return std::find_if(i->children.begin(), i->children.end(), [&b](const Node& n) { return n.c == *b; });
+        }
+
         std::vector<Node> children;
         char c;
         bool terminal;
