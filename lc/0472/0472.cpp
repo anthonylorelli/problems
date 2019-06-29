@@ -32,7 +32,7 @@ public:
 
         void insert(const std::string::const_iterator& b, const std::string::const_iterator& e) {
             if (b != e) {
-                auto n{std::find_if(children.begin(), children.end(), [&b](const Node& n) { return n.c == *b; })};
+                auto n{next(b)};
                 if (n == children.end()) {
                     children.emplace_back(*b);
                     children.rbegin()->insert(b+1, e);
@@ -44,18 +44,23 @@ public:
             }
         }
 
-        const int match(const std::string::const_iterator& b, const std::string::const_iterator& e, int count) const {
+        Node* is_substring(const std::string::const_iterator& b, const std::string::const_iterator& e) {
             if (b == e) {
-                return count;
+                return this;
             } else {
-                auto n{std::find_if(children.begin(), children.end(), [&b](const Node& n) { return n.c == *b; })};
-                return (n == children.end()) ? count : n->terminal ? count + 1 : n->match(b+1, e, count + 1);
+                auto n{next(b)};
+                if (n == children.end()) {
+                    return nullptr;
+                } else if (n->terminal) {
+                    return &*n;
+                } else {
+                    return n->is_substring(b + 1, e);
+                }
             }
         }
 
-        const std::vector<Node>::const_iterator next(const std::vector<Node>::iterator& i, 
-            const std::string::const_iterator& b, const std::string::const_iterator& e) const {
-            return std::find_if(i->children.begin(), i->children.end(), [&b](const Node& n) { return n.c == *b; });
+        const std::vector<Node>::iterator next(const std::string::const_iterator& b) {
+            return std::find_if(children.begin(), children.end(), [&b](const Node& n) { return n.c == *b; });
         }
 
         std::vector<Node> children;
