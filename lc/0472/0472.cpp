@@ -21,9 +21,41 @@ public:
         m_root.insert(s.cbegin(), s.cend());
     }
 
-    const bool is_concat(const std::string& s) const {
-        return false;
+    const bool is_concat(std::string& s) {
+        return is_concat(s.begin(), s.end(), m_root, 0);
     }
+
+    struct Node;
+    struct Result;
+
+    const bool is_concat(const std::string::iterator& b, const std::string::iterator& e, Node& n, const int count) {
+        std::string::iterator current{b};
+        Node* activeNode{&n};
+        while (current != e) {
+            Result r{activeNode->contains_substring(current, e)};
+            current = r.last;
+            if (r.found) {
+                bool substrConcat{is_concat(current, e, m_root, count + 1)};
+                if (substrConcat) {
+                    return true;
+                } else {
+                    activeNode = &r.next;
+                }
+            } else {
+                return false;
+            }
+        }
+
+        return count > 1;
+    }
+
+    struct Result
+    {
+        Result(const bool found, Node& next, const std::string::iterator& last) : found{found}, next{next}, last{last} {}
+        const bool found;
+        Node& next;
+        const std::string::iterator last;
+    };
 
     struct Node
     {
@@ -44,17 +76,17 @@ public:
             }
         }
 
-        Node* is_substring(const std::string::const_iterator& b, const std::string::const_iterator& e) {
+        const Result contains_substring(const std::string::iterator& b, const std::string::iterator& e) {
             if (b == e) {
-                return this;
+                return Result(true, *this, b);
             } else {
                 auto n{next(b)};
                 if (n == children.end()) {
-                    return nullptr;
+                    return Result(false, *this, b);
                 } else if (n->terminal) {
-                    return &*n;
+                    return Result(true, *n, b + 1);
                 } else {
-                    return n->is_substring(b + 1, e);
+                    return n->contains_substring(b + 1, e);
                 }
             }
         }
@@ -102,11 +134,30 @@ TEST_CASE("Node", "[Concatenated Words]") {
         REQUIRE(n.children[2].c == 'h');
         REQUIRE(n.children[3].c == 'r');
     }
-    SECTION("match") {
+    SECTION("is_substring") {
         std::string s1{"catsdog"};
-        int r{n.match(s1.cbegin(), s1.cend(), 0)};
-        REQUIRE(r == 4);
-        REQUIRE(n.match(s1.cbegin() + r, s1.cend(), 0) == 3);
+        Trie::Result r{n.contains_substring(s1.begin(), s1.end())};
+        REQUIRE(r.found == true);
+        REQUIRE(r.last - s1.begin() == 3);
+    }
+}
+
+TEST_CASE("Trie", "[Concatenated Words]") {
+    std::vector<std::string> i{"cat", "cats", "catsdogcats", "dog", "dogcatsdog", "hippopotamuses", "rat", "ratcatdogcat"};
+    Trie t{i};
+    SECTION("is_concat") {
+        std::vector<std::string> o1{"catsdogcats", "dogcatsdog", "ratcatdogcat"};
+        for (auto& s : o1) {
+            REQUIRE(t.is_concat(s) == true);
+        }
+        std::vector<std::string> o2{"catsdogcats1", "dogcatsdog2", "ratcatdogcat3"};
+        for (auto& s : o2) {
+            REQUIRE(t.is_concat(s) == false);
+        }
+        std::vector<std::string> o3{"cat", "cats", "dog", "rat", "hippopotamuses"};
+        for (auto& s : o3) {
+            REQUIRE(t.is_concat(s) == false);
+        }
     }
 }
 
