@@ -38,18 +38,62 @@ exection -> execution (insert 'u')
 #include <string>
 #include <vector>
 
+enum class Op { Insert, Delete, Substitute, None };
+
 struct Cell {
     int cost;
-    int parent;
+    Op parent;
 };
 
+
 class Solution {
+private:
+    void row_init(std::vector<std::vector<Cell>>& m, int i) {
+        m[0][i].cost = i;
+        m[0][i].parent = (i > 0) ? Op::Insert : Op::None;
+    }
+
+    void column_init(std::vector<std::vector<Cell>>& m, int i) {
+        m[i][0].cost = i;
+        m[i][0].parent = (i > 0) ? Op::Delete : Op::None;
+    }
+
+    int match(const char c1, const char c2) {
+        return c1 == c2 ? 0 : 1;
+    }
+
+    int indel(const char c) { return 1; }
+
+    Cell& goal(std::vector<std::vector<Cell>>& m, std::string w1, std::string& w2) {
+        return m[w1.length() - 1][w2.length() - 1];
+    }
+
 public:
     int minDistance(std::string word1, std::string word2) {
         const size_t max{std::max(word1.length(), word2.length()) + 1};
         std::vector<std::vector<Cell>> m(max, std::vector<Cell>(max));
 
-        
+        for (size_t i{0}; i < max; ++i) { 
+            row_init(m, i); 
+            column_init(m, i);
+        }
+
+        int comparison, insert, del;
+
+        for (size_t i{1}; i < word1.length(); ++i) {
+            for (size_t j{1}; j < word2.length(); ++j) {
+                comparison = m[i-1][j-1].cost + match(word1[i], word2[j]);
+                insert = m[i][j-1].cost + indel(word2[j]);
+                del = m[i-1][j].cost + indel(word1[i]);
+
+                m[i][j].cost = std::max(comparison, std::max(insert, del));
+                m[i][j].parent = m[i][j].cost == comparison ? Op::Substitute : 
+                    m[i][j].cost == insert ? Op::Insert : Op::Delete;
+            }
+        }
+
+        auto& answer{goal(m, word1, word2)};
+        return answer.cost;
     }
 };
 
@@ -60,8 +104,11 @@ int main(int argc, char* argv[]) {
     //return execute(std::cin, std::cout);
 }
 
-TEST_CASE("", "[Edit Distance]") {
-    SECTION("") {
-        REQUIRE(true);
+TEST_CASE("Solutiont test", "[Edit Distance]") {
+    SECTION("LC basic test case") {
+        Solution s;
+        std::string s1{"horse"};
+        std::string s2{"row"};
+        REQUIRE(s.minDistance(s1, s2) == 3);
     }
 }
