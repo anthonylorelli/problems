@@ -37,6 +37,8 @@ exection -> execution (insert 'u')
 #include <algorithm>
 #include <string>
 #include <vector>
+#include <iostream>
+#include <iomanip>
 
 enum class Op { Insert, Delete, Substitute, None };
 
@@ -45,31 +47,46 @@ struct Cell {
     Op parent;
 };
 
+std::ostream& operator<<(std::ostream& o, const Cell& c);
 
 class Solution {
 private:
-    void row_init(std::vector<std::vector<Cell>>& m, int i) {
+    void row_init(std::vector<std::vector<Cell>>& m, int i) const {
         m[0][i].cost = i;
         m[0][i].parent = (i > 0) ? Op::Insert : Op::None;
     }
 
-    void column_init(std::vector<std::vector<Cell>>& m, int i) {
+    void column_init(std::vector<std::vector<Cell>>& m, int i) const {
         m[i][0].cost = i;
         m[i][0].parent = (i > 0) ? Op::Delete : Op::None;
     }
 
-    int match(const char c1, const char c2) {
+    int match(const char c1, const char c2) const {
         return c1 == c2 ? 0 : 1;
     }
 
-    int indel(const char c) { return 1; }
+    int indel(const char c) const { return 1; }
 
-    Cell& goal(std::vector<std::vector<Cell>>& m, std::string w1, std::string& w2) {
+    Cell& goal(std::vector<std::vector<Cell>>& m, const std::string& w1, const std::string& w2) const {
         return m[w1.length() - 1][w2.length() - 1];
     }
 
 public:
-    int minDistance(std::string word1, std::string word2) {
+    friend std::ostream& operator<<(std::ostream& o, const Cell& c) {
+        o << c.cost;
+        return o;
+    }
+
+    friend std::ostream& operator<<(std::ostream& o, const std::vector<std::vector<Cell>>& m) {
+        o << std::setw(3);
+        for (const auto& r : m) {
+            for (const auto& c : r) { o << c; }
+            o << "\n";
+        }
+        return o;
+    }
+
+    int minDistance(std::string word1, std::string word2) const {
         const size_t max{std::max(word1.length(), word2.length()) + 1};
         std::vector<std::vector<Cell>> m(max, std::vector<Cell>(max));
 
@@ -86,7 +103,7 @@ public:
                 insert = m[i][j-1].cost + indel(word2[j]);
                 del = m[i-1][j].cost + indel(word1[i]);
 
-                m[i][j].cost = std::max(comparison, std::max(insert, del));
+                m[i][j].cost = std::min(comparison, std::min(insert, del));
                 m[i][j].parent = m[i][j].cost == comparison ? Op::Substitute : 
                     m[i][j].cost == insert ? Op::Insert : Op::Delete;
             }
@@ -105,10 +122,16 @@ int main(int argc, char* argv[]) {
 }
 
 TEST_CASE("Solutiont test", "[Edit Distance]") {
-    SECTION("LC basic test case") {
+    SECTION("LC basic test case 1") {
         Solution s;
         std::string s1{"horse"};
         std::string s2{"row"};
         REQUIRE(s.minDistance(s1, s2) == 3);
+    }
+    SECTION("LC basic test case 1") {
+        Solution s;
+        std::string s1{"intention"};
+        std::string s2{"execution"};
+        REQUIRE(s.minDistance(s1, s2) == 5);
     }
 }
