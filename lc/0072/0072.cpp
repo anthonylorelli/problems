@@ -37,6 +37,8 @@ exection -> execution (insert 'u')
 #include <algorithm>
 #include <string>
 #include <vector>
+#include <iostream>
+#include <iomanip>
 
 enum class Op { Insert, Delete, Substitute, None };
 
@@ -45,6 +47,7 @@ struct Cell {
     Op parent;
 };
 
+std::ostream& operator<<(std::ostream& o, const Cell& c);
 
 class Solution {
 private:
@@ -69,6 +72,20 @@ private:
     }
 
 public:
+    friend std::ostream& operator<<(std::ostream& o, const Cell& c) {
+        o << c.cost;
+        return o;
+    }
+
+    friend std::ostream& operator<<(std::ostream& o, const std::vector<std::vector<Cell>>& m) {
+        o << std::setw(3);
+        for (const auto& r : m) {
+            for (const auto& c : r) { o << c; }
+            o << "\n";
+        }
+        return o;
+    }
+
     int minDistance(std::string word1, std::string word2) const {
         const size_t max{std::max(word1.length(), word2.length()) + 1};
         std::vector<std::vector<Cell>> m(max, std::vector<Cell>(max));
