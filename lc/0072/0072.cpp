@@ -34,11 +34,21 @@ exection -> execution (insert 'u')
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
 
+#include <algorithm>
 #include <string>
+#include <vector>
+
+struct Cell {
+    int cost;
+    int parent;
+};
 
 class Solution {
 public:
     int minDistance(std::string word1, std::string word2) {
+        const size_t max{std::max(word1.length(), word2.length()) + 1};
+        std::vector<std::vector<Cell>> m(max, std::vector<Cell>(max));
+
         
     }
 };
