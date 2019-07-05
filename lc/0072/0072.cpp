@@ -80,7 +80,7 @@ private:
     int delete_cost(const char c) const { return 1; }
 
     Cell& goal(std::vector<std::vector<Cell>>& m, const std::string& w1, const std::string& w2) const {
-        return m[w1.length() - 1][w2.length() - 1];
+        return m[w1.length()][w2.length()];
     }
 
 public:
@@ -127,7 +127,7 @@ TEST_CASE("Solutiont test", "[Edit Distance]") {
     SECTION("LC basic test case 1") {
         Solution s;
         std::string s1{"horse"};
-        std::string s2{"row"};
+        std::string s2{"ros"};
         REQUIRE(s.minDistance(s1, s2) == 3);
     }
     SECTION("LC basic test case 1") {
