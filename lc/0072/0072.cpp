@@ -72,11 +72,12 @@ private:
         m[i][0].parent = (i > 0) ? Op::Delete : Op::None;
     }
 
-    int match(const char c1, const char c2) const {
+    int match_cost(const char c1, const char c2) const {
         return c1 == c2 ? 0 : 1;
     }
 
-    int indel(const char c) const { return 1; }
+    int insert_cost(const char c) const { return 1; }
+    int delete_cost(const char c) const { return 1; }
 
     Cell& goal(std::vector<std::vector<Cell>>& m, const std::string& w1, const std::string& w2) const {
         return m[w1.length() - 1][w2.length() - 1];
@@ -94,15 +95,16 @@ public:
 
         int comparison, insert, del;
 
-        for (size_t i{1}; i < word1.length(); ++i) {
-            for (size_t j{1}; j < word2.length(); ++j) {
-                comparison = m[i-1][j-1].cost + match(word1[i], word2[j]);
-                insert = m[i][j-1].cost + indel(word2[j]);
-                del = m[i-1][j].cost + indel(word1[i]);
+        for (size_t i{0}; i < word1.length(); ++i) {
+            for (size_t j{0}; j < word2.length(); ++j) {
+                comparison = m[i][j].cost + match_cost(word1[i], word2[j]);
+                insert = m[i+1][j].cost + insert_cost(word2[j]);
+                del = m[i][j+1].cost + delete_cost(word1[i]);
 
-                m[i][j].cost = std::min(comparison, std::min(insert, del));
-                m[i][j].parent = m[i][j].cost == comparison ? Op::Substitute : 
-                    m[i][j].cost == insert ? Op::Insert : Op::Delete;
+                const size_t next_i{i+1}, next_j{j+1};
+                m[next_i][next_j].cost = std::min(comparison, std::min(insert, del));
+                m[next_i][next_j].parent = m[next_i][next_j].cost == comparison ? Op::Substitute : 
+                    m[next_i][next_j].cost == insert ? Op::Insert : Op::Delete;
             }
         }
 
@@ -132,6 +134,12 @@ TEST_CASE("Solutiont test", "[Edit Distance]") {
         Solution s;
         std::string s1{"intention"};
         std::string s2{"execution"};
+        REQUIRE(s.minDistance(s1, s2) == 5);
+    }
+    SECTION("Test case from Skienna") {
+        Solution s;
+        std::string s1{"thou shalt not"};
+        std::string s2{"you should not"};
         REQUIRE(s.minDistance(s1, s2) == 5);
     }
 }
