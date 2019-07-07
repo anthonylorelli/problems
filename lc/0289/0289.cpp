@@ -71,20 +71,24 @@ public:
         }        
     }
 
-    void countNeighbors(std::vector<std::vector<int>>& board) const {
+    void countNeighbors(std::vector<std::vector<int>>& board,
+        std::vector<std::vector<int>>& neighbors) const {
         for (size_t i{0}; i < board.size(); ++i) {
             for (size_t j{0}; j < board[i].size(); ++j) {
-                int neighbors{0};
+                int adjacent{0};
                 // Look at row above
                 if (i > 0) {
-                    neighbors += countRow(board[i-1], j);
+                    adjacent += countRow(board[i-1], j);
                 }
                 // Look at current row
-                neighbors += countRow(board[i], j);
+                adjacent += countRow(board[i], j);
                 // Look at row below
                 if (i+1 < board.size()) {
-                    neighbors += countRow(board[i+1], j);
+                    adjacent += countRow(board[i+1], j);
                 }
+                neighbors[i][j] = adjacent;
+                // If current cell is populated decrement
+                if (board[i][j]) { neighbors[i][j]--; }
             }
         }
     }
@@ -92,8 +96,8 @@ public:
     void gameOfLife(std::vector<std::vector<int>>& board) {
         size_t rows{board.size()};
         size_t columns{rows > 0 ? board[0].size() : 0};
-        std::vector<std::vector<int>> neighbors(board.size(), std::vector<int>(board[0].size()));
-        countNeighbors(neighbors);
+        std::vector<std::vector<int>> neighbors(rows, std::vector<int>(columns));
+        countNeighbors(board, neighbors);
         applyRules(board, neighbors);
     }
 };
@@ -103,6 +107,25 @@ int main(int argc, char* argv[]) {
 
     return Catch::Session().run(argc, argv);
     //return execute(std::cin, std::cout);
+}
+
+TEST_CASE("Count neighbors", "[Game of Life]") {
+    SECTION("Basic functionality") {
+        Solution s;
+        std::vector<std::vector<int>> board{{0, 1, 0}, {0, 0, 1}, {1, 1, 1}, {0, 0, 0}};
+        std::vector<std::vector<int>> neighbors{{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
+        s.countNeighbors(board, neighbors);
+        std::vector<std::vector<int>> answer{{1, 1, 2}, {3, 5, 3}, {1, 3, 2}, {2, 3, 2}};
+        REQUIRE(neighbors == answer);
+    }
+    SECTION("Single column") {
+        Solution s;
+        std::vector<std::vector<int>> board{{0}, {1}, {1}, {1}, {0}, {1}};
+        std::vector<std::vector<int>> neighbors{{0}, {0}, {0}, {0}, {0}, {0}};
+        s.countNeighbors(board, neighbors);
+        std::vector<std::vector<int>> answer{{1}, {1}, {2}, {1}, {2}, {0}};
+        REQUIRE(neighbors == answer);
+    }
 }
 
 TEST_CASE("LC cases", "[Game of Life]") {
