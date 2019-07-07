@@ -42,9 +42,59 @@ Output:
 #include <vector>
 
 class Solution {
+private:
+    const int countRow(const std::vector<int>& row, const size_t i) const {
+        int neighbors{0};
+        if (i > 0) {
+            if (row[i-1]) { neighbors++; }
+        }
+        if (row[i]) { neighbors++; }
+        if (i+1 < row.size()) {
+            if (row[i+1]) { neighbors++; }
+        }
+        return neighbors;
+    }
+
 public:
+    void applyRules(std::vector<std::vector<int>>& board,
+        const std::vector<std::vector<int>>& neighbors) const {
+        for (size_t i{0}; i < board.size(); ++i) {
+            for (size_t j{0}; j < board[i].size(); ++j) {
+                if (neighbors[i][j] < 2) {
+                    board[i][j] = 0;
+                } else if (neighbors[i][j] == 3 && !board[i][j]) {
+                    board[i][j] = 1;
+                } else if (neighbors[i][j] > 3) {
+                    board[i][j] = 0;
+                }
+            }
+        }        
+    }
+
+    void countNeighbors(std::vector<std::vector<int>>& board) const {
+        for (size_t i{0}; i < board.size(); ++i) {
+            for (size_t j{0}; j < board[i].size(); ++j) {
+                int neighbors{0};
+                // Look at row above
+                if (i > 0) {
+                    neighbors += countRow(board[i-1], j);
+                }
+                // Look at current row
+                neighbors += countRow(board[i], j);
+                // Look at row below
+                if (i+1 < board.size()) {
+                    neighbors += countRow(board[i+1], j);
+                }
+            }
+        }
+    }
+
     void gameOfLife(std::vector<std::vector<int>>& board) {
-        
+        size_t rows{board.size()};
+        size_t columns{rows > 0 ? board[0].size() : 0};
+        std::vector<std::vector<int>> neighbors(board.size(), std::vector<int>(board[0].size()));
+        countNeighbors(neighbors);
+        applyRules(board, neighbors);
     }
 };
 
@@ -55,8 +105,12 @@ int main(int argc, char* argv[]) {
     //return execute(std::cin, std::cout);
 }
 
-TEST_CASE("", "[Game of Life]") {
-    SECTION("") {
-        REQUIRE(true);
+TEST_CASE("LC cases", "[Game of Life]") {
+    SECTION("Case 1") {
+        Solution s;
+        std::vector<std::vector<int>> board{{0, 1, 0}, {0, 0, 1}, {1, 1, 1}, {0, 0, 0}};
+        s.gameOfLife(board);
+        std::vector<std::vector<int>> answer{{0, 0, 0}, {1, 0, 1}, {0, 1, 1}, {0, 1, 0}};
+        REQUIRE(board == answer);
     }
 }
