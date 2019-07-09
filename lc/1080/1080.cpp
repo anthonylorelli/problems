@@ -8,6 +8,8 @@
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
 
+#include <initializer_list>
+
 /**
  * Definition for a binary tree node.
  * struct TreeNode {
@@ -27,11 +29,19 @@ struct TreeNode {
 
 class Solution {
 public:
+    int setSubset(TreeNode* root, const int limit, const int sum) {
+        const int leftSum { root->left ? setSubset(root->left, limit, root->val + sum) : 0 };
+        const int rightSum { root->right ? setSubset(root->right, limit, root->val + sum) : 0 };
+        if (leftSum < limit) { root->left = nullptr; }
+        if (rightSum < limit) { root->right = nullptr; }
+        return root->val + leftSum + rightSum;
+    }
+
     TreeNode* sufficientSubset(TreeNode* root, int limit) {
-        
+        const int sum{setSubset(root, limit, root->val)};
+        return sum < limit ? nullptr : root;
     }
 };
-
 
 int main(int argc, char* argv[]) {
     std::ios_base::sync_with_stdio(false);
@@ -43,6 +53,6 @@ int main(int argc, char* argv[]) {
 TEST_CASE("", "[Insufficient nodes]") {
     SECTION("") {
         Solution s;
-        REQUIRE(true;
+        REQUIRE(true);
     }
 }
