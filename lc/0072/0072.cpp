@@ -1,6 +1,6 @@
 // 72. Edit Distance
 // Problem definition: https://leetcode.com/problems/edit-distance/
-// Accepted ?
+// Accepted 2019-07-10
 
 /* 
 Given two words word1 and word2, find the minimum number of operations required 
@@ -44,7 +44,6 @@ enum class Op { Insert, Delete, Substitute, None };
 
 struct Cell {
     int cost;
-    Op parent;
 };
 
 std::ostream& operator<<(std::ostream& o, const Cell& c) {
@@ -64,12 +63,10 @@ class Solution {
 private:
     void row_init(std::vector<std::vector<Cell>>& m, int i) const {
         m[0][i].cost = i;
-        m[0][i].parent = (i > 0) ? Op::Insert : Op::None;
     }
 
     void column_init(std::vector<std::vector<Cell>>& m, int i) const {
         m[i][0].cost = i;
-        m[i][0].parent = (i > 0) ? Op::Delete : Op::None;
     }
 
     int match_cost(const char c1, const char c2) const {
@@ -103,14 +100,12 @@ public:
 
                 const size_t next_i{i+1}, next_j{j+1};
                 m[next_i][next_j].cost = std::min(comparison, std::min(insert, del));
-                m[next_i][next_j].parent = m[next_i][next_j].cost == comparison ? Op::Substitute : 
-                    m[next_i][next_j].cost == insert ? Op::Insert : Op::Delete;
             }
         }
 
         auto& answer{goal(m, word1, word2)};
 
-        std::cout << m;
+        //std::cout << m;
         
         return answer.cost;
     }
@@ -141,5 +136,11 @@ TEST_CASE("Solutiont test", "[Edit Distance]") {
         std::string s1{"thou shalt not"};
         std::string s2{"you should not"};
         REQUIRE(s.minDistance(s1, s2) == 5);
+    }
+    SECTION("Modified test case from Skienna") {
+        Solution s;
+        std::string s1{"thou shalt not thou shalt not thou shalt not"};
+        std::string s2{"you should not you should not you should not"};
+        REQUIRE(s.minDistance(s1, s2) == 15);
     }
 }
