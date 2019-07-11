@@ -29,17 +29,23 @@ struct TreeNode {
 
 class Solution {
 public:
-    int setSubset(TreeNode* root, const int limit, const int sum) {
-        const int leftSum { root->left ? setSubset(root->left, limit, root->val + sum) : 0 };
-        const int rightSum { root->right ? setSubset(root->right, limit, root->val + sum) : 0 };
-        if (leftSum < limit) { root->left = nullptr; }
-        if (rightSum < limit) { root->right = nullptr; }
-        return root->val + leftSum + rightSum;
+    const bool setSubset(TreeNode* root, const int limit, const int sum) const {
+        if (!root->left && !root->right) {
+            return !((root->val + sum) < limit);
+        } else {
+            const bool leftState { root->left ? setSubset(root->left, limit, root->val + sum) : false };
+            const bool rightState { root->right ? setSubset(root->right, limit, root->val + sum) : false };
+
+            if (!leftState) { root->left = nullptr; }
+            if (!rightState) { root->right = nullptr; }
+
+            return (!leftState && !rightState) ? false : true;
+        }
     }
 
     TreeNode* sufficientSubset(TreeNode* root, int limit) {
-        const int sum{setSubset(root, limit, root->val)};
-        return sum < limit ? nullptr : root;
+        const bool state{setSubset(root, limit, root->val)};
+        return !state ? nullptr : root;
     }
 };
 
@@ -56,3 +62,7 @@ TEST_CASE("", "[Insufficient nodes]") {
         REQUIRE(true);
     }
 }
+
+//Limit 22
+//Output:   [5,4,8,11,null,17,4,7,1,null,null,5,3]
+//Expected: [5,4,8,11,null,17,4,7,null,null,null,5]
