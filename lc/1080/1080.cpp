@@ -1,24 +1,9 @@
 // 1080. Insufficient nodes in root to leaf path
 // Problem definition: https://leetcode.com/problems/insufficient-nodes-in-root-to-leaf-paths/
-// Accepted ?
-
-/* 
- */
+// Accepted 2019-07-11
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
-
-#include <initializer_list>
-
-/**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
- * };
- */
 
 struct TreeNode {
     int val;
@@ -29,23 +14,23 @@ struct TreeNode {
 
 class Solution {
 public:
-    const bool setSubset(TreeNode* root, const int limit, const int sum) const {
+    const bool pruneTree(TreeNode* root, const int limit, const int sum) const {
         if (!root->left && !root->right) {
-            return !((root->val + sum) < limit);
+            return (root->val + sum) < limit;
         } else {
-            const bool leftState { root->left ? setSubset(root->left, limit, root->val + sum) : false };
-            const bool rightState { root->right ? setSubset(root->right, limit, root->val + sum) : false };
+            const bool pruneLeft { root->left ? pruneTree(root->left, limit, root->val + sum) : true };
+            const bool pruneRight { root->right ? pruneTree(root->right, limit, root->val + sum) : true };
 
-            if (!leftState) { root->left = nullptr; }
-            if (!rightState) { root->right = nullptr; }
+            if (pruneLeft) { root->left = nullptr; }
+            if (pruneRight) { root->right = nullptr; }
 
-            return (!leftState && !rightState) ? false : true;
+            return (pruneLeft && pruneRight) ? true : false;
         }
     }
 
     TreeNode* sufficientSubset(TreeNode* root, int limit) {
-        const bool state{setSubset(root, limit, root->val)};
-        return !state ? nullptr : root;
+        const bool pruneRoot {pruneTree(root, limit, 0)};
+        return pruneRoot ? nullptr : root;
     }
 };
 
@@ -62,7 +47,3 @@ TEST_CASE("", "[Insufficient nodes]") {
         REQUIRE(true);
     }
 }
-
-//Limit 22
-//Output:   [5,4,8,11,null,17,4,7,1,null,null,5,3]
-//Expected: [5,4,8,11,null,17,4,7,null,null,null,5]
