@@ -1,6 +1,7 @@
 // 0390. Elimination Game
 // Problem definition: https://leetcode.com/problems/elimination-game/description/
 // Accepted ?
+// Compare: https://en.wikipedia.org/wiki/Josephus_problem
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
