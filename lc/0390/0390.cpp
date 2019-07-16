@@ -1,7 +1,8 @@
 // 0390. Elimination Game
 // Problem definition: https://leetcode.com/problems/elimination-game/description/
-// Accepted ?
+// Accepted 2019-07-15
 // Compare: https://en.wikipedia.org/wiki/Josephus_problem
+// Enlightening discussion here: https://leetcode.com/problems/elimination-game/discuss/87159/O(1)java-solution-with-detailed-explanation(actually-lots-of-math-derivation)
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -14,6 +15,10 @@
 class Solution {
 public:
     int lastRemaining(int n) {
+        return n == 1 ? 1 : 2 * (n/2 + 1 - lastRemaining(n/2));
+    }
+
+    int lastRemaining2(int n) {
         std::vector<int> v(n);
         std::iota(v.begin(), v.end(), 1);
         bool from_start {true};
@@ -38,9 +43,9 @@ int main(int argc, char* argv[]) {
 TEST_CASE("", "[Elimination Game]") {
     SECTION("LC test case 1") {
         Solution s;
-        //REQUIRE(s.lastRemaining(9) == 6);
         for (int i {1}; i < 200; ++i) {
             std::cout << "[" << i << "] " << s.lastRemaining(i) << "\n";
-        }        
+            REQUIRE(s.lastRemaining(i) == s.lastRemaining2(i));
+        }
     }
 }
