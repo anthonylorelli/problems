@@ -6,6 +6,7 @@
 #include "../../uva/catch/catch.hpp"
 
 #include <vector>
+#include <algorithm>
 
 // Definition for a QuadTree node.
 class Node {
@@ -31,6 +32,21 @@ public:
 
 class Solution {
 public:
+    Node* construct(std::vector<std::vector<int>>& grid, size_t startc, size_t startr, size_t extent) {
+        auto i {grid[startc][startr]};
+        auto colbegin {grid.begin() + startc};
+        auto colend {colbegin + extent};
+        if (std::all_of(colbegin, colend, 
+            [&](const auto& row) { 
+                auto rbegin {row.begin() + startr};
+                auto rend {rbegin + extent};
+                return std::search_n(rbegin, rend, extent, i) == rend; 
+            })) {
+            return new Node(i ? true : false, true, nullptr, nullptr, nullptr, nullptr);
+        } else {
+            return nullptr;
+        }
+    }
     Node* construct(std::vector<std::vector<int>>& grid) {
         return nullptr;        
     }
