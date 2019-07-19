@@ -32,23 +32,28 @@ public:
 
 class Solution {
 public:
-    Node* construct(std::vector<std::vector<int>>& grid, size_t startc, size_t startr, size_t extent) {
-        auto i {grid[startc][startr]};
-        auto colbegin {grid.cbegin() + startc};
-        auto colend {colbegin + extent};
-        if (std::all_of(colbegin, colend, 
-            [startr, extent, i](const auto& row) { 
-                auto rbegin {row.cbegin() + startr};
-                auto rend {rbegin + extent};
-                return std::search_n(rbegin, rend, extent, i) == rend; 
+    Node* construct(std::vector<std::vector<int>>& grid, size_t startr, size_t startc, size_t extent) {
+        auto i {grid[startr][startc]};
+        auto rowbegin {grid.cbegin() + startr};
+        auto rowend {rowbegin + extent};
+        if (std::all_of(rowbegin, rowend, 
+            [startc, extent, i](const auto& row) { 
+                auto cbegin {row.cbegin() + startc};
+                auto cend {cbegin + extent};
+                return std::all_of(cbegin, cend, [i](const auto& c) { return c == i; }); 
             })) {
             return new Node(i, true, nullptr, nullptr, nullptr, nullptr);
         } else {
-            return nullptr;
+            size_t half {extent / 2};
+            return new Node(i, false,
+                construct(grid, startr, startc, half),
+                construct(grid, startr, startc + half, half),
+                construct(grid, startr + half, startc, half),
+                construct(grid, startr + half, startc + half, half));
         }
     }
     Node* construct(std::vector<std::vector<int>>& grid) {
-        return nullptr;        
+        return construct(grid, 0, 0, grid.size());
     }
 };
 
@@ -60,7 +65,11 @@ int main(int argc, char* argv[]) {
 }
 
 TEST_CASE("", "[Construct Quad Tree]") {
-    SECTION("LC test case 1") {
-        
+    SECTION("Base case") {
+        Solution s;
+        std::vector<std::vector<int>> grid {{1, 1}, {1, 1}};
+        Node* n {s.construct(grid)};
+        REQUIRE(n->isLeaf == true);
+        REQUIRE(n->val == true);
     }
 }
