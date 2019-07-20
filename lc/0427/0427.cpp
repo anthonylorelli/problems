@@ -1,6 +1,6 @@
 // 0427. Construct Quad Tree
 // Problem definition: https://leetcode.com/problems/construct-quad-tree/
-// Accepted ?
+// Accepted 2019-07-19
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -71,5 +71,34 @@ TEST_CASE("", "[Construct Quad Tree]") {
         Node* n {s.construct(grid)};
         REQUIRE(n->isLeaf == true);
         REQUIRE(n->val == true);
+    }
+    SECTION("LC test case 1") {
+        std::vector<std::vector<int>> grid =
+            {{1,1,1,1,0,0,0,0},
+             {1,1,1,1,0,0,0,0},
+             {1,1,1,1,1,1,1,1},
+             {1,1,1,1,1,1,1,1},
+             {1,1,1,1,0,0,0,0},
+             {1,1,1,1,0,0,0,0},
+             {1,1,1,1,0,0,0,0},
+             {1,1,1,1,0,0,0,0}};
+        Solution s;
+        Node* n {s.construct(grid)};
+        REQUIRE(n->isLeaf == false);
+        REQUIRE(n->topLeft->isLeaf == true);
+        REQUIRE(n->topLeft->val == true);
+        REQUIRE(n->topRight->isLeaf == false);
+        REQUIRE(n->topRight->topLeft->isLeaf == true);
+        REQUIRE(n->topRight->topLeft->val == false);
+        REQUIRE(n->topRight->topRight->isLeaf == true);
+        REQUIRE(n->topRight->topRight->val == false);
+        REQUIRE(n->topRight->bottomLeft->isLeaf == true);
+        REQUIRE(n->topRight->bottomLeft->val == true);
+        REQUIRE(n->topRight->bottomRight->isLeaf == true);
+        REQUIRE(n->topRight->bottomRight->val == true);
+        REQUIRE(n->bottomLeft->isLeaf == true);
+        REQUIRE(n->bottomLeft->val == true);
+        REQUIRE(n->bottomRight->isLeaf == true);
+        REQUIRE(n->bottomRight->val == false);
     }
 }
