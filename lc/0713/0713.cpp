@@ -19,7 +19,7 @@ int main(int argc, char* argv[]) {
     return Catch::Session().run(argc, argv);
 }
 
-TEST_CASE("", "[Knight Dialer]") {
+TEST_CASE("", "[Subarray Product Less Than K]") {
     SECTION("LC test case 1") {
         Solution s;
         std::vector<int> v = {10, 5, 2, 6};
