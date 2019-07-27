@@ -1,6 +1,7 @@
 // 0238. Product of Array Except Self
 // Problem definition: https://leetcode.com/problems/product-of-array-except-self/
-// Accepted ?
+// Accepted 2019-07-26
+// Adapted from: https://leetcode.com/problems/product-of-array-except-self/discuss/148153/C%2B%2B-solution-O(n)-without-extra-space-with-explanation
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -10,7 +11,15 @@
 class Solution {
 public:
     std::vector<int> productExceptSelf(std::vector<int>& nums) {
-        return {};        
+        std::vector<int> products(nums.size(), 1);
+        int preProduct {1}, postProduct {1};
+        for (size_t i {0}, j {nums.size() - 1}; i < nums.size(); ++i, --j) {
+            products[i] *= preProduct;
+            products[j] *= postProduct;
+            preProduct *= nums[i];
+            postProduct *= nums[j];
+        }
+        return products;
     }
 };
 
