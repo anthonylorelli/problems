@@ -1,6 +1,7 @@
 // 0713. Subarray Product Less Than K
 // Problem definition: https://leetcode.com/problems/subarray-product-less-than-k/
 // Accepted 2019-07-26
+// Adapted from: https://leetcode.com/problems/subarray-product-less-than-k/discuss/108830/C%2B%2B-concise-solution-O(n)
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
