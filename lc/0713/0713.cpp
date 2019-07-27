@@ -1,6 +1,6 @@
 // 0713. Subarray Product Less Than K
 // Problem definition: https://leetcode.com/problems/subarray-product-less-than-k/
-// Accepted ?
+// Accepted 2019-07-26
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -10,7 +10,13 @@
 class Solution {
 public:
     int numSubarrayProductLessThanK(std::vector<int>& nums, int k) {
-        return 0;        
+        int product {1}, answer{0};
+        for (size_t i {0}, left {0}; i < nums.size(); ++i) {
+            product *= nums[i];
+            while (product >= k && left <= i) { product /= nums[left++]; }
+            answer += i - left + 1;
+        }
+        return answer;
     }
 };
 
