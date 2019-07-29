@@ -10,7 +10,16 @@
 class Solution {
 public:
     int subarraySum(std::vector<int>& nums, int k) {
-        return 0;
+        int sum {0}, answer {0};
+        for (size_t current {0}, left {0}; current < nums.size(); ++current) {
+            sum += nums[current];
+            while (sum > k && left < current) { sum -= nums[left++]; }
+            if (sum == k) { 
+                while (!nums[left] && left < current) { left++; answer++; }
+                answer++; 
+            }
+        }
+        return answer;
     }
 };
 
@@ -24,5 +33,30 @@ TEST_CASE("", "[Subarray Sum Equals K]") {
         Solution s;
         std::vector<int> v = {1, 1, 1};
         REQUIRE(s.subarraySum(v, 2) == 2);
+    }
+    SECTION("LC test case 2") {
+        Solution s;
+        std::vector<int> v = {1};
+        REQUIRE(s.subarraySum(v, 0) == 0);
+    }
+    SECTION("LC test case 3") {
+        Solution s;
+        std::vector<int> v = {-1, -1, 1};
+        REQUIRE(s.subarraySum(v, 0) == 1);
+    }
+    SECTION("LC test case 4") {
+        Solution s;
+        std::vector<int> v = {-1, -1, 2};
+        REQUIRE(s.subarraySum(v, 0) == 1);
+    }
+    SECTION("Local test case 1") {
+        Solution s;
+        std::vector<int> v = {1, 1, 1, 1, 1, 1};
+        REQUIRE(s.subarraySum(v, 2) == 5);
+    }
+    SECTION("Local test case 2") {
+        Solution s;
+        std::vector<int> v = {1, 0, 1, 0, 1, 0, 1, 2};
+        REQUIRE(s.subarraySum(v, 2) == 8);
     }
 }
