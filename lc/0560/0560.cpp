@@ -1,6 +1,6 @@
 // 0560. Subarray Sum Equals K
 // Problem definition: https://leetcode.com/problems/subarray-sum-equals-k/
-// Accepted ?
+// Accepted 2019-07-28
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -10,13 +10,12 @@
 class Solution {
 public:
     int subarraySum(std::vector<int>& nums, int k) {
-        int sum {0}, answer {0};
-        for (size_t current {0}, left {0}; current < nums.size(); ++current) {
-            sum += nums[current];
-            while (sum > k && left < current) { sum -= nums[left++]; }
-            if (sum == k) { 
-                while (!nums[left] && left < current) { left++; answer++; }
-                answer++; 
+        int answer {0};
+        for (size_t i {0}; i < nums.size(); ++i) {
+            int sum {0};
+            for (size_t j {i}; j < nums.size(); ++j) {
+                sum += nums[j];
+                if (sum == k) { answer++; }
             }
         }
         return answer;
@@ -57,6 +56,6 @@ TEST_CASE("", "[Subarray Sum Equals K]") {
     SECTION("Local test case 2") {
         Solution s;
         std::vector<int> v = {1, 0, 1, 0, 1, 0, 1, 2};
-        REQUIRE(s.subarraySum(v, 2) == 8);
+        REQUIRE(s.subarraySum(v, 2) == 9);
     }
 }
