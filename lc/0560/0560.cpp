@@ -5,18 +5,18 @@
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
 
+#include <unordered_map>
 #include <vector>
 
 class Solution {
 public:
     int subarraySum(std::vector<int>& nums, int k) {
-        int answer {0};
-        for (size_t i {0}; i < nums.size(); ++i) {
-            int sum {0};
-            for (size_t j {i}; j < nums.size(); ++j) {
-                sum += nums[j];
-                if (sum == k) { answer++; }
-            }
+        int sum {0}, answer {0};
+        std::unordered_map<int,int> count{{0,1}};
+        for (const auto n : nums) {
+            sum += n;
+            if (count.count(sum-k)) { answer += count[sum - k]; }
+            count[sum]++;
         }
         return answer;
     }
