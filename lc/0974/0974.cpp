@@ -10,7 +10,15 @@
 class Solution {
 public:
     int subarraysDivByK(std::vector<int>& A, int K) {
-        return 0;
+        int answer {0};
+        for (size_t i {0}; i < A.size(); ++i) {
+            int sum {0};
+            for (size_t j{i}; j < A.size(); ++j) {
+                sum += A[j];
+                if (sum % K == 0) { answer++; }
+            }
+        }
+        return answer;
     }
 };
 
