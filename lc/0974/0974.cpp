@@ -1,6 +1,6 @@
 // 0974. Subarray Sums Divisible by K
 // Problem definition: https://leetcode.com/problems/subarray-sums-divisible-by-k/
-// Accepted ?
+// Accepted 2019-08-01
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -10,13 +10,14 @@
 class Solution {
 public:
     int subarraysDivByK(std::vector<int>& A, int K) {
-        int answer {0};
-        for (size_t i {0}; i < A.size(); ++i) {
-            int sum {0};
-            for (size_t j{i}; j < A.size(); ++j) {
-                sum += A[j];
-                if (sum % K == 0) { answer++; }
-            }
+        std::vector<int> v(K);
+        int sum {0}, answer {0};
+        v[0] = 1;
+        for (const auto n : A) {
+            sum += n;
+            int remainder {((sum % K) + K) % K};
+            answer += v[remainder];
+            v[remainder]++;
         }
         return answer;
     }
