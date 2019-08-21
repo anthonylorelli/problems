@@ -36,4 +36,8 @@ TEST_CASE("LC test cases", "[Find the Duplicate Number]") {
         std::vector<int> i = {3, 1, 3, 4, 2};
         REQUIRE(s.findDuplicate(i) == 3);
     }
+    SECTION("LC test case 3") {
+        std::vector<int> i = {2, 2, 2, 2, 2};
+        REQUIRE(s.findDuplicate(i) == 0);
+    }
 }
