@@ -6,11 +6,18 @@
 #include "../../uva/catch/catch.hpp"
 
 #include <vector>
+#include <numeric>
 
 class Solution {
 public:
     int findDuplicate(std::vector<int>& nums) {
-        return 0;        
+        int sum = std::accumulate(nums.begin(), nums.end(), 0);
+        int inclusive_sum {0};
+        for (auto i {1u}; i < nums.size(); ++i) {
+            inclusive_sum += i;
+        }
+
+        return sum - inclusive_sum;
     }
 };
 
@@ -28,12 +35,5 @@ TEST_CASE("LC test cases", "[Find the Duplicate Number]") {
     SECTION("LC test case 2") {
         std::vector<int> i = {3, 1, 3, 4, 2};
         REQUIRE(s.findDuplicate(i) == 3);
-    }
-}
-
-TEST_CASE("Local test cases", "[Find the Duplicate Number]") {
-    Solution s;
-    std::vector<int> i = {1, 3, 5, 6};
-    SECTION("Element found") {
     }
 }
