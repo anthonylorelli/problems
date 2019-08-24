@@ -6,11 +6,21 @@
 #include "../../uva/catch/catch.hpp"
 
 #include <vector>
+#include <limits>
 
 class Solution {
 public:
     int firstMissingPositive(std::vector<int>& nums) {
-        return 0;
+        int high {std::numeric_limits<int>::max()};
+        int low {1};
+        for (const auto i : nums) {
+            if (i > 1 && i < high) {
+                high = i - 1;
+            } else if (i == low) {
+                low++;
+            }
+        }
+        return low;
     }
 };
 
