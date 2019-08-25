@@ -6,21 +6,23 @@
 #include "../../uva/catch/catch.hpp"
 
 #include <vector>
-#include <limits>
+#include <algorithm>
 
 class Solution {
 public:
     int firstMissingPositive(std::vector<int>& nums) {
-        int high {std::numeric_limits<int>::max()};
-        int low {1};
-        for (const auto i : nums) {
-            if (i > 1 && i < high) {
-                high = i - 1;
-            } else if (i == low) {
-                low++;
+        for (size_t i {0}; i < nums.size(); ++i) {
+            int current {nums[i]};
+            if (current > 0 && current != i+1) {
+                std::swap(nums[i], nums[current-1]);
             }
+            if (nums[i] != nums[current-1]) { i--; }
         }
-        return low;
+
+        for (size_t i {0}; i < nums.size(); ++i) {
+            if (nums[i] != i+1) { return i+1; }
+        }
+        return -1;
     }
 };
 
