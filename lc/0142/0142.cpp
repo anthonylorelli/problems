@@ -15,7 +15,15 @@
 class Solution {
 public:
     ListNode* detectCycle(ListNode* head) {
-        return nullptr;        
+        if (!head) { return nullptr; }
+
+        ListNode* slow {head->next};
+        if (!slow) { return nullptr; }
+        ListNode* fast {slow->next};
+        
+        while (fast != slow) {
+            
+        }
     }
 };
 
