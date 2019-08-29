@@ -1,6 +1,6 @@
 // 0142. Linked List Cycle II
 // Problem definition: https://leetcode.com/problems/linked-list-cycle-ii/
-// Accepted ?
+// Accepted 2019-08-28
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -19,11 +19,22 @@ public:
 
         ListNode* slow {head->next};
         if (!slow) { return nullptr; }
-        ListNode* fast {slow->next};
+        ListNode* fast {head->next->next};
+        if (!fast) { return nullptr; }
         
         while (fast != slow) {
-            
+            fast = fast->next ? fast->next->next : nullptr;
+            if (!fast) { return nullptr; }
+            slow = slow->next;
         }
+
+        slow = head;
+        while (slow != fast) {
+            fast = fast->next;
+            slow = slow->next;
+        }
+
+        return slow;
     }
 };
 
@@ -32,8 +43,8 @@ int main(int argc, char* argv[]) {
     return Catch::Session().run(argc, argv);
 }
 
-TEST_CASE("LC test cases", "[Linked List Cycle II]") {
-    Solution s;
+// TEST_CASE("LC test cases", "[Linked List Cycle II]") {
+//     Solution s;
     // SECTION("LC test case 1") {
     //     std::vector<int> i = {1, 2, 0};
     //     REQUIRE(s.firstMissingPositive(i) == 3);
@@ -54,8 +65,8 @@ TEST_CASE("LC test cases", "[Linked List Cycle II]") {
     //     std::vector<int> i = {1};
     //     REQUIRE(s.firstMissingPositive(i) == 2);
     // }
-}
+// }
 
-TEST_CASE("Local test cases", "[Linked List Cycle II]") {
-    Solution s;
-}
+// TEST_CASE("Local test cases", "[Linked List Cycle II]") {
+//     Solution s;
+// }
