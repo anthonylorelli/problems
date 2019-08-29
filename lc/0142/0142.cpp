@@ -1,6 +1,7 @@
 // 0142. Linked List Cycle II
 // Problem definition: https://leetcode.com/problems/linked-list-cycle-ii/
 // Accepted 2019-08-28
+// Ref. https://en.wikipedia.org/wiki/Cycle_detection#Floyd's_Tortoise_and_Hare
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
