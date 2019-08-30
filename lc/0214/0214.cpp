@@ -12,7 +12,7 @@
 class Solution {
 public:
     std::string shortestPalindrome(std::string s) {
-        
+        // Suffix trees?
     }
 };
 
