@@ -13,9 +13,9 @@
 class Trie {
 public:
     void insert(std::string::iterator begin, std::string::iterator end) {
-        Trie* current {nullptr};
+        Trie* current {this};
         while (begin != end) {
-            current = &m_children[*begin];
+            current = &current->m_children[*begin];
             begin++;
         }
     }
