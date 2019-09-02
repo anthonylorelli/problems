@@ -6,13 +6,13 @@
 #include "../../uva/catch/catch.hpp"
 
 #include <string>
-#include <vector>
-#include <algorithm>
 #include <unordered_map>
+#include <utility>
 
 class Trie {
 public:
-    void insert(std::string::iterator begin, std::string::iterator end) {
+    template <typename T>
+    void insert(T begin, T end) {
         Trie* current {this};
         while (begin != end) {
             current = &current->m_children[*begin];
@@ -24,10 +24,10 @@ public:
     int match(T b, T e) {
         Trie* current {this};
         int count {0};
-        while (b++ != e) {
+        while (b != e) {
             if (current->m_children.count(*b)) {
                 current = &current->m_children[*b];
-                count++;
+                count++; b++;
             } else {
                 break;
             }
@@ -41,9 +41,8 @@ private:
 
 class SuffixTree {
 public:
-    void insert(std::string& s) {
-        auto b {s.begin()};
-        auto e {s.end()};
+    template <typename T>
+    SuffixTree(T b, T e) {
         while (b != e) { m_trie.insert(b++, e); }
     }
 
@@ -59,10 +58,11 @@ private:
 class Solution {
 public:
     std::string shortestPalindrome(std::string s) {
-        SuffixTree t;
-        t.insert(s);
-        int longestMatch {t.match(s.rbegin(), s.rend())};
-        return "";
+        SuffixTree t(s.rbegin(), s.rend());
+        int longestMatch {t.match(s.begin(), s.end())};
+        size_t prefixLength {s.length() - longestMatch};
+        std::string prefix(s.rbegin(), s.rbegin() + prefixLength);
+        return prefix + s;
     }
 };
 
@@ -86,5 +86,17 @@ TEST_CASE("LC test cases", "[First Missing Positive]") {
 }
 
 TEST_CASE("Local test cases", "[First Missing Positive]") {
-    //Solution s;
+    Solution s;
+    std::vector<std::pair<std::string,std::string>> input {
+        {"aaaa", "aaaa"}, {"d", "d"},
+        {"abcdefghijklmnopqrstuvwxyz", "zyxwvutsrqponmlkjihgfedcbabcdefghijklmnopqrstuvwxyz"},
+        {"bbcd", "dcbbcd"}
+    };
+
+    SECTION("Local test cases") {
+        std::for_each(std::begin(input), std::end(input),
+            [&s, &input](const auto& p) { 
+                REQUIRE(s.shortestPalindrome(p.first) == p.second); 
+            });
+    }
 }
