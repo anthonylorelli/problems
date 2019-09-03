@@ -7,47 +7,48 @@
 
 #include <string>
 #include <unordered_map>
-#include <utility>
+#include <list>
 
 class Trie {
 public:
-    template <typename T>
-    void insert(T begin, T end) {
-        Trie* current {this};
-        while (begin != end) {
-            current = &current->m_children[*begin];
-            begin++;
+    Trie() { }
+
+    template <typename It>
+    void insert(const It& b, const It& e) {
+        if (b != e) {
+            if (!m_children.count(*b)) {
+                m_storage.emplace_back();
+                m_children.insert({ *b, &*m_storage.rbegin() });
+            }
+            m_children[*b]->insert(b + 1, e);
         }
     }
 
-    template <typename T>
-    int match(T b, T e) {
-        Trie* current {this};
+    template <typename It>
+    int match(const It& b, const It& e) {
         int count {0};
-        while (b != e) {
-            if (current->m_children.count(*b)) {
-                current = &current->m_children[*b];
-                count++; b++;
-            } else {
-                break;
+        if (b != e) {
+            if (m_children.count(*b)) {
+                count = m_children[*b]->match(b+1, e) + 1;
             }
         }
         return count;
     }
 
 private:
-    std::unordered_map<char,Trie> m_children;
+    std::unordered_map<char, Trie*> m_children;
+    std::list<Trie> m_storage;
 };
 
 class SuffixTree {
 public:
-    template <typename T>
-    SuffixTree(T b, T e) {
-        while (b != e) { m_trie.insert(b++, e); }
+    template <typename It>
+    SuffixTree(const It b, const It& e) {
+        auto i {b};
+        while (i != e) { m_trie.insert(i++, e); }
     }
 
-    template <typename T>
-    int match(T b, T e) {
+    int match(const std::string::iterator& b, const std::string::iterator& e) {
         return m_trie.match(b, e);
     }
 
@@ -71,10 +72,11 @@ int main(int argc, char* argv[]) {
     return Catch::Session().run(argc, argv);
 }
 
-TEST_CASE("LC test cases", "[First Missing Positive]") {
+TEST_CASE("LC test cases", "[Shortest Palindrome]") {
     Solution s;
     std::vector<std::pair<std::string,std::string>> input {
-        {"aacecaaa", "aaacecaaa"}, {"abcd", "dcbabcd"}
+        {"aacecaaa", "aaacecaaa"}, {"abcd", "dcbabcd"},
+        {"ababbbabbaba", "ababbabbbababbbabbaba"} //"ababbabababbbabbaba"
     };
 
     SECTION("LC test cases") {
@@ -85,12 +87,12 @@ TEST_CASE("LC test cases", "[First Missing Positive]") {
     }
 }
 
-TEST_CASE("Local test cases", "[First Missing Positive]") {
+TEST_CASE("Local test cases", "[Shortest Palindrome]") {
     Solution s;
     std::vector<std::pair<std::string,std::string>> input {
         {"aaaa", "aaaa"}, {"d", "d"},
         {"abcdefghijklmnopqrstuvwxyz", "zyxwvutsrqponmlkjihgfedcbabcdefghijklmnopqrstuvwxyz"},
-        {"bbcd", "dcbbcd"}
+        {"bbcd", "dcbbcd"}, {"", ""}
     };
 
     SECTION("Local test cases") {
