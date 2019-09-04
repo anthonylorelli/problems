@@ -7,7 +7,7 @@
 
 #include <string>
 #include <unordered_map>
-#include <list>
+#include <memory>
 
 class Trie {
 public:
@@ -17,10 +17,10 @@ public:
     void insert(const It& b, const It& e) {
         if (b != e) {
             if (!m_children.count(*b)) {
-                m_storage.emplace_back();
-                m_children.insert({ *b, &*m_storage.rbegin() });
+                bool terminal {b+1 == e};
+                m_children.insert({*b, std::make_pair(std::make_unique<Trie>(), terminal)});
             }
-            m_children[*b]->insert(b + 1, e);
+            m_children[*b].first->insert(b + 1, e);
         }
     }
 
@@ -29,21 +29,20 @@ public:
         int count {0};
         if (b != e) {
             if (m_children.count(*b)) {
-                count = m_children[*b]->match(b+1, e) + 1;
+                count = m_children[*b].first->match(b+1, e) + 1;
             }
         }
         return count;
     }
 
 private:
-    std::unordered_map<char, Trie*> m_children;
-    std::list<Trie> m_storage;
+    std::unordered_map<char, std::pair<std::unique_ptr<Trie>,bool>> m_children;
 };
 
 class SuffixTree {
 public:
     template <typename It>
-    SuffixTree(const It b, const It& e) {
+    SuffixTree(const It& b, const It& e) {
         auto i {b};
         while (i != e) { m_trie.insert(i++, e); }
     }
@@ -90,9 +89,9 @@ TEST_CASE("LC test cases", "[Shortest Palindrome]") {
 TEST_CASE("Local test cases", "[Shortest Palindrome]") {
     Solution s;
     std::vector<std::pair<std::string,std::string>> input {
-        {"aaaa", "aaaa"}, {"d", "d"},
+        {"aaaa", "aaaa"}, {"aaa", "aaa"}, {"d", "d"},
         {"abcdefghijklmnopqrstuvwxyz", "zyxwvutsrqponmlkjihgfedcbabcdefghijklmnopqrstuvwxyz"},
-        {"bbcd", "dcbbcd"}, {"", ""}
+        {"bbcd", "dcbbcd"}, {"", ""}, {"dad", "dad"}
     };
 
     SECTION("Local test cases") {
