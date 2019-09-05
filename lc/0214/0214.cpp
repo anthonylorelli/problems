@@ -16,9 +16,11 @@ public:
     template <typename It>
     void insert(const It& b, const It& e) {
         if (b != e) {
+            bool terminal { b + 1 == e };
             if (!m_children.count(*b)) {
-                bool terminal {b+1 == e};
                 m_children.insert({*b, std::make_pair(std::make_unique<Trie>(), terminal)});
+            } else {
+                m_children[*b].second = terminal;
             }
             m_children[*b].first->insert(b + 1, e);
         }
@@ -26,16 +28,20 @@ public:
 
     template <typename It>
     int match(const It& b, const It& e) {
-        int count {0};
-        if (b != e) {
-            if (m_children.count(*b)) {
-                count = m_children[*b].first->match(b+1, e) + 1;
-            }
-        }
-        return count;
+        return match(b, e, 0);
     }
 
 private:
+    template <typename It>
+    int match(const It& b, const It& e, const int prefix) {
+        if (b != e && m_children.count(*b)) {
+            int sum {prefix + 1};
+            int rest {m_children[*b].first->match(b+1, e, sum)};
+            return (m_children[*b].second && !rest) ? sum : rest;
+        }
+        return 0;
+    }
+
     std::unordered_map<char, std::pair<std::unique_ptr<Trie>,bool>> m_children;
 };
 
