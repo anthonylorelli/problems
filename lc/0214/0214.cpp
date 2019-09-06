@@ -64,6 +64,16 @@ private:
 class Solution {
 public:
     std::string shortestPalindrome(std::string s) {
+        for (auto b {s.rbegin()}; b != s.rend(); ++b) {
+            if (std::equal(b, s.rend(), s.begin()) {
+                std::string prefix(s.rbegin(), b);
+                return prefix + s;
+            }
+        }
+        return s;
+    }
+
+    std::string shortestPalindromeSuffixTree(std::string s) {
         SuffixTree t(s.rbegin(), s.rend());
         int longestMatch {t.match(s.begin(), s.end())};
         size_t prefixLength {s.length() - longestMatch};
