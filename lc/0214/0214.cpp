@@ -65,7 +65,8 @@ class Solution {
 public:
     std::string shortestPalindrome(std::string s) {
         for (auto b {s.rbegin()}; b != s.rend(); ++b) {
-            if (std::equal(b, s.rend(), s.begin()) {
+            auto midpoint {(s.rend() - b) / 2};
+            if (std::equal(b, b + midpoint, s.begin())) {
                 std::string prefix(s.rbegin(), b);
                 return prefix + s;
             }
