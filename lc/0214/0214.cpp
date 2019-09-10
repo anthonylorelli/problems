@@ -8,6 +8,7 @@
 #include <string>
 #include <unordered_map>
 #include <memory>
+#include <iostream>
 
 class Trie {
 public:
@@ -67,10 +68,23 @@ class Solution {
 public:
     std::string shortestPalindrome(std::string s) {
         for (auto b {s.rbegin()}; b != s.rend(); ++b) {
+            auto length {s.rend() - b};
+            auto it = std::search(b, s.rend(),
+                std::boyer_moore_searcher(s.begin(), s.begin() + length));
+            if (it != s.rend()) {
+                std::string prefix(s.rbegin(), b);
+                return prefix + s;
+            }
+        }
+        return s;
+    }
+
+    std::string shortestPalindromeStephenMethod(std::string s) {
+        for (auto b {s.rbegin()}; b != s.rend(); ++b) {
             bool even {(s.rend() - b) % 2 == 0};
             auto midpoint {(s.rend() - b) / 2};
             if (std::equal(b, b + (midpoint/2), s.begin()) &&
-                std::equal(b + midpoint, b + midpoint + (midpoint/2), s.begin() + midpoint + 1)) {
+                std::equal(b + midpoint + (even ? 0 : 1), b + midpoint + (midpoint/2) + (even ? 0 : 1), s.begin() + midpoint + (even ? 0 : 1))) {
                 std::string prefix(s.rbegin(), b);
                 return prefix + s;
             }
