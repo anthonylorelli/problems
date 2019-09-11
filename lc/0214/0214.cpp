@@ -62,12 +62,21 @@ private:
     Trie m_trie;
 };
 
-enum class PalindromeType { Double, Triple };
-
 class Solution {
 public:
     std::string shortestPalindrome(std::string s) {
-        return "";
+        for (size_t l {s.length() - 1}; l >= 0; --l) {
+            auto midpoint {(l / 2) + 1};
+            size_t i {0}, j {l - midpoint}, k {midpoint};
+            while (s[i] == s[l] && s[j] == s[k] && i < j) {
+                i++; j--; k++; l--;                
+            }
+            if (i >= j) {
+                std::string prefix(s.rbegin(), s.rbegin() + (s.length() - l));
+                return prefix + s;                
+            }
+        }
+        return s;
     }
 
     std::string shortestPalindromeBoyerMoore(std::string s) {
