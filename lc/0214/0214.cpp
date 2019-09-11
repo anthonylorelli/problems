@@ -67,6 +67,10 @@ enum class PalindromeType { Double, Triple };
 class Solution {
 public:
     std::string shortestPalindrome(std::string s) {
+        return "";
+    }
+
+    std::string shortestPalindromeBoyerMoore(std::string s) {
         for (auto b {s.rbegin()}; b != s.rend(); ++b) {
             auto length {s.rend() - b};
             auto it = std::search(b, s.rend(),
@@ -81,12 +85,22 @@ public:
 
     std::string shortestPalindromeStephenMethod(std::string s) {
         for (auto b {s.rbegin()}; b != s.rend(); ++b) {
-            bool even {(s.rend() - b) % 2 == 0};
-            auto midpoint {(s.rend() - b) / 2};
-            if (std::equal(b, b + (midpoint/2), s.begin()) &&
-                std::equal(b + midpoint + (even ? 0 : 1), b + midpoint + (midpoint/2) + (even ? 0 : 1), s.begin() + midpoint + (even ? 0 : 1))) {
-                std::string prefix(s.rbegin(), b);
-                return prefix + s;
+            auto length {s.rend() - b};
+            auto midpoint {length / 2};
+            if (length >= 5) {
+                auto quarter {midpoint / 2};
+                bool even {length % 2 == 0};
+                auto offset {midpoint + (even ? 0 : 1)};
+                if (std::equal(s.begin(), s.begin() + quarter, b) &&
+                    std::equal(s.begin() + offset, s.begin() + offset + quarter, b + offset)) {
+                    std::string prefix(s.rbegin(), b);
+                    return prefix + s;
+                }
+            } else {
+                if (std::equal(b, b + midpoint, s.begin())) {
+                    std::string prefix(s.rbegin(), b);
+                    return prefix + s;
+                }
             }
         }
         return s;
