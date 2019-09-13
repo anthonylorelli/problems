@@ -64,32 +64,17 @@ private:
 
 class Solution {
 public:
-    // length = 7
-    // l = 6
-    // midpoint = 3
-    // i = 0
-    // j = 3
-    // k = 3
-    // l = 6
-    // aacecaa
-    // length = 6
-    // l = 5
-    // midpoint = 2
-    // i = 0
-    // j = 3
-    // k = 2
-    // aaccaa
     std::string shortestPalindrome(std::string s) {
         for (size_t e {s.length()}; e > 0; --e) {
-            auto midpoint {(e - 1) / 2};
-            size_t i {0}, j {midpoint}, k {e - midpoint}, l {e - 1};
+            auto midpoint {e / 2};
+            bool even {e % 2 == 0};
+            size_t i {0}, j {even ? (midpoint - 1) : midpoint}, k {midpoint}, l {e - 1};
             if (e < 4) { k = i; j = l; }
             while (s[i] == s[l] && s[j] == s[k] && i < j) {
                 i++; j--; k++; l--;
             }
             if (i >= j) {
                 std::string prefix(s.rbegin(), s.rbegin() + (s.length() - e));
-                std::cout << "Matched on length " << e << "Prefix " << prefix << "\n";
                 return prefix + s;
             }
         }
