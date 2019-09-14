@@ -64,6 +64,17 @@ private:
 
 class Solution {
 public:
+    static constexpr int base {256};
+    static constexpr int mod {101};
+
+    template<typename It>
+    int hash(const It& b, const It& e) {
+        auto n = std::accumulate(b, e, 0, [&](const char c, int h) {
+            return 0;
+        });
+        return n;
+    }
+
     std::string shortestPalindrome(std::string s) {
         for (size_t e {s.length()}; e > 0; --e) {
             auto midpoint {e / 2};
