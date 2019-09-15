@@ -8,6 +8,7 @@
 #include <string>
 #include <unordered_map>
 #include <memory>
+#include <numeric>
 #include <iostream>
 
 class Trie {
@@ -64,15 +65,14 @@ private:
 
 class Solution {
 public:
-    static constexpr int base {256};
-    static constexpr int mod {101};
+    static constexpr int c_base {256};
+    static constexpr int c_mod {101};
 
     template<typename It>
     int hash(const It& b, const It& e) {
-        auto n = std::accumulate(b, e, 0, [&](const char c, int h) {
-            return 0;
+        return std::accumulate(b, e, 0, [&](const char c, int h) {
+            return h + ((static_cast<int>(c) * c_base) % c_mod);
         });
-        return n;
     }
 
     std::string shortestPalindrome(std::string s) {
@@ -164,6 +164,19 @@ TEST_CASE("LC test cases", "[Shortest Palindrome]") {
         std::for_each(std::begin(input), std::end(input),
             [&s, &input](const auto& p) { 
                 REQUIRE(s.shortestPalindrome(p.first) == p.second); 
+            });
+    }
+}
+
+TEST_CASE("Hash test cases", "[Shortest Palindrome]") {
+    Solution s;    
+    SECTION("Create hash") {
+        std::vector<std::pair<std::string,int>> input {
+            {"a", 87}
+        };
+        std::for_each(std::begin(input), std::end(input),
+            [&s, &input](const auto& p) { 
+                REQUIRE(s.hash(p.first.begin(), p.first.end()) == p.second); 
             });
     }
 }
