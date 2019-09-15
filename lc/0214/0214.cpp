@@ -66,13 +66,17 @@ private:
 class Solution {
 public:
     static constexpr int c_base {256};
-    static constexpr int c_mod {101};
+    static constexpr int c_mod {1046527};
 
     template<typename It>
     int hash(const It& b, const It& e) {
-        return std::accumulate(b, e, 0, [&](const char c, int h) {
-            return h + ((static_cast<int>(c) * c_base) % c_mod);
+        return std::accumulate(b, e, 0, [&](const int h, const char c) {
+            return ((h + c) * c_base) % c_mod;
         });
+    }
+
+    int substract_right(const int h, const char c) {
+        return (h - (c * c_base)) / c_base;
     }
 
     std::string shortestPalindrome(std::string s) {
@@ -172,7 +176,29 @@ TEST_CASE("Hash test cases", "[Shortest Palindrome]") {
     Solution s;    
     SECTION("Create hash") {
         std::vector<std::pair<std::string,int>> input {
-            {"a", 87}
+            {"a", 24832}, {"b", 25088}, {"c", 25344},
+            {"ab", 102918}, {"ac", 103174}, {"bc", 168710},
+            {"abc", 209177}, {"cba", 274233}
+        };
+        std::for_each(std::begin(input), std::end(input),
+            [&s, &input](const auto& p) { 
+                REQUIRE(s.hash(p.first.begin(), p.first.end()) == p.second); 
+            });
+    }
+    SECTION("Hash symmetry") {
+        std::vector<std::string> input {
+            "abcba", "bbbb", "c", ""
+        };
+        std::for_each(std::begin(input), std::end(input),
+            [&s, &input](const auto& p) { 
+                REQUIRE(s.hash(p.begin(), p.end()) == s.hash(p.rbegin(), p.rend()));
+            });
+    }
+    SECTION("Substract right") {
+        std::vector<std::pair<std::string,int>> input {
+            {"a", 24832}, {"b", 25088}, {"c", 25344},
+            {"ab", 102918}, {"ac", 103174}, {"bc", 168710},
+            {"abc", 209177}, {"cba", 274233}
         };
         std::for_each(std::begin(input), std::end(input),
             [&s, &input](const auto& p) { 
