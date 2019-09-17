@@ -65,19 +65,6 @@ private:
 
 class Solution {
 public:
-    static constexpr int c_base {256};
-    static constexpr int c_mod {1046527};
-
-    template<typename It>
-    int hash(const It& b, const It& e) {
-        return std::accumulate(b, e, 0, [&](const int h, const char c) {
-            return ((h + c) * c_base) % c_mod;
-        });
-    }
-
-    int substract_right(const int h, const char c) {
-        return (h - (c * c_base)) / c_base;
-    }
 
     std::string shortestPalindrome(std::string s) {
         for (size_t e {s.length()}; e > 0; --e) {
@@ -150,30 +137,35 @@ public:
         std::string prefix(s.rbegin(), s.rbegin() + prefixLength);
         return prefix + s;
     }
-};
 
-int main(int argc, char* argv[]) {
-    std::ios_base::sync_with_stdio(false);
-    return Catch::Session().run(argc, argv);
-}
+    static constexpr int c_base {256};
+    static constexpr int c_mod {1046527};
 
-TEST_CASE("LC test cases", "[Shortest Palindrome]") {
-    Solution s;
-    std::vector<std::pair<std::string,std::string>> input {
-        {"aacecaaa", "aaacecaaa"}, {"abcd", "dcbabcd"},
-        {"ababbbabbaba", "ababbabbbababbbabbaba"} 
-    };
-
-    SECTION("LC test cases") {
-        std::for_each(std::begin(input), std::end(input),
-            [&s, &input](const auto& p) { 
-                REQUIRE(s.shortestPalindrome(p.first) == p.second); 
-            });
+    template<typename It>
+    int hash(const It& b, const It& e) {
+        return std::accumulate(b, e, 0, [&](const int h, const char c) {
+            return ((h + c) * c_base) % c_mod;
+        });
     }
-}
+
+    int substract_right(const int h, const char c) {
+        return (h - (c * c_base)) / c_base;
+    }
+};
 
 TEST_CASE("Hash test cases", "[Shortest Palindrome]") {
     Solution s;    
+    SECTION("Substract right") {
+        std::vector<std::pair<std::string,int>> input {
+            {"a", 24832}, {"b", 25088}, {"c", 25344},
+            {"ab", 102918}, {"ac", 103174}, {"bc", 168710},
+            {"abc", 209177}, {"cba", 274233}
+        };
+        std::for_each(std::begin(input), std::end(input),
+            [&s, &input](const auto& p) { 
+                REQUIRE(s.hash(p.first.begin(), p.first.end()) == p.second); 
+            });
+    }
     SECTION("Create hash") {
         std::vector<std::pair<std::string,int>> input {
             {"a", 24832}, {"b", 25088}, {"c", 25344},
@@ -194,15 +186,19 @@ TEST_CASE("Hash test cases", "[Shortest Palindrome]") {
                 REQUIRE(s.hash(p.begin(), p.end()) == s.hash(p.rbegin(), p.rend()));
             });
     }
-    SECTION("Substract right") {
-        std::vector<std::pair<std::string,int>> input {
-            {"a", 24832}, {"b", 25088}, {"c", 25344},
-            {"ab", 102918}, {"ac", 103174}, {"bc", 168710},
-            {"abc", 209177}, {"cba", 274233}
-        };
+}
+
+TEST_CASE("LC test cases", "[Shortest Palindrome]") {
+    Solution s;
+    std::vector<std::pair<std::string,std::string>> input {
+        {"aacecaaa", "aaacecaaa"}, {"abcd", "dcbabcd"},
+        {"ababbbabbaba", "ababbabbbababbbabbaba"} 
+    };
+
+    SECTION("LC test cases") {
         std::for_each(std::begin(input), std::end(input),
             [&s, &input](const auto& p) { 
-                REQUIRE(s.hash(p.first.begin(), p.first.end()) == p.second); 
+                REQUIRE(s.shortestPalindrome(p.first) == p.second); 
             });
     }
 }
@@ -238,4 +234,7 @@ TEST_CASE("TLE test cases", "[Shortest Palindrome]") {
     }
 }
 
-        
+int main(int argc, char* argv[]) {
+    std::ios_base::sync_with_stdio(false);
+    return Catch::Session().run(argc, argv);
+}
