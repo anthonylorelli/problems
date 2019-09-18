@@ -1,6 +1,7 @@
 // 0214. Shortest Palindrome
 // Problem definition: https://leetcode.com/problems/shortest-palindrome/
 // Accepted ?
+// https://en.wikipedia.org/wiki/List_of_prime_numbers
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -139,7 +140,7 @@ public:
     }
 
     static constexpr int c_base {256};
-    static constexpr int c_mod {1046527};
+    static constexpr int c_mod {283};
 
     template<typename It>
     int hash(const It& b, const It& e) {
@@ -157,9 +158,10 @@ TEST_CASE("Hash test cases", "[Shortest Palindrome]") {
     Solution s;    
     SECTION("Substract right") {
         std::vector<std::pair<std::string,int>> input {
-            {"a", 24832}, {"b", 25088}, {"c", 25344},
-            {"ab", 102918}, {"ac", 103174}, {"bc", 168710},
-            {"abc", 209177}, {"cba", 274233}
+//            {"a", 24832}, {"b", 25088}, {"c", 25344},
+//            {"ab", 102918}, {"ac", 103174}, {"bc", 168710},
+//            {"abc", 209177}, {"cba", 274233}
+            {"a", 211}, {"b", 184}, {"ab", 147}, 
         };
         std::for_each(std::begin(input), std::end(input),
             [&s, &input](const auto& p) { 
