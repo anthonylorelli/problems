@@ -140,7 +140,7 @@ public:
     }
 
     static constexpr int c_base {256};
-    static constexpr int c_mod {283};
+    static constexpr int c_mod {251};
 
     template<typename It>
     int hash(const It& b, const It& e) {
@@ -161,7 +161,7 @@ TEST_CASE("Hash test cases", "[Shortest Palindrome]") {
 //            {"a", 24832}, {"b", 25088}, {"c", 25344},
 //            {"ab", 102918}, {"ac", 103174}, {"bc", 168710},
 //            {"abc", 209177}, {"cba", 274233}
-            {"a", 211}, {"b", 184}, {"ab", 147}, 
+            {"a", 234}, {"b", 239}, {"ab", 154}, 
         };
         std::for_each(std::begin(input), std::end(input),
             [&s, &input](const auto& p) { 
