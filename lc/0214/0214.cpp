@@ -11,6 +11,7 @@
 #include <memory>
 #include <numeric>
 #include <iostream>
+#include <cmath>
 
 class Trie {
 public:
@@ -67,7 +68,7 @@ private:
 class Solution {
 public:
 
-    std::string shortestPalindrome(std::string s) {
+    std::string shortestPalindromeStchurIndexMethod(std::string s) {
         for (size_t e {s.length()}; e > 0; --e) {
             auto midpoint {e / 2};
             bool even {e % 2 == 0};
@@ -149,35 +150,37 @@ public:
         });
     }
 
-    int substract_right(const int h, const char c) {
+    int subtract_right(const int h, const char c) {
         return (h - (c * c_base)) / c_base;
+    }
+
+    int subtract_left(const int h, const int exp, const char c) {
+        return ((h + c_mod) - (static_cast<int>(std::pow(c_base, exp)) * c) % c_mod) % c_mod;
+    }
+
+    std::string shortestPalindrome(std::string s) {
+        return "";
     }
 };
 
 TEST_CASE("Hash test cases", "[Shortest Palindrome]") {
     Solution s;    
-    SECTION("Substract right") {
+    SECTION("Create hash") {
         std::vector<std::pair<std::string,int>> input {
-//            {"a", 24832}, {"b", 25088}, {"c", 25344},
-//            {"ab", 102918}, {"ac", 103174}, {"bc", 168710},
-//            {"abc", 209177}, {"cba", 274233}
-            {"a", 234}, {"b", 239}, {"ab", 154}, 
+            {"a", 234}, {"b", 239}, {"ab", 154}, {"bc", 184}, {"abc", 10} 
         };
         std::for_each(std::begin(input), std::end(input),
             [&s, &input](const auto& p) { 
                 REQUIRE(s.hash(p.first.begin(), p.first.end()) == p.second); 
             });
     }
-    SECTION("Create hash") {
-        std::vector<std::pair<std::string,int>> input {
-            {"a", 24832}, {"b", 25088}, {"c", 25344},
-            {"ab", 102918}, {"ac", 103174}, {"bc", 168710},
-            {"abc", 209177}, {"cba", 274233}
-        };
-        std::for_each(std::begin(input), std::end(input),
-            [&s, &input](const auto& p) { 
-                REQUIRE(s.hash(p.first.begin(), p.first.end()) == p.second); 
-            });
+    SECTION("Remove left") {
+        std::string i("ab");
+        int h = s.hash(i.begin(), i.end());
+        REQUIRE(s.subtract_left(h, 2, 'a') == 239);
+        i = "abc";
+        h = s.hash(i.begin(), i.end());
+        REQUIRE(s.subtract_left(h, 3, 'a') == 184);
     }
     SECTION("Hash symmetry") {
         std::vector<std::string> input {
