@@ -144,22 +144,23 @@ public:
     static constexpr int c_mod {251};
 
     template<typename It>
-    int hash(const It& b, const It& e) {
-        return std::accumulate(b, e, 0, [&](const int h, const char c) {
+    unsigned int hash(const It& b, const It& e) {
+        return std::accumulate(b, e, 0, [&](const unsigned int h, const char c) {
             return ((h + c) * c_base) % c_mod;
         });
     }
 
-    int subtract_right(const int h, const char c) {
+    int subtract_right(const int h, const char c) const noexcept {
         return (h - (c * c_base)) / c_base;
     }
 
-    int subtract_left(const int h, const int exp, const char c) {
-        return ((h + c_mod) - (static_cast<int>(std::pow(c_base, exp)) * c) % c_mod) % c_mod;
+    unsigned int subtract_left(const unsigned int h, const int exp, const char c) const {
+        return ((h + c_mod) - (static_cast<unsigned int>(std::pow(c_base, exp)) * c) % c_mod) % c_mod;
     }
 
     std::string shortestPalindrome(std::string s) {
-        return "";
+        unsigned int h {hash(s.begin(), s.end()};
+        unsigned int r {hash(s.rbegin(), s.rend())};
     }
 };
 
