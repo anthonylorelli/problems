@@ -67,6 +67,9 @@ private:
 
 class Solution {
 public:
+    std::string shortestPalindromeTrueStchurIndexMethod(std::string s) {
+        return "";
+    }
 
     std::string shortestPalindromeStchurIndexMethod(std::string s) {
         for (size_t e {s.length()}; e > 0; --e) {
