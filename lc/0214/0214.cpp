@@ -143,27 +143,50 @@ public:
         return prefix + s;
     }
 
-    static constexpr int c_base {256};
-    static constexpr int c_mod {251};
+    static constexpr unsigned int c_base {256};
+    static constexpr unsigned int c_mod {7778777};
 
     template<typename It>
     unsigned int hash(const It& b, const It& e) {
         return std::accumulate(b, e, 0, [&](const unsigned int h, const char c) {
-            return ((h + c) * c_base) % c_mod;
+            return ((h * c_base) + c) % c_mod;
         });
     }
 
-    int subtract_right(const int h, const char c) const noexcept {
-        return (h - (c * c_base)) / c_base;
+    template<typename It>
+    unsigned int reverse_hash(const It& b, const It& e) {
+        unsigned int place_value {1};
+        return std::accumulate(b, e, 0, [&](const unsigned int h, const char c) {
+            unsigned int next {(h + c * place_value) % c_mod};
+            place_value = (place_value * c_base) % c_mod;
+            return next;
+        });
+    }
+
+    unsigned int hash(const std::string& s) {
+        unsigned int place_value {1};
+        unsigned int index {0};
+        unsigned int fh {0}, rh {0};
+        for (unsigned int i {0}; i < s.length(); ++i, place_value = (place_value * c_base) % c_mod) {
+            fh = ((fh * c_base) + s[i]) % c_mod;
+            rh = (rh + (s[i] * place_value)) % c_mod;
+            if (fh == rh) { index = i; }
+        }
+        return s.length() - (index + 1);
+    }
+
+    std::string shortestPalindrome(std::string s) {
+        if (s.length() > 0) {
+            unsigned int length {hash(s)};
+            std::string prefix(s.rbegin(), s.rbegin() + length);
+            return prefix + s;
+        } else {
+            return s;
+        }
     }
 
     unsigned int subtract_left(const unsigned int h, const int exp, const char c) const {
         return ((h + c_mod) - (static_cast<unsigned int>(std::pow(c_base, exp)) * c) % c_mod) % c_mod;
-    }
-
-    std::string shortestPalindrome(std::string s) {
-        unsigned int h {hash(s.begin(), s.end()};
-        unsigned int r {hash(s.rbegin(), s.rend())};
     }
 };
 
@@ -171,20 +194,12 @@ TEST_CASE("Hash test cases", "[Shortest Palindrome]") {
     Solution s;    
     SECTION("Create hash") {
         std::vector<std::pair<std::string,int>> input {
-            {"a", 234}, {"b", 239}, {"ab", 154}, {"bc", 184}, {"abc", 10} 
+            {"a", 97}, {"b", 98}, {"ab", 24930}, {"bc", 25187}, {"abc", 6382179} 
         };
         std::for_each(std::begin(input), std::end(input),
             [&s, &input](const auto& p) { 
                 REQUIRE(s.hash(p.first.begin(), p.first.end()) == p.second); 
             });
-    }
-    SECTION("Remove left") {
-        std::string i("ab");
-        int h = s.hash(i.begin(), i.end());
-        REQUIRE(s.subtract_left(h, 2, 'a') == 239);
-        i = "abc";
-        h = s.hash(i.begin(), i.end());
-        REQUIRE(s.subtract_left(h, 3, 'a') == 184);
     }
     SECTION("Hash symmetry") {
         std::vector<std::string> input {
@@ -193,6 +208,15 @@ TEST_CASE("Hash test cases", "[Shortest Palindrome]") {
         std::for_each(std::begin(input), std::end(input),
             [&s, &input](const auto& p) { 
                 REQUIRE(s.hash(p.begin(), p.end()) == s.hash(p.rbegin(), p.rend()));
+            });
+    }
+    SECTION("Reverse hash") {
+        std::vector<std::string> input {
+            "abc", "bbbb", "c", "", "aaacecaaa"
+        };
+        std::for_each(std::begin(input), std::end(input),
+            [&s, &input](const auto& p) { 
+                REQUIRE(s.hash(p.begin(), p.end()) == s.reverse_hash(p.rbegin(), p.rend()));
             });
     }
 }
