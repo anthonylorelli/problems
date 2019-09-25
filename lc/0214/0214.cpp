@@ -1,6 +1,6 @@
 // 0214. Shortest Palindrome
 // Problem definition: https://leetcode.com/problems/shortest-palindrome/
-// Accepted ?
+// Accepted: 2019-09-24 (using Rabin-Karp)
 // https://en.wikipedia.org/wiki/List_of_prime_numbers
 
 #define CATCH_CONFIG_RUNNER
@@ -12,6 +12,7 @@
 #include <numeric>
 #include <iostream>
 #include <cmath>
+#include <cstdint>
 
 class Trie {
 public:
@@ -143,50 +144,26 @@ public:
         return prefix + s;
     }
 
-    static constexpr unsigned int c_base {256};
-    static constexpr unsigned int c_mod {7778777};
+    static constexpr uint32_t c_base {256};
+    static constexpr uint32_t c_mod {7778777};
 
-    template<typename It>
-    unsigned int hash(const It& b, const It& e) {
-        return std::accumulate(b, e, 0, [&](const unsigned int h, const char c) {
-            return ((h * c_base) + c) % c_mod;
-        });
-    }
+    inline uint32_t hash(const uint32_t h, const char c) const noexcept { return ((h * c_base) + c) % c_mod; }
+    inline uint32_t reverse_hash(const uint32_t h, const uint32_t place_value, const char c) const noexcept { return (h + (c * place_value)) % c_mod; }
 
-    template<typename It>
-    unsigned int reverse_hash(const It& b, const It& e) {
-        unsigned int place_value {1};
-        return std::accumulate(b, e, 0, [&](const unsigned int h, const char c) {
-            unsigned int next {(h + c * place_value) % c_mod};
-            place_value = (place_value * c_base) % c_mod;
-            return next;
-        });
-    }
-
-    unsigned int hash(const std::string& s) {
-        unsigned int place_value {1};
-        unsigned int index {0};
-        unsigned int fh {0}, rh {0};
-        for (unsigned int i {0}; i < s.length(); ++i, place_value = (place_value * c_base) % c_mod) {
-            fh = ((fh * c_base) + s[i]) % c_mod;
-            rh = (rh + (s[i] * place_value)) % c_mod;
+    uint32_t palindrome_length(const std::string& s) {
+        uint32_t place_value {1}, index {0}, fh {0}, rh {0};
+        for (uint32_t i {0}; i < s.length(); ++i, place_value = (place_value * c_base) % c_mod) {
+            fh = hash(fh, s[i]); 
+            rh = reverse_hash(rh, place_value, s[i]);
             if (fh == rh) { index = i; }
         }
-        return s.length() - (index + 1);
+        return s.length() > 0 ? s.length() - (index + 1) : 0;
     }
 
     std::string shortestPalindrome(std::string s) {
-        if (s.length() > 0) {
-            unsigned int length {hash(s)};
-            std::string prefix(s.rbegin(), s.rbegin() + length);
-            return prefix + s;
-        } else {
-            return s;
-        }
-    }
-
-    unsigned int subtract_left(const unsigned int h, const int exp, const char c) const {
-        return ((h + c_mod) - (static_cast<unsigned int>(std::pow(c_base, exp)) * c) % c_mod) % c_mod;
+        unsigned int length {palindrome_length(s)};
+        std::string prefix(s.rbegin(), s.rbegin() + length);
+        return prefix + s;
     }
 };
 
