@@ -35,8 +35,13 @@ TEST_CASE("LC test cases", "[Missing Number]") {
 
     SECTION("LC test cases") {
         std::for_each(std::begin(input), std::end(input),
-            [&s, &input](const auto& p) { 
+            [&s, &input](auto& p) { 
                 REQUIRE(s.missingNumber(p.first) == p.second); 
             });
     }
+}
+
+int main(int argc, char* argv[]) {
+    std::ios_base::sync_with_stdio(false);
+    return Catch::Session().run(argc, argv);
 }
