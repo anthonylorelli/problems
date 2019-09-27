@@ -18,7 +18,7 @@ public:
 TEST_CASE("LC test cases", "[Longest Palindromic Substring]") {
     Solution s;
     std::vector<std::pair<std::string,std::string>> input {
-        {"",""}
+        {"",""}, {"babad","bab"}, {"cbbd","bb"}
     };
 
     SECTION("LC test cases") {
