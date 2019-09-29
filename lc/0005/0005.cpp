@@ -14,11 +14,27 @@ public:
         if (s.length() == 0) {
             return "";
         }
-        
+
         for (int i = 0; i < s.length(); ++i) {
 
         }
         return "";
+    }
+
+    std::string add_boundaries(const std::string& s) {
+        std::string sp;
+        if (s.length() == 0) {
+            sp = "||";
+            return std::move(sp);
+        }
+
+        sp.resize((s.length * 2) + 1);
+        for (size_t i {0}; i < (s.length() - 1); i += 2) {
+            sp[i] = '|';
+            sp[i+1] = s[i/2];
+        }
+        sp[s.length() - 1] = '|';
+        return std::move(sp);
     }
 };
 
