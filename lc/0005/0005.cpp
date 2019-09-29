@@ -11,8 +11,12 @@
 class Solution {
 public:
     std::string longestPalindrome(std::string s) {
+        if (s.length() == 0) {
+            return "";
+        }
+        
         for (int i = 0; i < s.length(); ++i) {
-            
+
         }
         return "";
     }
