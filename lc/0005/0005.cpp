@@ -36,6 +36,19 @@ public:
         sp[s.length() - 1] = '|';
         return std::move(sp);
     }
+
+    std::string remove_boundaries(const std::string& s) {
+        std::string sp;
+        if (s.length() < 3) {
+            return std::move(sp);
+        }
+
+        sp.resize((s.length() - 1)/2);
+        for (size_t i {0}; i < sp.length(); ++i) {
+            sp[i] = s[(i * 2) + 1];
+        }
+        return std::move(sp);
+    }
 };
 
 TEST_CASE("LC test cases", "[Longest Palindromic Substring]") {
