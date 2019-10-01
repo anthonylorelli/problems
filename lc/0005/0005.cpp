@@ -1,6 +1,6 @@
 // 0005. Longest Palindromic Substring
 // Problem definition: https://leetcode.com/problems/longest-palindromic-substring/
-// Accepted ?
+// Accepted 2019-09-30
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
