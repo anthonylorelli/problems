@@ -12,6 +12,7 @@
 class Solution {
 public:
     int swimInWater(std::vector<std::vector<int>>& grid) {
+        int time {0};
         return 0;        
     }
 };
