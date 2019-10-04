@@ -17,8 +17,15 @@ public:
         auto size {grid.size()};
         std::vector<std::vector<bool>> visited(size, std::vector(size, false));
         std::vector<std::vector<int>> distance(size, std::vector(size, c_max_time));
+        
         int time {0};
         distance[0][0] = 0;
+        std::pair<int,int> v{0,0};
+
+        while (!visited[v.first][v.second]) {
+            visited[v.first][v.second] = true;
+        }
+
         return 0;        
     }
 };
