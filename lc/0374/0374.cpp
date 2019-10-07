@@ -15,14 +15,16 @@ int guess(int num);
 
 class Solution {
 public:
-    int guessNumber(const int current, const int max) const noexcept {
-        auto result {guess(current)};
-        return !result ? current : result == -1 ? guessNumber(current / 2, current) :
-            guessNumber(current + current / 2, max);
+    int guessNumber(int start, int end) {
+		if (start == end) { return start; }
+        int mid {(end - start) / 2};
+        int value {start + (mid == 0 ? 1 : mid)};
+        int result {guess(value)};
+        return result == 0 ? value : result == -1 ? guessNumber(value, end) : guessNumber(start, value);
     }
 
     int guessNumber(int n) {
-        return guessNumber(n / 2, n);
+        return guessNumber(1, n);
     }
 };
 
@@ -41,6 +43,7 @@ TEST_CASE("LC test cases", "[Guess Number Higher or Lower]") {
     SECTION("LC test cases") {
 		std::for_each(std::begin(input), std::end(input),
 			[&s, &input](auto& p) {
+                g_target = p.second;
 				REQUIRE(s.guessNumber(p.first) == p.second);
 		});
     }
