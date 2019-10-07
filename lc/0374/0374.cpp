@@ -5,6 +5,9 @@
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
 
+#include <tuple>
+#include <vector>
+
 // Forward declaration of guess API.
 // @param num, your guess
 // @return -1 if my number is lower, 1 if my number is higher, otherwise return 0
@@ -23,10 +26,23 @@ public:
     }
 };
 
-TEST_CASE("LC test cases", "[Swim in Rising Water]") {
+int g_target {0};
+
+int guess(int num) {
+    return num == g_target ? 0 : num < g_target ? -1 : 1;
+}
+
+TEST_CASE("LC test cases", "[Guess Number Higher or Lower]") {
     Solution s;
+    std::vector<std::pair<int,int>> input {
+        {10,6}, {1,1}, {2,2}
+    };
 
     SECTION("LC test cases") {
+		std::for_each(std::begin(input), std::end(input),
+			[&s, &input](auto& p) {
+				REQUIRE(s.guessNumber(p.first) == p.second);
+		});
     }
 }
 
