@@ -10,19 +10,19 @@
 
 // Forward declaration of guess API.
 // @param num, your guess
-// @return -1 if my number is lower, 1 if my number is higher, otherwise return 0
+// @return 1 if my number is lower, -1 if my number is higher, otherwise return 0
 int guess(int num);
 
 class Solution {
 public:
-    int guessNumber(const int current, const int max) const noexcept {
-        auto result {guess(current)};
-        return !result ? current : result == -1 ? guessNumber(current / 2, current) :
-            guessNumber(current + current / 2, max);
+    int guessNumber(int low, int high) {
+        int mid {(low + high) / 2};
+        int result {guess(mid)};
+        return result == 0 ? mid : result == 1 ? guessNumber(mid + 1, high) : guessNumber(low, mid - 1);
     }
 
     int guessNumber(int n) {
-        return guessNumber(n / 2, n);
+        return guessNumber(1, n);
     }
 };
 
@@ -41,6 +41,7 @@ TEST_CASE("LC test cases", "[Guess Number Higher or Lower]") {
     SECTION("LC test cases") {
 		std::for_each(std::begin(input), std::end(input),
 			[&s, &input](auto& p) {
+                g_target = p.second;
 				REQUIRE(s.guessNumber(p.first) == p.second);
 		});
     }
