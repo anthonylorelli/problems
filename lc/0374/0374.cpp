@@ -10,17 +10,15 @@
 
 // Forward declaration of guess API.
 // @param num, your guess
-// @return -1 if my number is lower, 1 if my number is higher, otherwise return 0
+// @return 1 if my number is lower, -1 if my number is higher, otherwise return 0
 int guess(int num);
 
 class Solution {
 public:
-    int guessNumber(int start, int end) {
-		if (start == end) { return start; }
-        int mid {(end - start) / 2};
-        int value {start + (mid == 0 ? 1 : mid)};
-        int result {guess(value)};
-        return result == 0 ? value : result == -1 ? guessNumber(value, end) : guessNumber(start, value);
+    int guessNumber(int low, int high) {
+        int mid {(low + high) / 2};
+        int result {guess(mid)};
+        return result == 0 ? mid : result == 1 ? guessNumber(mid + 1, high) : guessNumber(low, mid - 1);
     }
 
     int guessNumber(int n) {
