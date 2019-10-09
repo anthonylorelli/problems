@@ -7,6 +7,7 @@
 
 #include <tuple>
 #include <vector>
+#include <cstdint>
 
 // Forward declaration of guess API.
 // @param num, your guess
@@ -16,7 +17,9 @@ int guess(int num);
 class Solution {
 public:
     int guessNumber(int low, int high) {
-        int mid {(low + high) / 2};
+        int64_t sum {low};
+        sum += high;
+		int mid {static_cast<int>(sum / 2)};
         int result {guess(mid)};
         return result == 0 ? mid : result == 1 ? guessNumber(mid + 1, high) : guessNumber(low, mid - 1);
     }
