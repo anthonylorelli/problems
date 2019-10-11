@@ -1,6 +1,6 @@
 // 0645. Set Mismatch
 // Problem definition: https://leetcode.com/problems/set-mismatch/
-// Accepted ?
+// Accepted 2019-10-10
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
