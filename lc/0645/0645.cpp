@@ -16,7 +16,7 @@ public:
         for (int i {0}; i < nums.size(); ++i) {
             int current {nums[i]}, target {i+1};
             if (current != target) {
-                std::swap(nums[i], nums[target-1]);
+                std::swap(nums[i], nums[current - 1]);
                 if (nums[current - 1] != nums[i]) { --i; }
             }
         }
@@ -25,7 +25,7 @@ public:
             if (nums[i] != i+1) {
                 result.push_back(nums[i]);
                 result.push_back(i + 1);
-                return result;
+                break;
             }
         }
 
