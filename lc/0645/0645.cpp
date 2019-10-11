@@ -1,6 +1,6 @@
 // 0645. Set Mismatch
 // Problem definition: https://leetcode.com/problems/set-mismatch/
-// Accepted ?
+// Accepted 2019-10-10
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -16,7 +16,7 @@ public:
         for (int i {0}; i < nums.size(); ++i) {
             int current {nums[i]}, target {i+1};
             if (current != target) {
-                std::swap(nums[i], nums[target-1]);
+                std::swap(nums[i], nums[current - 1]);
                 if (nums[current - 1] != nums[i]) { --i; }
             }
         }
@@ -25,7 +25,7 @@ public:
             if (nums[i] != i+1) {
                 result.push_back(nums[i]);
                 result.push_back(i + 1);
-                return result;
+                break;
             }
         }
 
