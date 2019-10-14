@@ -9,8 +9,13 @@
 
 class Solution {
 public:
+    template <typename T>
+    bool traverse(T& begin, T& end) {
+        return true;
+    }
+    
     bool isValidSerialization(std::string preorder) {
-        return false;        
+        return traverse(std::begin(preorder), std::end(preorder));
     }
 };
 
