@@ -9,29 +9,39 @@
 
 class Solution {
 public:
-    template <typename T>
-    bool traverse(T& begin, T& end) {
-        if (begin == end) {
-            return true;
-        } else {
-            char c {*begin++};
-            if (begin == end) { return false; } 
-            if (c == '#') {
-                return true;
-            }
-            return false;
-        }
+    int checkTree(const std::string& t, const int i) {
+        if (i >= t.size()) { return 0; }
+
+        char c {t[i]};
+        int r {i + 2};
+
+        if (c == '#') {
+            return r;
+        } else if (r >= t.size()) {
+            return 0;
+        } 
+            
+        int l {checkTree(t, r)};
+        
+        if (l >= t.size()) {
+            return 0;
+        } 
+            
+        return checkTree(t, l);
     }
 
     bool isValidSerialization(std::string preorder) {
-        return traverse(std::begin(preorder), std::end(preorder));
+        if (preorder.size() == 0) { return true; }
+        int result {checkTree(preorder, 0)};
+        return !(result == 0 || result < preorder.size());
     }
 };
 
 TEST_CASE("LC test cases", "[Verify Preorder Serlalization of a Binary Tree]") {
     Solution s;
     std::vector<std::pair<std::string,bool>> input {
-        {"9,3,4,#,#,1,#,#,2,#,6,#,#",true},{"1,#",false},{"9,#,#,1",false}
+        {"9,3,4,#,#,1,#,#,2,#,6,#,#",true},{"1,#",false},{"9,#,#,1",false},
+        {"",true},{"#",true}
     };
 
     SECTION("LC test cases") {
