@@ -41,7 +41,7 @@ TEST_CASE("LC test cases", "[Verify Preorder Serlalization of a Binary Tree]") {
     Solution s;
     std::vector<std::pair<std::string,bool>> input {
         {"9,3,4,#,#,1,#,#,2,#,6,#,#",true},{"1,#",false},{"9,#,#,1",false},
-        {"",true},{"#",true}
+        {"",true},{"#",true},{"1,#,#",true},{"3,#,3",false}
     };
 
     SECTION("LC test cases") {
