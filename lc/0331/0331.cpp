@@ -1,6 +1,6 @@
 // 0331. Verify Preorder Serlalization of a Binary Tree
 // Problem definition: https://leetcode.com/problems/verify-preorder-serialization-of-a-binary-tree/
-// Accepted ?
+// Accepted 2019-10-16
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
