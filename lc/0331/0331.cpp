@@ -1,33 +1,44 @@
 // 0331. Verify Preorder Serlalization of a Binary Tree
 // Problem definition: https://leetcode.com/problems/verify-preorder-serialization-of-a-binary-tree/
-// Accepted ?
+// Accepted 2019-10-16
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
 
 #include <string>
+#include <cctype>
 
 class Solution {
 public:
+    int eatNumber(const std::string& t, const int i) {
+        int j {i};
+        while (std::isdigit(t[j])) { ++j; }
+        return j + 1;
+    }
+
     int checkTree(const std::string& t, const int i) {
         if (i >= t.size()) { return 0; }
 
         char c {t[i]};
-        int r {i + 2};
+        int right {i};
 
         if (c == '#') {
-            return r;
-        } else if (r >= t.size()) {
-            return 0;
-        } 
-            
-        int l {checkTree(t, r)};
+            return right + 2;
+        } else {
+            right = eatNumber(t, right);
+        }
         
-        if (l >= t.size()) {
+        if (right >= t.size()) {
             return 0;
         } 
             
-        return checkTree(t, l);
+        int left {checkTree(t, right)};
+        
+        if (left >= t.size() || left == 0) {
+            return 0;
+        } 
+            
+        return checkTree(t, left);
     }
 
     bool isValidSerialization(std::string preorder) {
@@ -41,7 +52,8 @@ TEST_CASE("LC test cases", "[Verify Preorder Serlalization of a Binary Tree]") {
     Solution s;
     std::vector<std::pair<std::string,bool>> input {
         {"9,3,4,#,#,1,#,#,2,#,6,#,#",true},{"1,#",false},{"9,#,#,1",false},
-        {"",true},{"#",true}
+        {"",true},{"#",true},{"1,#,#",true},{"3,#,3",false},{"4,3,#",false},
+        {"93,333,411,#,#,1,#,#,20,#,612123,#,#",true},{"9080,#,#",true}
     };
 
     SECTION("LC test cases") {
