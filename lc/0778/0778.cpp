@@ -10,6 +10,18 @@
 #include <vector>
 #include <queue>
 
+struct Node
+{
+    int x;
+    int y;
+    int distance;
+};
+
+bool operator>(const Node& l, const Node& r)
+{
+    return l.distance > r.distance;
+}
+
 class Solution {
 public:
     int c_max_time {51};
@@ -18,7 +30,10 @@ public:
         auto size {grid.size()};
         std::vector<std::vector<bool>> visited(size, std::vector(size, false));
         std::vector<std::vector<int>> distance(size, std::vector(size, c_max_time));
-        
+
+        auto l {[](const Node& l, const Node& r) { return l > r; }};
+        std::priority_queue<Node, std::vector<Node>, decltype(l)> q; 
+
         int time {0};
         distance[0][0] = 0;
         std::pair<int,int> v{0,0};
