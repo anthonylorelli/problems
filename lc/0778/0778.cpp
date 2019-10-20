@@ -32,7 +32,7 @@ public:
         std::vector<std::vector<int>> distance(size, std::vector(size, c_max_time));
 
         auto l {[](const Node& l, const Node& r) { return l > r; }};
-        std::priority_queue<Node, std::vector<Node>, decltype(l)> q; 
+        std::priority_queue<Node, std::vector<Node>, decltype(l)> q{l}; 
 
         int time {0};
         distance[0][0] = 0;
