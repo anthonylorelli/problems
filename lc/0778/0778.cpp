@@ -12,9 +12,9 @@
 
 struct Node
 {
-    int x;
-    int y;
+    Node(const int distance, const bool visited) : distance{distance}, visited{visited} {}
     int distance;
+    bool visited;
 };
 
 bool operator>(const Node& l, const Node& r)
@@ -24,25 +24,20 @@ bool operator>(const Node& l, const Node& r)
 
 class Solution {
 public:
-    int c_max_time {51};
+    static constexpr int c_max_time {51};
+
+    template <typename T>
+    void addAdjacent(const std::pair<int,int>& current, const int time, T& queue) {
+    }
 
     int swimInWater(std::vector<std::vector<int>>& grid) {
         auto size {grid.size()};
-        std::vector<std::vector<bool>> visited(size, std::vector(size, false));
-        std::vector<std::vector<int>> distance(size, std::vector(size, c_max_time));
+        std::vector<std::vector<Node>> map(size, std::vector(size, Node(c_max_time, false)));
 
         auto l {[](const Node& l, const Node& r) { return l > r; }};
-        std::priority_queue<Node, std::vector<Node>, decltype(l)> q; 
+        std::priority_queue<Node, std::vector<Node>, decltype(l)> q{l}; 
 
-        int time {0};
-        distance[0][0] = 0;
-        std::pair<int,int> v{0,0};
-
-        while (!visited[v.first][v.second]) {
-            visited[v.first][v.second] = true;
-        }
-
-        return 0;        
+        return 0;
     }
 };
 
