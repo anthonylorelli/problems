@@ -17,11 +17,6 @@ struct Node
     bool visited;
 };
 
-bool operator>(const Node& l, const Node& r)
-{
-    return l.distance > r.distance;
-}
-
 class Solution {
 public:
     static constexpr int c_max_time {51};
@@ -34,8 +29,13 @@ public:
         auto size {grid.size()};
         std::vector<std::vector<Node>> map(size, std::vector(size, Node(c_max_time, false)));
 
-        auto l {[](const Node& l, const Node& r) { return l > r; }};
-        std::priority_queue<Node, std::vector<Node>, decltype(l)> q{l}; 
+        auto l {[](const Node* l, const Node* r) { return l->distance > r->distance; }};
+        std::priority_queue<Node*, std::vector<Node*>, decltype(l)> q{l}; 
+
+        std::for_each(map.begin(), map.end(), [&q](const auto& row) {
+            std::transform(row.begin(), row.end(), std::back_insert_iterator(q), 
+                [](const Node& n) { return &n; });
+        });
 
         return 0;
     }
