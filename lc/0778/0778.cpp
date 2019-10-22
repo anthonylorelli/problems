@@ -22,7 +22,8 @@ public:
     static constexpr int c_max_time {51};
 
     template <typename T>
-    void addAdjacent(const std::pair<int,int>& current, const int time, T& queue) {
+    void addAdjacent(const Node& n) {
+
     }
 
     int swimInWater(std::vector<std::vector<int>>& grid) {
@@ -30,12 +31,11 @@ public:
         std::vector<std::vector<Node>> map(size, std::vector(size, Node(c_max_time, false)));
 
         auto l {[](const Node* l, const Node* r) { return l->distance > r->distance; }};
-        std::priority_queue<Node*, std::vector<Node*>, decltype(l)> q{l}; 
+        std::priority_queue<Node*, std::vector<Node*>, decltype(l)> q{l};
 
-        std::for_each(map.begin(), map.end(), [&q](const auto& row) {
-            std::transform(row.begin(), row.end(), std::back_insert_iterator(q), 
-                [](const Node& n) { return &n; });
-        });
+        for (auto& r : map) {
+            for (auto& c : r) { q.push(&c); }
+        }
 
         return 0;
     }
