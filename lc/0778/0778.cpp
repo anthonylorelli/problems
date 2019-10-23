@@ -12,7 +12,9 @@
 
 struct Node
 {
-    Node(const int distance, const bool visited) : distance{distance}, visited{visited} {}
+    Node(const int distance, const bool visited) : x{0}, y{0}, distance{distance}, visited{visited} {}
+    int x;
+    int y;
     int distance;
     bool visited;
 };
@@ -28,14 +30,9 @@ public:
 
     int swimInWater(std::vector<std::vector<int>>& grid) {
         auto size {grid.size()};
-        std::vector<std::vector<Node>> map(size, std::vector(size, Node(c_max_time, false)));
-
-        auto l {[](const Node* l, const Node* r) { return l->distance > r->distance; }};
-        std::priority_queue<Node*, std::vector<Node*>, decltype(l)> q{l};
-
-        for (auto& r : map) {
-            for (auto& c : r) { q.push(&c); }
-        }
+        auto l {[](const Node& l, const Node& r) { return l.distance > r.distance; }};
+        std::priority_queue<Node, std::vector<Node>, decltype(l)> 
+            q{l, std::vector(size*size, Node(c_max_time, false))};
 
         return 0;
     }
