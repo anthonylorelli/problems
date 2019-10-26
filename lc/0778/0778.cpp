@@ -22,23 +22,33 @@ class Solution {
 public:
     static constexpr int c_max_time {51};
 
-    template <typename T>
-    void addAdjacent(const Node& n) {
+    void updateLocation(const int x, const int y, const int distance, std::vector<std::vector<Node>>& nodes) {
 
+    }
+
+    void addAdjacent(const Node& n, std::vector<std::vector<Node>>& nodes, std::vector<std::vector<int>>& distances) {
+        int x {n.x}, y {n.y}, distance;
+        if (x > 0) {
+            distance = distances[x-1][y]};
+            if (distance < n.distance) { distance = n.distance; }
+        }
     }
 
     int swimInWater(std::vector<std::vector<int>>& grid) {
         auto size {grid.size()};
-        auto l {[](const Node& l, const Node& r) { return l.distance > r.distance; }};
-        std::vector q(size*size, Node(c_max_time, false));
+        auto l {[](const Node* l, const Node* r) { return l->distance > r->distance; }};
+        std::vector<std::vector<Node>> nodes(size, std::vector(size, Node(c_max_time, false)));
+        std::vector<Node*> q(size*size);
 
-        int x {0}, y {0};
-        for (auto& i : q) {
-            i.x = x++; i.y = y;
-            if (x == size) { y++; x = 0; }
+        for (int x {0}; x < size; ++x) {
+            for (int y {0}; y < size; ++y) {
+                Node& n {nodes[x][y]};
+                n.x = x; n.y = y;
+                q[(x * size) + y] = &n;
+            }
         }
 
-        q[0].distance = 0;
+        nodes[0][0].distance = 0;
 
         std::make_heap(q.begin(), q.end(), l);
 
