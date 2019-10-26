@@ -8,7 +8,6 @@
 #include <string>
 #include <algorithm>
 #include <vector>
-#include <queue>
 
 struct Node
 {
@@ -31,8 +30,23 @@ public:
     int swimInWater(std::vector<std::vector<int>>& grid) {
         auto size {grid.size()};
         auto l {[](const Node& l, const Node& r) { return l.distance > r.distance; }};
-        std::priority_queue<Node, std::vector<Node>, decltype(l)> 
-            q{l, std::vector(size*size, Node(c_max_time, false))};
+        std::vector q(size*size, Node(c_max_time, false));
+
+        int x {0}, y {0};
+        for (auto& i : q) {
+            i.x = x++; i.y = y;
+            if (x == size) { y++; x = 0; }
+        }
+
+        q[0].distance = 0;
+
+        std::make_heap(q.begin(), q.end(), l);
+
+        while (!q.empty()) {
+            std::pop_heap(q.begin(), q.end(), l);
+            auto n {q.back()};
+            q.pop_back();
+        }
 
         return 0;
     }
