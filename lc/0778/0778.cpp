@@ -21,7 +21,7 @@ struct Node
 
 class Solution {
 public:
-    static constexpr int c_max_time {std::numeric_limits<int>::max};
+    static constexpr int c_max_time {std::numeric_limits<int>::max()};
 
     void updateLocation(const int x, const int y, const int distance, std::vector<std::vector<Node>>& nodes) {
 
@@ -30,7 +30,7 @@ public:
     void addAdjacent(const Node& n, std::vector<std::vector<Node>>& nodes, std::vector<std::vector<int>>& distances) {
         int x {n.x}, y {n.y}, distance;
         if (x > 0) {
-            distance = distances[x-1][y]};
+            distance = distances[x-1][y];
             if (distance < n.distance) { distance = n.distance; }
         }
     }
