@@ -28,10 +28,35 @@ public:
     }
 
     void addAdjacent(const Node& n, std::vector<std::vector<Node>>& nodes, std::vector<std::vector<int>>& distances) {
-        int x {n.x}, y {n.y}, distance;
+        int x {n.x}, y {n.y};
         if (x > 0) {
-            distance = distances[x-1][y];
+            int distance = distances[x-1][y];
             if (distance < n.distance) { distance = n.distance; }
+            if (nodes[x-1][y].distance > distance) {
+                nodes[x-1][y].distance = distance;
+            }
+        }
+        if (y > 0) {
+            int distance = distances[x][y-1];
+            if (distance < n.distance) { distance = n.distance; }
+            if (nodes[x][y-1].distance > distance) {
+                nodes[x][y-1].distance = distance;
+            }
+        }
+        auto size {nodes.size()};
+        if (x < size - 1) {
+            int distance = distances[x+1][y];
+            if (distance < n.distance) { distance = n.distance; }
+            if (nodes[x+1][y].distance > distance) {
+                nodes[x+1][y].distance = distance;
+            }
+        }
+        if (y < size - 1) {
+            int distance = distances[x][y+1];
+            if (distance < n.distance) { distance = n.distance; }
+            if (nodes[x][y+1].distance > distance) {
+                nodes[x][y+1].distance = distance;
+            }
         }
     }
 
