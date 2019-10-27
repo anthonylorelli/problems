@@ -8,6 +8,7 @@
 #include <string>
 #include <algorithm>
 #include <vector>
+#include <limits>
 
 struct Node
 {
@@ -20,7 +21,7 @@ struct Node
 
 class Solution {
 public:
-    static constexpr int c_max_time {51};
+    static constexpr int c_max_time {std::numeric_limits<int>::max};
 
     void updateLocation(const int x, const int y, const int distance, std::vector<std::vector<Node>>& nodes) {
 
