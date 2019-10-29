@@ -1,11 +1,10 @@
 // 0778. Swim in Rising Water
 // Problem definition: https://leetcode.com/problems/swim-in-rising-water/
-// Accepted ?
+// Accepted 2019-10-28
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
 
-#include <string>
 #include <algorithm>
 #include <vector>
 #include <limits>
@@ -22,10 +21,6 @@ struct Node
 class Solution {
 public:
     static constexpr int c_max_time {std::numeric_limits<int>::max()};
-
-    void updateLocation(const int x, const int y, const int distance, std::vector<std::vector<Node>>& nodes) {
-
-    }
 
     void addAdjacent(const Node& n, std::vector<std::vector<Node>>& nodes, std::vector<std::vector<int>>& distances) {
         int x {n.x}, y {n.y};
@@ -97,7 +92,7 @@ TEST_CASE("LC test cases", "[Swim in Rising Water]") {
     std::vector<std::pair<std::vector<std::vector<int>>,int>> input {
         {{{0,1,2,3,4},{24,23,22,21,5},{12,13,14,15,16},{11,17,18,19,20},{10,9,8,7,6}},16},
         {{{0,2},{1,3}},3},{{{3,2,1},{2,2,1},{1,1,1}},3},{{{3,4,5,6},{4,4,5,6},{5,5,5,6},{6,6,6,6}},6},
-        {{{1,0,5,2,1},{0,0,5,2,1},{5,5,5,2,1},{2,2,2,2,1},{1,1,1,1,1}},5}
+        {{{1,0,5,2,1},{0,0,5,2,1},{5,5,5,2,1},{2,2,2,2,1},{1,1,1,1,1}},5},{{{7}},7}
     };
 
     SECTION("LC test cases") {
