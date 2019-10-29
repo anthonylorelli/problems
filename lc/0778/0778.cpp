@@ -1,11 +1,10 @@
 // 0778. Swim in Rising Water
 // Problem definition: https://leetcode.com/problems/swim-in-rising-water/
-// Accepted ?
+// Accepted 2019-10-28
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
 
-#include <string>
 #include <algorithm>
 #include <vector>
 #include <limits>
@@ -22,10 +21,6 @@ struct Node
 class Solution {
 public:
     static constexpr int c_max_time {std::numeric_limits<int>::max()};
-
-    void updateLocation(const int x, const int y, const int distance, std::vector<std::vector<Node>>& nodes) {
-
-    }
 
     void addAdjacent(const Node& n, std::vector<std::vector<Node>>& nodes, std::vector<std::vector<int>>& distances) {
         int x {n.x}, y {n.y};
