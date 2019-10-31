@@ -10,7 +10,14 @@
 class Solution {
 public:
     int maxRotateFunction(std::vector<int>& A) {
-        return 0;        
+        int max {0}; // should be smallest negative
+        auto size {A.size()};
+        for (int offset {0}; offset < size; ++offset) {
+            int sum {0};
+            for (int i {1}; i < size; ++i) {
+            }
+        }
+        return 0;
     }
 };
 
