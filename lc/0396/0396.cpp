@@ -6,11 +6,12 @@
 #include "../../uva/catch/catch.hpp"
 
 #include <vector>
+#include <numeric>
 
 class Solution {
 public:
     int maxRotateFunction(std::vector<int>& A) {
-        int max {0}; // should be smallest negative
+        int min {std::numeric_limits<int>::min()}; // should be smallest negative
         auto size {A.size()};
         for (int offset {0}; offset < size; ++offset) {
             int sum {0};
