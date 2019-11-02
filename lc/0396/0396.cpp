@@ -11,27 +11,29 @@
 class Solution {
 public:
     int maxRotateFunction(std::vector<int>& A) {
-        int min {std::numeric_limits<int>::min()}; // should be smallest negative
+        int max {std::numeric_limits<int>::min()}; // should be smallest negative
         auto size {A.size()};
         for (int offset {0}; offset < size; ++offset) {
             int sum {0};
             for (int i {1}; i < size; ++i) {
+                sum += i * A[(i + offset) % size];
             }
+            max = std::max(max, sum);
         }
-        return 0;
+        return size ? max : 0;
     }
 };
 
 TEST_CASE("LC test cases", "[Rotate Function]") {
     Solution s;
     std::vector<std::pair<std::vector<int>,int>> input {
-        {{4,3,2,6}, 26}
+        {{4,3,2,6}, 26}, {{-4,-3,-2,-6}, -16}, {{}, 0}
     };
 
     SECTION("LC test cases") {
         std::for_each(std::begin(input), std::end(input),
             [&s, &input](auto& p) { 
-                REQUIRE(s.swimInWater(p.first) == p.second); 
+                REQUIRE(s.maxRotateFunction(p.first) == p.second); 
             });
     }
 }
