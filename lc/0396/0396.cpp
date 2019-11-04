@@ -1,6 +1,7 @@
 // 0396. Rotate Function
 // Problem definition: https://leetcode.com/problems/rotate-function/
 // Accepted ?
+// Cf. https://leetcode.com/problems/rotate-function/discuss/406537/python-and-c%2B%2B-simple-O(n)-solution
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
