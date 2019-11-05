@@ -1,25 +1,26 @@
 // 0396. Rotate Function
 // Problem definition: https://leetcode.com/problems/rotate-function/
-// Accepted ?
-// Cf. https://leetcode.com/problems/rotate-function/discuss/406537/python-and-c%2B%2B-simple-O(n)-solution
+// Accepted 2019-11-04
+// Cf. https://leetcode.com/problems/rotate-function/discuss/87842/Java-Solution-O(n)-with-non-mathametical-explaination
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
 
 #include <vector>
-#include <numeric>
 
 class Solution {
 public:
     int maxRotateFunction(std::vector<int>& A) {
-        int max {std::numeric_limits<int>::min()}; // should be smallest negative
         auto size {A.size()};
-        for (int offset {0}; offset < size; ++offset) {
-            int sum {0};
-            for (int i {1}; i < size; ++i) {
-                sum += i * A[(i + offset) % size];
-            }
-            max = std::max(max, sum);
+        long sum {0}, iteration {0};
+        for (size_t i {0}; i < size; ++i) {
+            sum += A[i];
+            iteration += (A[i] * i);
+        }
+        long max {iteration}; 
+        for (size_t i {1}; i < size; ++i) {
+            iteration = iteration - sum + A[i-1] * size;
+            max = std::max(max, iteration);
         }
         return size ? max : 0;
     }
