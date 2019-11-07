@@ -6,10 +6,25 @@
 #include "../../uva/catch/catch.hpp"
 
 #include <vector>
+#include <queue>
+#include <functional>
+#include <algorithm>
 
 class Solution {
 public:
     int lastStoneWeightII(std::vector<int>& stones) {
+        std::priority_queue q {std::less<int>(), std::move(stones)};
+
+        while (!q.empty()) {
+            auto n1 {q.top()};
+            q.pop();
+            if (q.empty()) { return n1; }
+            auto n2 {q.top()};
+            q.pop();
+            if (n1 < n2) { std::swap(n1, n2); }
+            auto n3 {n1 - n2};
+            if (n3) { q.push(n3); }
+        }
         return 0;
     }
 };
@@ -17,7 +32,7 @@ public:
 TEST_CASE("LC test cases", "[Last Stone Weight II]") {
     Solution s;
     std::vector<std::pair<std::vector<int>,int>> input {
-        {{2,7,4,1,8,1}, 1}
+        {{2,7,4,1,8,1}, 1}, {{7,4}, 3}
     };
 
     SECTION("LC test cases") {
