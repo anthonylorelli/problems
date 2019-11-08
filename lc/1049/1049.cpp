@@ -13,7 +13,7 @@
 class Solution {
 public:
     int lastStoneWeightII(std::vector<int>& stones) {
-        std::priority_queue q {std::less<int>(), std::move(stones)};
+        std::priority_queue<int> q {std::less<int>(), std::move(stones)};
 
         while (!q.empty()) {
             auto n1 {q.top()};
@@ -32,7 +32,7 @@ public:
 TEST_CASE("LC test cases", "[Last Stone Weight II]") {
     Solution s;
     std::vector<std::pair<std::vector<int>,int>> input {
-        {{2,7,4,1,8,1}, 1}, {{7,4}, 3}
+        {{2,7,4,1,8,1},1}, {{7,4},3}, {{5,5},0}, {{31,26,33,21,40},5}
     };
 
     SECTION("LC test cases") {
