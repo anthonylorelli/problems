@@ -14,7 +14,6 @@ class Solution {
 public:
     int lastStoneWeightII(std::vector<int>& stones) {
         auto size {stones.size()};
-        std::vector<std::vector<int>> table{size, std::vector(size, 0)};
         return 0;
     }
 
