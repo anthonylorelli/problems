@@ -1,6 +1,7 @@
 // 1049. Last Stone Weight II
 // Problem definition: https://leetcode.com/problems/last-stone-weight-ii/
 // Accepted ?
+// Cf. https://leetcode.com/problems/last-stone-weight-ii/discuss/294995/C%2B%2B-4-lines-Epic-Smash
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
