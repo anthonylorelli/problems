@@ -1,6 +1,6 @@
 // 1049. Last Stone Weight II
 // Problem definition: https://leetcode.com/problems/last-stone-weight-ii/
-// Accepted ?
+// Accepted 2019-11-11
 // Cf. https://leetcode.com/problems/last-stone-weight-ii/discuss/294995/C%2B%2B-4-lines-Epic-Smash
 
 #define CATCH_CONFIG_RUNNER
@@ -10,12 +10,20 @@
 #include <queue>
 #include <functional>
 #include <algorithm>
+#include <unordered_set>
+#include <iterator>
 
 class Solution {
 public:
     int lastStoneWeightII(std::vector<int>& stones) {
-        auto size {stones.size()};
-        return 0;
+        std::unordered_set<int> s1 {0};
+        for (auto n : stones) {
+            std::unordered_set<int> s2;
+            for (auto i : s1) { s2.insert({n + i, n - i}); }
+            s1 = std::move(s2); 
+        }        
+        return std::abs(*std::min_element(s1.begin(), s1.end(), 
+            [](const int i, const int j) { return std::abs(i) < std::abs(j); }));
     }
 
     int lastStoneWeightIIGreedy(std::vector<int>& stones) {
