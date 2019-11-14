@@ -10,6 +10,7 @@
 class Solution {
 public:
     int getMoneyAmount(int n) {
+        std::vector<int> v{n};
         return 0;
     }
 };
