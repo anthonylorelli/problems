@@ -14,9 +14,11 @@ public:
         if (n == 2) { return 1; }
         int lower {1}, upper {n}, sum {0};
         while (lower < upper) {
-            if ((upper - lower) > 5) {
+            int diff {upper - lower};
+            if (diff > 5) {
                 long total {upper + lower};
                 lower = total / 2;
+                sum += lower;
             }
         }
         return 0;
