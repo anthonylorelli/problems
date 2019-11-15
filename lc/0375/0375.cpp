@@ -10,7 +10,15 @@
 class Solution {
 public:
     int getMoneyAmount(int n) {
-        std::vector<int> v{n};
+        if (n == 0 || n == 1) { return 0; }
+        if (n == 2) { return 1; }
+        int lower {1}, upper {n}, sum {0};
+        while (lower < upper) {
+            if ((upper - lower) > 5) {
+                long total {upper + lower};
+                lower = total / 2;
+            }
+        }
         return 0;
     }
 };
