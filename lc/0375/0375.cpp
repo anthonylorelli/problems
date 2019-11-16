@@ -18,17 +18,21 @@ public:
             if (diff > 5) {
                 long total {upper + lower};
                 lower = total / 2;
-                sum += lower;
+            } else if (diff == 5) {
+                lower += 2;
+            } else if (diff == 3) {
+                return sum + 2;
             }
+            sum += lower;
         }
-        return 0;
+        return sum;
     }
 };
 
 TEST_CASE("LC test cases", "[Guess Number Higher or Lower II]") {
     Solution s;
     std::vector<std::pair<int,int>> input {
-        {{10,21},{1,0}}
+        {{10,21},{1,0},{3,2}}
     };
 
     SECTION("LC test cases") {
