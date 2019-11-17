@@ -1,6 +1,7 @@
 // 0375. Guess Number Higher or Lower II
 // Problem definition: https://leetcode.com/problems/guess-number-higher-or-lower-ii/
 // Accepted ?
+// Cf. https://leetcode.com/problems/guess-number-higher-or-lower-ii/discuss/84799/java-MinMax-solution-beats-97
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
