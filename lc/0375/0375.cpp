@@ -7,26 +7,36 @@
 #include "../../uva/catch/catch.hpp"
 
 #include <vector>
+#include <limits>
 
 class Solution {
 public:
-    int getMoneyAmount(int n) {
-        if (n == 0 || n == 1) { return 0; }
-        if (n == 2) { return 1; }
-        int lower {1}, upper {n}, sum {0};
-        while (lower < upper) {
-            int diff {upper - lower};
-            if (diff > 5) {
-                long total {upper + lower};
-                lower = total / 2;
-            } else if (diff == 5) {
-                lower += 2;
-            } else if (diff == 3) {
-                return sum + 2;
-            }
-            sum += lower;
+    template <typename T>
+    int getMoneyAmount(T& t, int left, int right) {
+        if (t[left][right]) {
+            return t[left][right];
         }
-        return sum;
+
+        if (left >= right) {
+            return 0;
+        } else if (left >= (right - 2)) {
+            return right - 1;
+        }
+
+        int mid {left + (right - left) / 2}, min {std::numeric_limits<int>::max()};
+
+        for (int i {mid}; i < right; ++i) {
+            min = std::min(min, i + std::max(getMoneyAmount(t, i + 1, right), getMoneyAmount(t, left, i - 1)));
+        }
+
+        t[left][right] = min;
+
+        return min;
+    }
+
+    int getMoneyAmount(int n) {
+        std::vector<std::vector<int>> table{n+1u, std::vector<int>(n+1u, 0)};
+        return getMoneyAmount(table, n, 1);
     }
 };
 
