@@ -1,6 +1,6 @@
 // 0375. Guess Number Higher or Lower II
 // Problem definition: https://leetcode.com/problems/guess-number-higher-or-lower-ii/
-// Accepted ?
+// Accepted 2019-11-19
 // Cf. https://leetcode.com/problems/guess-number-higher-or-lower-ii/discuss/84799/java-MinMax-solution-beats-97
 
 #define CATCH_CONFIG_RUNNER
@@ -12,30 +12,31 @@
 class Solution {
 public:
     template <typename T>
-    int getMoneyAmount(T& t, int row, int col) {
-        if (t[row][col]) {
-            return t[row][col];
+    int getMoneyAmount(T& t, int begin, int end) {
+        if (t[begin][end]) {
+            return t[begin][end];
         }
 
-        if (row >= col) {
+        if (begin >= end) {
             return 0;
-        } else if (row >= (col - 2)) {
-            return col - 1;
+        } else if (begin >= (end - 2)) {
+            return end - 1;
         }
 
-        int mid {row + (col - row) / 2}, min {std::numeric_limits<int>::max()};
+        int mid {begin + (end - begin) / 2}, min {std::numeric_limits<int>::max()};
 
-        for (int i {mid}; i < col; ++i) {
-            min = std::min(min, i + std::max(getMoneyAmount(t, i + 1, col), getMoneyAmount(t, row, i - 1)));
+        for (int i {mid}; i < end; ++i) {
+            min = std::min(min, i + std::max(getMoneyAmount(t, i + 1, end), getMoneyAmount(t, begin, i - 1)));
         }
 
-        t[row][col] = min;
+        t[begin][end] = min;
 
         return min;
     }
 
     int getMoneyAmount(int n) {
-        std::vector<std::vector<int>> table{n+1u, std::vector<int>(n+1u, 0)};
+        unsigned int size {n+1u};
+        std::vector table{size, std::vector(size, 0)};
         return getMoneyAmount(table, 1, n);
     }
 };
