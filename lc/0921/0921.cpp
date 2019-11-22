@@ -9,8 +9,24 @@
 
 class Solution {
 public:
+    template <typename T>
+    int minAddToMakeValid(const T& begin, const T& end) {
+        if (begin != end) {
+            switch (*begin) {
+            case '(':
+                return 1 + minAddToMakeValid(begin + 1, end);
+                break;
+            case ')':
+                return -1 + minAddToMakeValid(begin + 1, end);
+                break;
+            }
+        }
+
+        return 0;
+    }
+
     int minAddToMakeValid(std::string S) {
-        
+        return std::abs(minAddToMakeValid(S.begin(), S.end()));        
     }
 };
 
