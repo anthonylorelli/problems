@@ -10,30 +10,46 @@
 class Solution {
 public:
     template <typename T>
-    int minAddToMakeValid(const T& begin, const T& end) {
+    int minAddClose(const T& begin, const T& end, int sum) {
         if (begin != end) {
             switch (*begin) {
             case '(':
-                return 1 + minAddToMakeValid(begin + 1, end);
+                return std::abs(sum) + minAddOpen(begin + 1, end, 1);
                 break;
             case ')':
-                return -1 + minAddToMakeValid(begin + 1, end);
+                return minAddClose(begin + 1, end, sum - 1);
                 break;
             }
         }
 
-        return 0;
+        return std::abs(sum);
+    }
+
+    template <typename T>
+    int minAddOpen(const T& begin, const T& end, int sum) {
+        if (begin != end) {
+            switch (*begin) {
+            case '(':
+                return minAddOpen(begin + 1, end, sum + 1);
+                break;
+            case ')':
+                return minAddClose(begin + 1, end, sum - 1);
+                break;
+            }
+        }
+
+        return std::abs(sum);
     }
 
     int minAddToMakeValid(std::string S) {
-        return std::abs(minAddToMakeValid(S.begin(), S.end()));        
+        return std::abs(minAddOpen(S.begin(), S.end(), 0));        
     }
 };
 
 TEST_CASE("LC test cases", "[Guess Number Higher or Lower II]") {
     Solution s;
     std::vector<std::pair<std::string,int>> input {
-        {{"())",1},{"(((",3},{"()",0},{"()))((",4}}
+        {{"())",1},{"(((",3},{"()",0},{"()))((",4},{"",0},{"(",1},{")",1},{"(()())((",2}}
     };
 
     SECTION("LC test cases") {
