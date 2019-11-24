@@ -1,6 +1,6 @@
 // 0921. Minimum Add to Make Parentheses Valid
 // Problem definition: https://leetcode.com/problems/minimum-add-to-make-parentheses-valid/
-// Accepted ?
+// Accepted 2019-11-23
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -9,44 +9,23 @@
 
 class Solution {
 public:
-    template <typename T>
-    int minAddClose(const T& begin, const T& end, int sum) {
-        if (begin != end) {
-            switch (*begin) {
-            case '(':
-                return std::abs(sum) + minAddOpen(begin + 1, end, 1);
-                break;
-            case ')':
-                return minAddClose(begin + 1, end, sum - 1);
-                break;
-            }
-        }
-
-        return std::abs(sum);
-    }
-
-    template <typename T>
-    int minAddOpen(const T& begin, const T& end, int sum) {
-        if (begin != end) {
-            switch (*begin) {
-            case '(':
-                return minAddOpen(begin + 1, end, sum + 1);
-                break;
-            case ')':
-                return minAddClose(begin + 1, end, sum - 1);
-                break;
-            }
-        }
-
-        return std::abs(sum);
-    }
-
     int minAddToMakeValid(std::string S) {
-        return std::abs(minAddOpen(S.begin(), S.end(), 0));        
+        int left {0}, total {0};
+        for (const auto c : S) {
+            if (c == '(') {
+                left++;
+            } else if (left) { 
+                left--; 
+            } else { 
+                total++; 
+            }
+        }
+
+        return total + left;
     }
 };
 
-TEST_CASE("LC test cases", "[Guess Number Higher or Lower II]") {
+TEST_CASE("LC test cases", "[Minimum Add to Make Parentheses Valid]") {
     Solution s;
     std::vector<std::pair<std::string,int>> input {
         {{"())",1},{"(((",3},{"()",0},{"()))((",4},{"",0},{"(",1},{")",1},{"(()())((",2}}
