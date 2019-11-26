@@ -1,16 +1,33 @@
 // 0020. Valid Parentheses
 // Problem definition: https://leetcode.com/problems/valid-parentheses/
-// Accepted ?
+// Accepted 2019-11-25
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
 
 #include <string>
+#include <stack>
 
 class Solution {
 public:
     bool isValid(std::string s) {
-        return false;
+        auto size {s.size()};
+        if (size % 2 == 1) { return false; }
+        else if (!size) { return true; }
+        std::stack<char> st;
+        for (const auto c : s) {
+            if (st.size() == 0) {
+                st.push(c);
+            } else if ((st.top() == '[' && c == ']') ||
+                (st.top() == '(' && c == ')') ||
+                (st.top() == '{' && c == '}')) {
+                st.pop();
+            } else {
+                st.push(c);
+            }
+        }
+
+        return st.size() == 0;
     }
 };
 
