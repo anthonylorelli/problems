@@ -9,21 +9,36 @@
 
 class Solution {
 public:
+    std::string filter(const std::string& s) {
+        std::string sp;
+        for (const auto c : s) {
+            if (c == '#') {
+                if (!sp.empty()) { sp.pop_back(); }
+            } else {
+                sp.push_back(c);
+            }
+        }
+        return sp;
+    }
+
     bool backspaceCompare(std::string S, std::string T) {
-        return false;
+        std::string sp{filter(S)}, tp{filter(T)};
+        return sp == tp;
     }
 };
 
-TEST_CASE("LC test cases", "[Convert a Number to Hexadecimal]") {
+TEST_CASE("LC test cases", "[Backspace String Compare]") {
     Solution s;
     std::vector<std::pair<std::pair<std::string,std::string>,bool>> input {
-        {{{"ab#c","ad#c"},true},{{"ab##","c#d#"},true},{{"a##c","#a#c"},true},{{"a#c",b},false}}
+        {{{"ab#c","ad#c"},true},{{"ab##","c#d#"},true},{{"a##c","#a#c"},true},
+        {{"a#c","b"},false},{{"###",""},true},{{"bbb####b","b"},true}}
     };
 
     SECTION("LC test cases") {
         std::for_each(std::begin(input), std::end(input),
             [&s, &input](auto& p) { 
-                REQUIRE(s.toHex(p.first) == p.second); 
+                auto& [S, T] = p.first;
+                REQUIRE(s.backspaceCompare(S, T) == p.second); 
             });
     }
 }
