@@ -1,6 +1,6 @@
 // 0844. Backspace String Compare
 // Problem definition: https://leetcode.com/problems/backspace-string-compare/
-// Accepted ?
+// Accepted 2019-11-29
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -9,7 +9,7 @@
 
 class Solution {
 public:
-    std::string filter(const std::string& s) {
+    std::string filter(const std::string& s) const {
         std::string sp;
         for (const auto c : s) {
             if (c == '#') {
