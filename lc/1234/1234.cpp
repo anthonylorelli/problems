@@ -1,40 +1,23 @@
-// 0020. Valid Parentheses
-// Problem definition: https://leetcode.com/problems/valid-parentheses/
-// Accepted 2019-11-25
+// 1234. Replace the Substring for Balanced String
+// Problem definition: https://leetcode.com/problems/replace-the-substring-for-balanced-string/
+// Accepted ?
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
 
 #include <string>
-#include <stack>
 
 class Solution {
 public:
-    bool isValid(std::string s) {
-        auto size {s.size()};
-        if (size % 2 == 1) { return false; }
-        else if (!size) { return true; }
-        std::stack<char> st;
-        for (const auto c : s) {
-            if (st.size() == 0) {
-                st.push(c);
-            } else if ((st.top() == '[' && c == ']') ||
-                (st.top() == '(' && c == ')') ||
-                (st.top() == '{' && c == '}')) {
-                st.pop();
-            } else {
-                st.push(c);
-            }
-        }
-
-        return st.size() == 0;
+    int balancedString(std::string s) {
+        return 0;
     }
 };
 
-TEST_CASE("LC test cases", "[Minimum Add to Make Parentheses Valid]") {
+TEST_CASE("LC test cases", "[Replace the Substring for Balanced String]") {
     Solution s;
-    std::vector<std::pair<std::string,bool>> input {
-        {{"()",true},{"()[]{}",true},{"(]",false},{"([)]",false},{"{[]}",true}}
+    std::vector<std::pair<std::string,int>> input {
+        {{"QWER",0},{"QQWE",1},{"QQQW",2},{"QQQQ",3}}
     };
 
     SECTION("LC test cases") {
