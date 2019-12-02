@@ -10,6 +10,7 @@
 class Solution {
 public:
     int balancedString(std::string s) {
+        int n {s.size() / 4};
         return 0;
     }
 };
