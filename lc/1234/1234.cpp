@@ -6,6 +6,7 @@
 #include "../../uva/catch/catch.hpp"
 
 #include <string>
+#include <unordered_map>
 
 class Solution {
 public:
@@ -17,30 +18,22 @@ public:
     }
 
 private:
-    inline int& parse(const char c) noexcept {
-        return c == 'Q' ? m_q : c == 'R' ? m_r : c == 'W' ? m_w : m_e;
-    }
-
     template <typename T, typename I>
     T seek(T begin, T end, const I n) {
         while (begin < end) {
-            int &i {parse(*begin)};
-            if (i == n) { return begin; }
-            else { i++; }
+            if (m_map[*begin] == n) { return begin; }
+            else { m_map[*begin]++; }
             begin++;
         }
         return begin;
     }
 
-    int m_q {0};
-    int m_r {0};
-    int m_w {0};
-    int m_e {0};
+    std::unordered_map<char,int> m_map {{'Q',0},{'W',0},{'E',0},{'R',0}};
 };
 
 TEST_CASE("LC test cases", "[Replace the Substring for Balanced String]") {
     std::vector<std::pair<std::string,int>> input {
-        {{"QWER",0},{"QQWE",1},{"QQQW",2},{"QQQQ",3}}
+        {{"QWER",0},{"QQWE",1},{"QQQW",2},{"QQQQ",3},{"QERWRRWR",2}}
     };
 
     SECTION("LC test cases") {
