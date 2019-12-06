@@ -14,7 +14,12 @@ public:
         auto n {s.size() / 4};
         auto start {seek(s.begin(), s.end(), n)};
         auto end {seek(s.rbegin(), s.rend(), n)};
-        return s.size() - (start - s.begin()) - (end - s.rbegin());
+        auto min {s.size() - (start - s.begin()) - (end - s.rbegin())};
+        while (start >= s.begin()) {
+            m_map[*start]--;
+            start--;
+        }
+        return min;
     }
 
 private:
