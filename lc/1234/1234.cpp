@@ -18,12 +18,12 @@ public:
         do {
             start--;
             m_map[*start]--;
-			while (end < s.rend() && m_map[*end] < n) {
+            while (end < s.rend() && m_map[*end] < n) {
                 m_map[*end]++;
                 end++;
                 min = std::min(min, length(start, end, s));
             }
-		} while (start > s.begin());
+        } while (start > s.begin());
         return min;
     }
 
