@@ -21,8 +21,8 @@ public:
             while (end < s.rend() && m_map[*end] < n) {
                 m_map[*end]++;
                 end++;
-                min = std::min(min, length(start, end, s));
             }
+            min = std::min(min, length(start, end, s));
         } while (start > s.begin());
         return min;
     }
