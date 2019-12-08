@@ -28,10 +28,10 @@ public:
     }
 
 private:
-	template <typename T, typename U>
-	inline unsigned int length(const T& start, const U& end, const std::string& s) {
-		return s.size() - (start - s.begin()) - (end - s.rbegin());
-	}
+    template <typename T, typename U>
+    inline unsigned int length(const T& start, const U& end, const std::string& s) {
+        return s.size() - (start - s.begin()) - (end - s.rbegin());
+    }
 
     template <typename T, typename I>
     T seek(T begin, T end, const I n) {
