@@ -14,20 +14,25 @@ public:
         auto n {s.size() / 4};
         auto start {seek(s.begin(), s.end(), n)};
         auto end {seek(s.rbegin(), s.rend(), n)};
-        auto min {s.size() - (start - s.begin()) - (end - s.rbegin())};
-        while (start >= s.begin()) {
-            m_map[*start]--;
+        auto min {length(start, end, s)};
+        do {
+            if (start != s.end()) { m_map[*start]--; }
             start--;
-            while (end < s.rend() && m_map[*end] < n) {
+			while (end < s.rend() && m_map[*end] < n) {
                 m_map[*end]++;
                 end++;
-                min = std::min(min, s.size() - (start - s.begin()) - (end - s.rbegin()));
+                min = std::min(min, length(start, end, s));
             }            
-        }
+		} while (start > s.begin());
         return min;
     }
 
 private:
+	template <typename T, typename U>
+	inline unsigned int length(const T& start, const U& end, const std::string& s) {
+		return s.size() - (start - s.begin()) - (end - s.rbegin());
+	}
+
     template <typename T, typename I>
     T seek(T begin, T end, const I n) {
         while (begin < end) {
@@ -38,20 +43,20 @@ private:
         return begin;
     }
 
-    std::unordered_map<char,int> m_map {{'Q',0},{'W',0},{'E',0},{'R',0}};
+    std::unordered_map<char,unsigned int> m_map {{'Q',0},{'W',0},{'E',0},{'R',0}};
 };
 
 TEST_CASE("LC test cases", "[Replace the Substring for Balanced String]") {
     std::vector<std::pair<std::string,int>> input {
-        {{"QWER",0},{"QQWE",1},{"QQQW",2},{"QQQQ",3},{"QERWRRWR",2}}
+        {{"QWER",0},{"QQWE",1},{"QQQW",2},{"QQQQ",3},{"QERWRRWR",2},{"WWEQERQWQWWRWWERQWEQ",4}}
     };
 
     SECTION("LC test cases") {
         std::for_each(std::begin(input), std::end(input),
             [&input](auto& p) { 
                 Solution s;
-                auto& [input, output] = p;
-                REQUIRE(s.balancedString(input) == output);
+                auto& [testInput, expected] = p;
+                REQUIRE(s.balancedString(testInput) == expected);
             });
     }
 }
