@@ -1,6 +1,6 @@
 // 1234. Replace the Substring for Balanced String
 // Problem definition: https://leetcode.com/problems/replace-the-substring-for-balanced-string/
-// Accepted ?
+// Accepted 2019-12-07
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -16,13 +16,13 @@ public:
         auto end {seek(s.rbegin(), s.rend(), n)};
         auto min {length(start, end, s)};
         do {
-            if (start != s.end()) { m_map[*start]--; }
             start--;
+            m_map[*start]--;
 			while (end < s.rend() && m_map[*end] < n) {
                 m_map[*end]++;
                 end++;
                 min = std::min(min, length(start, end, s));
-            }            
+            }
 		} while (start > s.begin());
         return min;
     }
@@ -37,7 +37,7 @@ private:
     T seek(T begin, T end, const I n) {
         while (begin < end) {
             if (m_map[*begin] == n) { return begin; }
-            else { m_map[*begin]++; }
+            m_map[*begin]++;
             begin++;
         }
         return begin;
@@ -48,7 +48,7 @@ private:
 
 TEST_CASE("LC test cases", "[Replace the Substring for Balanced String]") {
     std::vector<std::pair<std::string,int>> input {
-        {{"QWER",0},{"QQWE",1},{"QQQW",2},{"QQQQ",3},{"QERWRRWR",2},{"WWEQERQWQWWRWWERQWEQ",4}}
+        {{"WWEQERQWQWWRWWERQWEQ",4},{"QWER",0},{"QQWE",1},{"QQQW",2},{"QQQQ",3},{"QERWRRWR",2}}
     };
 
     SECTION("LC test cases") {
