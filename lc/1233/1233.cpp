@@ -16,34 +16,49 @@
 struct Directory
 {
     std::unordered_map<std::string_view,std::unique_ptr<Directory>> children;
+    bool terminal {false};
+    std::string* m_path {nullptr};
+
     template <typename T>
-    void addChildren(const std::string& path, const T& begin) {
-        const auto& [name, it] = next(path, begin);
-        if (it != path.end()) {
+    void addChildren(std::string& path, const T& begin) {
+        if (begin != path.end()) {
+            const auto& [name, it] = next(path, begin);
             if (!children.count(name)) {
                 children[name] = std::make_unique<Directory>();
             }
             children[name]->addChildren(path, it);
+        } else {
+            terminal = true;
+            m_path = &path;
         }
     }
 
-    bool isLeaf() {
-        return children.size() == 0;
+    inline bool isParent() const noexcept {
+        return terminal && !children.empty();
     }
 
-    void removeLeaves() {
-        for (auto it {children.begin()}; it != children.end();) {
-            if (it->second->isLeaf()) {
-                it = children.erase(it);
-            } else {
-                it->second->removeLeaves();
-                it++;
+    void collectPaths(std::vector<std::string>& paths) const {
+        if (children.empty()) {
+            paths.push_back(std::move(*m_path));
+        } else {
+            for (auto& [name, dir] : children) {
+                dir->collectPaths(paths);
+            }
+        }
+    }
+
+    void removeSubfolders() {
+        if (isParent()) {
+            children.clear();
+        } else {
+            for (auto& [name, dir] : children) {
+                dir->removeSubfolders();
             }
         }
     }
 
     template <typename T>
-    static std::pair<std::string_view,T> next(const std::string& s, const T& it) {
+    static std::pair<std::string_view,T> next(std::string& s, const T& it) {
         auto begin {*it == '/' ? it + 1 : it};
         auto child {std::find_if(begin, s.end(), [](const auto& c) { return c == '/'; })};
         size_t length = child - begin;
@@ -54,20 +69,26 @@ struct Directory
 class Solution {
 public:
     std::vector<std::string> removeSubfolders(std::vector<std::string>& folder) {
-        for (const auto& path : folder) {
+        for (auto& path : folder) {
             add(path);
         }
 
-        for (auto& paths : m_top) {
-            auto& [name, dir] = paths;
-            dir.removeLeaves();
+        for (auto& [name, dir] : m_top) {
+            dir.removeSubfolders();
         }
 
+        return getPaths();
+    }
+
+    std::vector<std::string> getPaths() {
         std::vector<std::string> result;
+        for (auto& [name, dir] : m_top) {
+            dir.collectPaths(result);
+        }
         return result;
     }
 
-    void add(const std::string& path) {
+    void add(std::string& path) {
         const auto& [name, it] = Directory::next(path, path.begin());
         if (!m_top.count(name)) {
             m_top.emplace(name,Directory{});
