@@ -33,26 +33,12 @@ struct Directory
         }
     }
 
-    inline bool isParent() const noexcept {
-        return terminal && !children.empty();
-    }
-
     void collectPaths(std::vector<std::string>& paths) const {
-        if (children.empty()) {
+        if (terminal) {
             paths.push_back(std::move(*m_path));
         } else {
             for (auto& [name, dir] : children) {
                 dir->collectPaths(paths);
-            }
-        }
-    }
-
-    void removeSubfolders() {
-        if (isParent()) {
-            children.clear();
-        } else {
-            for (auto& [name, dir] : children) {
-                dir->removeSubfolders();
             }
         }
     }
@@ -71,10 +57,6 @@ public:
     std::vector<std::string> removeSubfolders(std::vector<std::string>& folder) {
         for (auto& path : folder) {
             add(path);
-        }
-
-        for (auto& [name, dir] : m_top) {
-            dir.removeSubfolders();
         }
 
         return getPaths();
