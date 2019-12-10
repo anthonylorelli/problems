@@ -102,7 +102,8 @@ public:
 TEST_CASE("LC test cases", "[Remove Sub-Folders from the Filesystem]") {
     std::vector<std::pair<std::vector<std::string>,std::vector<std::string>>> input {
         {{"/a","/a/b","/c/d","/c/d/e","/c/f"},{"/a","/c/d","/c/f"}},
-        {{"/a","/a/b/c","/a/b/d"},{"/a"}},{{"/a/b/c","/a/b/ca","/a/b/d"},{"/a/b/c","/a/b/ca","/a/b/d"}}
+        {{"/a","/a/b/c","/a/b/d"},{"/a"}},{{"/a/b/c","/a/b/ca","/a/b/d"},{"/a/b/c","/a/b/ca","/a/b/d"}},
+        {{"/a","/a/b","/a/b/c","/a/b/c/d"},{"/a"}}
     };
 
     SECTION("LC test cases") {
