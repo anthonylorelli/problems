@@ -6,18 +6,15 @@
 #include "../../uva/catch/catch.hpp"
 
 #include <vector>
+#include <algorithm>
 
 class Solution {
 public:
     std::vector<int> corpFlightBookings(std::vector<std::vector<int>>& bookings, int n) {
         std::vector<int> seats(n, 0);
         for (const auto& flights : bookings) {
-            int start {flights[0]-1};
-            int end {flights[1]-1};
-            int booked {flights[2]};
-            for (int i {start}; i <= end; ++i) {
-                seats[i] += booked;
-            }
+            std::transform(seats.begin()+flights[0]-1, seats.begin()+flights[1],
+                seats.begin()+flights[0]-1, [&flights](const auto n) { return n + flights[2]; });
         }
         return seats;
     }
