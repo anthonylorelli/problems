@@ -16,7 +16,7 @@ public:
 
 TEST_CASE("LC test cases", "[Remove K Digits]") {
     std::vector<std::pair<std::pair<std::string,int>,std::string>> input {
-        {{{"1432219",3},"1219"},{{"10200",1},"200"},{{"10",2},"0"}}
+        {{{"1432219",3},"1219"},{{"10200",1},"200"},{{"10",2},"0"}},{{"123",2},"1"}
     };
 
     SECTION("LC test cases") {
