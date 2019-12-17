@@ -1,17 +1,20 @@
 // 0402. Remove K Digits
 // Problem definition: https://leetcode.com/problems/remove-k-digits/
 // Accepted ?
+// Cf. https://github.com/sstchur/coding_practice/tree/master/RemoveKDigits
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
 
 #include <string>
+#include <stack>
 
 class Solution {
 public:
     std::string removeKdigits(std::string num, int k) {
         if (k >= num.length()) { return "0"; }
-        
+        std::stack<char> hand;
+
     }
 };
 
