@@ -14,7 +14,16 @@ public:
     std::string removeKdigits(std::string num, int k) {
         if (k >= num.length()) { return "0"; }
         std::stack<char> hand;
-
+        int count {0};
+        for (const auto c : num) {
+            if (hand.size() > 0 && c >= hand.top()) {
+                hand.push(c);
+            } else {
+                hand.pop();
+                count++;
+                hand.push(c);
+            }
+        }
     }
 };
 
