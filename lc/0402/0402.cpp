@@ -16,13 +16,14 @@ public:
         std::stack<char, std::string> s;
         int count {0};
         for (const auto c : num) {
-            if (s.size() > 0 && c >= s.top()) {
-                s.push(c);
-            } else {
+            if (s.size() == 0) {
+                if (c == '0') { continue; }
+            } else if (c < s.top()) {
                 s.pop();
-                count++;
-                s.push(c);
-            }
+            } 
+            
+            s.push(c);
+            count++;
         }
     }
 };
