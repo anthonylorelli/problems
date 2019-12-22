@@ -13,15 +13,15 @@ class Solution {
 public:
     std::string removeKdigits(std::string num, int k) {
         if (k >= num.length()) { return "0"; }
-        std::stack<char> hand;
+        std::stack<char, std::string> s;
         int count {0};
         for (const auto c : num) {
-            if (hand.size() > 0 && c >= hand.top()) {
-                hand.push(c);
+            if (s.size() > 0 && c >= s.top()) {
+                s.push(c);
             } else {
-                hand.pop();
+                s.pop();
                 count++;
-                hand.push(c);
+                s.push(c);
             }
         }
     }
