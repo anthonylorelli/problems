@@ -1,6 +1,6 @@
 // 0402. Remove K Digits
 // Problem definition: https://leetcode.com/problems/remove-k-digits/
-// Accepted ?
+// Accepted 2019-12-22
 // Cf. https://github.com/sstchur/coding_practice/tree/master/RemoveKDigits
 
 #define CATCH_CONFIG_RUNNER
