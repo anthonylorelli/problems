@@ -7,29 +7,31 @@
 #include "../../uva/catch/catch.hpp"
 
 #include <string>
-#include <stack>
 
 class Solution {
 public:
     std::string removeKdigits(std::string num, int k) {
-        if (k >= num.length()) { return "0"; }
-        std::stack<char, std::string> s;
-        int count {0};
+        std::string result;
         for (const auto c : num) {
-            if (s.size() > 0 && c >= s.top()) {
-                s.push(c);
-            } else {
-                s.pop();
-                count++;
-                s.push(c);
+            while (result.size() > 0 && c < result.back() && k > 0) {
+                result.pop_back();
+                k--;
             }
+
+            if (result.size() == 0 && c == '0') { continue; }
+            result.push_back(c);
         }
+
+        while (k > 0 && result.size() > 0) { result.pop_back(); k--; }
+
+        return result.size() == 0 ? "0" : result;
     }
 };
 
 TEST_CASE("LC test cases", "[Remove K Digits]") {
     std::vector<std::pair<std::pair<std::string,int>,std::string>> input {
-        {{{"1432219",3},"1219"},{{"10200",1},"200"},{{"10",2},"0"}},{{"123",2},"1"}
+        {{{"1432219",3},"1219"},{{"10200",1},"200"},{{"10",2},"0"},
+        {{"1234",2},"12"},{{"34012",2},"12"},{{"10",1},"0"}}
     };
 
     SECTION("LC test cases") {
