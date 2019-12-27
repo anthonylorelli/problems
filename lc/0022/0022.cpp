@@ -11,7 +11,7 @@
 class Solution {
 public:
     std::vector<std::string> generateParenthesis(int n) {
-        return {};
+        std::vector<char> sequence(n * 2);
     }
 };
 
