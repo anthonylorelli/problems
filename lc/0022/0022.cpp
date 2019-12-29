@@ -8,11 +8,41 @@
 #include <string>
 #include <vector>
 
+class Sequence {
+private:
+    std::vector<std::string> m_results;
+    std::string m_s;
+    int m_n;
+
+    template <typename T>
+    void generate(T current, int toOpen, int toClose) {
+        if (toOpen == 0 && toClose == 0) {
+            m_results.push_back(m_s);
+        } else if (toOpen > 0) {
+            *current = '(';
+            generate(++current, toOpen - 1, toClose + 1);
+            *current = ')';
+            generate(current + 1, toOpen - 1, toClose);
+        } else {
+            *current = ')';
+            generate(current + 1, toOpen, toClose - 1);
+        }
+    }
+
+public:
+    Sequence(int n) : m_s(n * 2, ' '), m_n{n} { }
+
+    std::vector<std::string> generate() {
+        generate(m_s.begin(), m_n, 0);
+        return m_results;
+    }
+};
+
 class Solution {
 public:
     std::vector<std::string> generateParenthesis(int n) {
-        std::vector<std::string> results;
-        std::string s(n * 2, ' ');
+        Sequence s{n};
+        return s.generate();
     }
 };
 
