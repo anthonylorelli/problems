@@ -1,6 +1,6 @@
 // 0022. Generate Parentheses
 // Problem definition: https://leetcode.com/problems/generate-parentheses/
-// Accepted ?
+// Accepted 2019-12-30
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -10,12 +10,12 @@
 
 class Sequence {
 private:
-    std::vector<std::string> m_results;
-    std::string m_s;
     int m_n;
+    std::string m_s;
+    std::vector<std::string>& m_results;
 
     template <typename T>
-    void generate(T current, int toOpen, int toClose) {
+    void generate(const T& current, const int toOpen, const int toClose) {
         if (toOpen == 0 && toClose == 0) {
             m_results.push_back(m_s);
         } else {
@@ -32,30 +32,32 @@ private:
     }
 
 public:
-    Sequence(int n) : m_s(n * 2, ' '), m_n{n} { }
+    Sequence(int n, std::vector<std::string>& v) : m_s(n * 2, ' '), m_n{n}, m_results{v} { }
 
-    std::vector<std::string> generate() {
+    void generate() {
         generate(m_s.begin(), m_n, 0);
-        return m_results;
     }
 };
 
 class Solution {
 public:
     std::vector<std::string> generateParenthesis(int n) {
-        Sequence s{n};
-        return s.generate();
+        std::vector<std::string> v;
+        Sequence s{n, v};
+        s.generate();
+        return v;
     }
 };
 
 TEST_CASE("LC test cases", "[Generate Parentheses]") {
     std::vector<std::pair<int,std::vector<std::string>>> input {
+        {4,{"(((())))","((()()))","((())())","((()))()","(()(()))",
+            "(()()())","(()())()","(())(())","(())()()","()((()))",
+            "()(()())","()(())()","()()(())","()()()()"}},
         {3,{"((()))", "(()())","(())()","()(())","()()()"}},
         {2,{"(())","()()"}},
         {1,{"()"}},
-        {4,{"(((())))","((()()))","((())())","((()))()","(()(()))",
-            "(()()())","(()())()","(())(())","(())()()","()((()))",
-            "()(()())","()(())()","()()(())","()()()()"}}
+        {0,{""}}
     };
 
     SECTION("LC test cases") {
