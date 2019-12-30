@@ -18,14 +18,16 @@ private:
     void generate(T current, int toOpen, int toClose) {
         if (toOpen == 0 && toClose == 0) {
             m_results.push_back(m_s);
-        } else if (toOpen > 0) {
-            *current = '(';
-            generate(++current, toOpen - 1, toClose + 1);
-            *current = ')';
-            generate(current + 1, toOpen - 1, toClose);
         } else {
-            *current = ')';
-            generate(current + 1, toOpen, toClose - 1);
+            if (toOpen > 0) {
+                *current = '(';
+                generate(current + 1, toOpen - 1, toClose + 1);
+            } 
+            
+            if (toClose) {
+                *current = ')';
+                generate(current + 1, toOpen, toClose - 1);
+            }
         }
     }
 
@@ -48,7 +50,8 @@ public:
 
 TEST_CASE("LC test cases", "[Generate Parentheses]") {
     std::vector<std::pair<int,std::vector<std::string>>> input {
-        {3,{"((()))", "(()())","(())()","()(())","()()()"}}
+        {3,{"((()))", "(()())","(())()","()(())","()()()"}},
+        {1,{"()"}}
     };
 
     SECTION("LC test cases") {
