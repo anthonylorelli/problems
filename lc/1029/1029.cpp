@@ -6,11 +6,27 @@
 #include "../../uva/catch/catch.hpp"
 
 #include <vector>
+#include <algorithm>
+#include <numeric>
 
 class Solution {
 public:
     int twoCitySchedCost(std::vector<std::vector<int>>& costs) {
-        return 0;
+        size_t n {costs.size() / 2};
+        std::sort(costs.begin(), costs.end(), [](const auto& v1, const auto& v2) {
+            return v1[0] == v2[0] ? v2[0] < v2[0] : v1[0] < v2[0];
+        });
+        int total = std::accumulate(costs.begin(), costs.begin() + n, 0, [](int sum, auto& v) {
+            v[1] += 1000;
+            return sum + v[0];
+        });
+        std::sort(costs.begin(), costs.end(), [](const auto& v1, const auto& v2) {
+            return v1[1] < v2[1];
+        });
+        total = std::accumulate(costs.begin(), costs.begin() + n, total, [](int sum, const auto& v) {
+            return sum + v[1];
+        });
+        return total;
     }
 };
 
