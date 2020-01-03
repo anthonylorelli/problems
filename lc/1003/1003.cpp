@@ -6,11 +6,12 @@
 #include "../../uva/catch/catch.hpp"
 
 #include <string>
+#include <stack>
 
 class Solution {
 public:
     bool isValid(std::string S) {
-        return true;        
+        return true;
     }
 };
 
