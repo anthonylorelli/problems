@@ -11,6 +11,10 @@
 class Solution {
 public:
     bool isValid(std::string S) {
+        for (const auto c : S) {
+
+        }
+
         return true;
     }
 };
