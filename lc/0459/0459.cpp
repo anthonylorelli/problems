@@ -6,6 +6,7 @@
 #include "../../uva/catch/catch.hpp"
 
 #include <string>
+#include <string_view>
 
 class Solution {
 public:
