@@ -11,6 +11,18 @@
 class Solution {
 public:
     bool repeatedSubstringPattern(std::string s) {
+        const auto max {s.length() / 2};
+        const char* str {s.c_str()};
+        for (size_t i {1}; i <= max; ++i) {
+            if (s.length() % i) { continue; }
+            std::string_view sv {str, i};
+            for (size_t start {i}; start < s.length(); start += i) {
+                std::string_view next {str + start, i};
+                if (sv != next) { continue; }
+            }
+            return true;
+        }
+
         return false;
     }
 };
@@ -25,7 +37,7 @@ TEST_CASE("LC test cases", "[Repeated Substring Pattern]") {
             [&input](auto& p) { 
                 Solution s;
                 auto& [testInput, expected] = p;
-                REQUIRE(s.isValid(testInput) == expected);
+                REQUIRE(s.repeatedSubstringPattern(testInput) == expected);
             });
     }
 }
