@@ -63,7 +63,9 @@ private:
 class Solution {
 public:
     std::string shortestCommonSupersequence(std::string str1, std::string str2) {
-        return "";        
+        SuffixTree s1 {str1.begin(), str1.end()}, s2 {str2.begin(), str2.end()};
+        auto pre1 {s2.match(str1.begin(), str2.begin())};
+        auto pre2 {s1.match(str2.begin(), str2.end())};
     }
 };
 
