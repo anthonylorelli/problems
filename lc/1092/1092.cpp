@@ -56,6 +56,10 @@ public:
         return m_trie.match(b, e);
     }
 
+    int match(const std::string& s) {
+        return m_trie.match(s.begin(), s.end());
+    }
+
 private:
     Trie m_trie;
 };
@@ -66,6 +70,7 @@ public:
         SuffixTree s1 {str1.begin(), str1.end()}, s2 {str2.begin(), str2.end()};
         auto pre1 {s2.match(str1.begin(), str2.begin())};
         auto pre2 {s1.match(str2.begin(), str2.end())};
+        return "";
     }
 };
 
@@ -80,6 +85,21 @@ TEST_CASE("LC test cases", "[Repeated Substring Pattern]") {
                 Solution s;
                 auto& [testInput, expected] = p;
                 REQUIRE(s.shortestCommonSupersequence(testInput.first, testInput.second) == expected);
+            });
+    }
+}
+
+TEST_CASE("Suffix tree cases", "[Suffix tree cases]") {
+    std::vector<std::pair<std::pair<std::string,std::string>,int>> input {
+        {{"acab","cab"},3}
+    };
+
+    SECTION("LC test cases") {
+        std::for_each(std::begin(input), std::end(input),
+            [&input](auto& p) { 
+                auto& [testInput, expected] = p;
+                SuffixTree tree{testInput.first.begin(), testInput.first.end()};
+                REQUIRE(tree.match(testInput.second) == expected);
             });
     }
 }
