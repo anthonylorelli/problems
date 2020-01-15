@@ -46,10 +46,10 @@ private:
 
 class SuffixTree {
 public:
-    template <typename It>
-    SuffixTree(const It& b, const It& e) {
-        auto i {b};
-        while (i != e) { m_trie.insert(i++, e); }
+    SuffixTree(const std::string& s) {
+        auto b {s.begin()};
+        auto e {s.end()};
+        while (b != e) { m_trie.insert(b++, e); }
     }
 
     int match(const std::string::iterator& b, const std::string::iterator& e) {
@@ -67,16 +67,16 @@ private:
 class Solution {
 public:
     std::string shortestCommonSupersequence(std::string str1, std::string str2) {
-        SuffixTree s1 {str1.begin(), str1.end()}, s2 {str2.begin(), str2.end()};
-        auto pre1 {s2.match(str1.begin(), str2.begin())};
-        auto pre2 {s1.match(str2.begin(), str2.end())};
-        return "";
+        SuffixTree s1 {str1}, s2 {str2};
+        auto pre1 {s2.match(str1)};
+        auto pre2 {s1.match(str2)};
+        return pre1 > pre2 ? str2 + str1.substr(pre1) : str1 + str2.substr(pre2);
     }
 };
 
 TEST_CASE("LC test cases", "[Repeated Substring Pattern]") {
     std::vector<std::pair<std::pair<std::string,std::string>,std::string>> input {
-        {{"abac","cab"},"cabac"}
+        {{"abac","cab"},"cabac"},{{"cab","abac"},"cabac"}
     };
 
     SECTION("LC test cases") {
@@ -91,14 +91,14 @@ TEST_CASE("LC test cases", "[Repeated Substring Pattern]") {
 
 TEST_CASE("Suffix tree cases", "[Suffix tree cases]") {
     std::vector<std::pair<std::pair<std::string,std::string>,int>> input {
-        {{"acab","cab"},3}
+        {{"acab","cab"},3},{{"cab","abac"},2},{{"abac","abacab"},4}
     };
 
     SECTION("LC test cases") {
         std::for_each(std::begin(input), std::end(input),
             [&input](auto& p) { 
                 auto& [testInput, expected] = p;
-                SuffixTree tree{testInput.first.begin(), testInput.first.end()};
+                SuffixTree tree{testInput.first};
                 REQUIRE(tree.match(testInput.second) == expected);
             });
     }
