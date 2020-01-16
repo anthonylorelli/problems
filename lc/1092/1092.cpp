@@ -10,8 +10,6 @@
 
 class Trie {
 public:
-    Trie() { }
-
     template <typename It>
     void insert(const It& b, const It& e) {
         if (b != e) {
@@ -76,7 +74,8 @@ public:
 
 TEST_CASE("LC test cases", "[Repeated Substring Pattern]") {
     std::vector<std::pair<std::pair<std::string,std::string>,std::string>> input {
-        {{"abac","cab"},"cabac"},{{"cab","abac"},"cabac"}
+        {{"abac","cab"},"cabac"},{{"cab","abac"},"cabac"},{{"abc","def"},"abcdef"},
+        {{"bbbaaaba","bbababbb"},"bbabaaababb"}
     };
 
     SECTION("LC test cases") {
