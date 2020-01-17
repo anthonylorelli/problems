@@ -62,6 +62,60 @@ private:
     Trie m_trie;
 };
 
+struct Cell {
+    int cost;
+};
+
+class Distance {
+private:
+    void row_init(std::vector<std::vector<Cell>>& m, int i) const {
+        m[0][i].cost = i;
+    }
+
+    void column_init(std::vector<std::vector<Cell>>& m, int i) const {
+        m[i][0].cost = i;
+    }
+
+    int match_cost(const char c1, const char c2) const {
+        return c1 == c2 ? 0 : 1;
+    }
+
+    int insert_cost(const char c) const { return 1; }
+    int delete_cost(const char c) const { return 1; }
+
+    Cell& goal(std::vector<std::vector<Cell>>& m, const std::string& w1, const std::string& w2) const {
+        return m[w1.length()][w2.length()];
+    }
+
+public:
+    int minDistance(std::string word1, std::string word2) const {
+        const size_t max{std::max(word1.length(), word2.length()) + 1};
+        std::vector<std::vector<Cell>> m(max, std::vector<Cell>(max));
+
+        for (size_t i{0}; i < max; ++i) { 
+            row_init(m, i); 
+            column_init(m, i);
+        }
+
+        int comparison, insert, del;
+
+        for (size_t i{0}; i < word1.length(); ++i) {
+            for (size_t j{0}; j < word2.length(); ++j) {
+                comparison = m[i][j].cost + match_cost(word1[i], word2[j]);
+                insert = m[i+1][j].cost + insert_cost(word2[j]);
+                del = m[i][j+1].cost + delete_cost(word1[i]);
+
+                const size_t next_i{i+1}, next_j{j+1};
+                m[next_i][next_j].cost = std::min(comparison, std::min(insert, del));
+            }
+        }
+
+        auto& answer{goal(m, word1, word2)};
+
+        return answer.cost;
+    }
+};
+
 class Solution {
 public:
     std::string shortestCommonSupersequence(std::string str1, std::string str2) {
