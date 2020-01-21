@@ -62,9 +62,25 @@ private:
     Trie m_trie;
 };
 
+enum class Op {
+    match,
+    insert,
+    remove,
+    substitute
+};
+
 struct Cell {
     int cost;
+    Op op;
 };
+
+Cell operator+(const int n, const Cell& c1) {
+    return Cell{n+c1.cost, c1.op};
+}
+
+constexpr bool operator<(const Cell& c1, const Cell& c2) {
+    return c1.cost < c2.cost;
+}
 
 class Distance {
 private:
@@ -76,12 +92,12 @@ private:
         m[i][0].cost = i;
     }
 
-    int match_cost(const char c1, const char c2) const {
-        return c1 == c2 ? 0 : 1;
+    Cell match_cost(const char c1, const char c2) const {
+        return c1 == c2 ? Cell{0,Op::match} : Cell{1000,Op::substitute};
     }
 
-    int insert_cost(const char c) const { return 1; }
-    int delete_cost(const char c) const { return 1; }
+    Cell insert_cost(const char c) const { return Cell{1,Op::insert}; }
+    Cell remove_cost(const char c) const { return Cell{1,Op::remove}; }
 
     Cell& goal(std::vector<std::vector<Cell>>& m, const std::string& w1, const std::string& w2) const {
         return m[w1.length()][w2.length()];
@@ -97,16 +113,16 @@ public:
             column_init(m, i);
         }
 
-        int comparison, insert, del;
+        Cell comparison, insert, remove;
 
         for (size_t i{0}; i < word1.length(); ++i) {
             for (size_t j{0}; j < word2.length(); ++j) {
                 comparison = m[i][j].cost + match_cost(word1[i], word2[j]);
                 insert = m[i+1][j].cost + insert_cost(word2[j]);
-                del = m[i][j+1].cost + delete_cost(word1[i]);
+                remove = m[i][j+1].cost + remove_cost(word1[i]);
 
                 const size_t next_i{i+1}, next_j{j+1};
-                m[next_i][next_j].cost = std::min(comparison, std::min(insert, del));
+                m[next_i][next_j] = std::min({comparison, insert, remove});
             }
         }
 
