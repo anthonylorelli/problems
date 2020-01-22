@@ -158,6 +158,21 @@ TEST_CASE("LC test cases", "[Repeated Substring Pattern]") {
     }
 }
 
+TEST_CASE("Edit distance", "[Edit Distance]") {
+    std::vector<std::pair<std::pair<std::string,std::string>,int>> input {
+        {{"abc","def"},6}
+    };
+
+    SECTION("Edit distance test cases") {
+        std::for_each(std::begin(input), std::end(input),
+            [&input](auto& p) { 
+                Distance d;
+                auto& [testInput, expected] = p;
+                REQUIRE(d.minDistance(testInput.first, testInput.second) == expected);
+            });
+    }
+}
+
 TEST_CASE("Suffix tree cases", "[Suffix tree cases]") {
     std::vector<std::pair<std::pair<std::string,std::string>,int>> input {
         {{"acab","cab"},3},{{"cab","abac"},2},{{"abac","abacab"},4}
