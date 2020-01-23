@@ -82,6 +82,21 @@ constexpr bool operator<(const Cell& c1, const Cell& c2) {
     return c1.cost < c2.cost;
 }
 
+class StringBuilder {
+private:
+    std::vector<std::vector<Cell>>& m_m;
+    std::string& m_word1;
+    std::string& m_word2;
+
+public:
+    StringBuilder(std::vector<std::vector<Cell>>& m, std::string& w1, std::string& w2) :
+        m_m{m}, m_word1{w1}, m_word2{w2} { }
+
+    std::string build() {
+        return "";
+    }
+};
+
 class Distance {
 private:
     void row_init(std::vector<std::vector<Cell>>& m, int i) const {
@@ -104,7 +119,7 @@ private:
     }
 
 public:
-    int minDistance(std::string word1, std::string word2) const {
+    int minDistance(std::string& word1, std::string& word2) const {
         const size_t max{std::max(word1.length(), word2.length()) + 1};
         std::vector<std::vector<Cell>> m(max, std::vector<Cell>(max));
 
