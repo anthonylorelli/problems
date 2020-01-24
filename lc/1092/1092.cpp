@@ -66,7 +66,8 @@ enum class Op {
     match,
     insert,
     remove,
-    substitute
+    substitute,
+    none
 };
 
 struct Cell {
@@ -88,12 +89,35 @@ private:
     std::string& m_word1;
     std::string& m_word2;
 
+    void build(const size_t i, const size_t j, std::string& output) {
+        if (m_m[i][j].op == Op::none) { return; }
+
+        switch (m_m[i][j].op) {
+        case Op::insert:
+            build(i - 1, j, output);
+            output.push_back(m_word2[j]);
+            break;
+        case Op::remove:
+            build(i, j - 1, output);
+            output.push_back(m_word1[i]);
+            break;
+        case Op::match:
+            build(i - 1, j - 1, output);
+            output.push_back(m_word1[i]);
+            break;
+        default:
+            break;
+        }
+    }
+
 public:
     StringBuilder(std::vector<std::vector<Cell>>& m, std::string& w1, std::string& w2) :
         m_m{m}, m_word1{w1}, m_word2{w2} { }
 
     std::string build() {
-        return "";
+        std::string output;
+        build(m_word1.length(), m_word2.length(), output);
+        return output;
     }
 };
 
@@ -101,10 +125,12 @@ class Distance {
 private:
     void row_init(std::vector<std::vector<Cell>>& m, int i) const {
         m[0][i].cost = i;
+        m[0][i].op = i > 0 ? Op::insert : Op::none;
     }
 
     void column_init(std::vector<std::vector<Cell>>& m, int i) const {
         m[i][0].cost = i;
+        m[i][0].op = i > 0 ? Op::remove : Op::none;
     }
 
     Cell match_cost(const char c1, const char c2) const {
