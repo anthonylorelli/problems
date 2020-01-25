@@ -7,6 +7,7 @@
 
 #include <string>
 #include <unordered_map>
+#include <iostream>
 
 class Trie {
 public:
@@ -90,20 +91,24 @@ private:
     std::string& m_word2;
 
     void build(const size_t i, const size_t j, std::string& output) {
+        std::cout << "i " << i << " j " << j << "\n";
         if (m_m[i][j].op == Op::none) { return; }
 
         switch (m_m[i][j].op) {
         case Op::insert:
             build(i - 1, j, output);
-            output.push_back(m_word2[j]);
+            std::cout << m_word2[j-1] << "\n";
+            output.push_back(m_word2[j-1]);
             break;
         case Op::remove:
             build(i, j - 1, output);
-            output.push_back(m_word1[i]);
+            std::cout << m_word1[i-1] << "\n";
+            output.push_back(m_word1[i-1]);
             break;
         case Op::match:
             build(i - 1, j - 1, output);
-            output.push_back(m_word1[i]);
+            std::cout << m_word1[i-1] << "\n";
+            output.push_back(m_word1[i-1]);
             break;
         default:
             break;
@@ -145,7 +150,7 @@ private:
     }
 
 public:
-    int minDistance(std::string& word1, std::string& word2) const {
+    std::string supersequence(std::string& word1, std::string& word2) const {
         const size_t max{std::max(word1.length(), word2.length()) + 1};
         std::vector<std::vector<Cell>> m(max, std::vector<Cell>(max));
 
@@ -167,9 +172,7 @@ public:
             }
         }
 
-        auto& answer{goal(m, word1, word2)};
-
-        return answer.cost;
+        return StringBuilder{m, word1, word2}.build();
     }
 };
 
@@ -183,25 +186,25 @@ public:
     }
 };
 
-TEST_CASE("LC test cases", "[Repeated Substring Pattern]") {
-    std::vector<std::pair<std::pair<std::string,std::string>,std::string>> input {
-        {{"abac","cab"},"cabac"},{{"cab","abac"},"cabac"},{{"abc","def"},"abcdef"},
-        {{"bbbaaaba","bbababbb"},"bbabaaababb"}
-    };
+// TEST_CASE("LC test cases", "[Repeated Substring Pattern]") {
+//     std::vector<std::pair<std::pair<std::string,std::string>,std::string>> input {
+//         {{"abac","cab"},"cabac"},{{"cab","abac"},"cabac"},{{"abc","def"},"abcdef"},
+//         {{"bbbaaaba","bbababbb"},"bbabaaababb"}
+//     };
 
-    SECTION("LC test cases") {
-        std::for_each(std::begin(input), std::end(input),
-            [&input](auto& p) { 
-                Solution s;
-                auto& [testInput, expected] = p;
-                REQUIRE(s.shortestCommonSupersequence(testInput.first, testInput.second) == expected);
-            });
-    }
-}
+//     SECTION("LC test cases") {
+//         std::for_each(std::begin(input), std::end(input),
+//             [&input](auto& p) { 
+//                 Solution s;
+//                 auto& [testInput, expected] = p;
+//                 REQUIRE(s.shortestCommonSupersequence(testInput.first, testInput.second) == expected);
+//             });
+//     }
+// }
 
 TEST_CASE("Edit distance", "[Edit Distance]") {
-    std::vector<std::pair<std::pair<std::string,std::string>,int>> input {
-        {{"abc","def"},6}
+    std::vector<std::pair<std::pair<std::string,std::string>,std::string>> input {
+        {{"abc","def"},"abcdef"}
     };
 
     SECTION("Edit distance test cases") {
@@ -209,7 +212,7 @@ TEST_CASE("Edit distance", "[Edit Distance]") {
             [&input](auto& p) { 
                 Distance d;
                 auto& [testInput, expected] = p;
-                REQUIRE(d.minDistance(testInput.first, testInput.second) == expected);
+                REQUIRE(d.supersequence(testInput.first, testInput.second) == expected);
             });
     }
 }
