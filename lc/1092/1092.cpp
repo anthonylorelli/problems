@@ -146,31 +146,44 @@ private:
     Cell remove_cost(const char c) const { return Cell{1,Op::remove}; }
 
     Cell& goal(std::vector<std::vector<Cell>>& m, const std::string& w1, const std::string& w2) const {
-        return m[w1.length()][w2.length()];
+        return m[w1.length()-1][w2.length()-1];
     }
 
-public:
-    std::string supersequence(std::string& word1, std::string& word2) const {
-        const size_t max{std::max(word1.length(), word2.length()) + 1};
-        std::vector<std::vector<Cell>> m(max, std::vector<Cell>(max));
-
-        for (size_t i{0}; i < max; ++i) { 
+    void fill(std::string& word1, std::string& word2, std::vector<std::vector<Cell>>& m) const {
+        for (size_t i{0}; i < m.size(); ++i) { 
             row_init(m, i); 
             column_init(m, i);
         }
 
         Cell comparison, insert, remove;
 
-        for (size_t i{0}; i < word1.length(); ++i) {
-            for (size_t j{0}; j < word2.length(); ++j) {
-                comparison = m[i][j].cost + match_cost(word1[i], word2[j]);
-                insert = m[i+1][j].cost + insert_cost(word2[j]);
-                remove = m[i][j+1].cost + remove_cost(word1[i]);
+        for (size_t i{1}; i < word1.length(); ++i) {
+            for (size_t j{1}; j < word2.length(); ++j) {
+                const char w1 {word1[i-1]}, w2 {word2[j-1]}; 
+                comparison = m[i-1][j-1].cost + match_cost(w1, w2);
+                insert = m[i][j-1].cost + insert_cost(w2);
+                remove = m[i-1][j].cost + remove_cost(w1);
 
-                const size_t next_i{i+1}, next_j{j+1};
-                m[next_i][next_j] = std::min({comparison, insert, remove});
+                m[i][j] = std::min({comparison, insert, remove});
             }
         }
+    }
+
+public:
+    int distance(std::string& word1, std::string& word2) const {
+        const size_t max{std::max(word1.length(), word2.length()) + 1};
+        std::vector<std::vector<Cell>> m(max, std::vector<Cell>(max));
+
+        fill(word1, word2, m);
+
+        return goal(m, word1, word2).cost;
+    }
+
+    std::string supersequence(std::string& word1, std::string& word2) const {
+        const size_t max{std::max(word1.length(), word2.length()) + 1};
+        std::vector<std::vector<Cell>> m(max, std::vector<Cell>(max));
+
+        fill(word1, word2, m);
 
         return StringBuilder{m, word1, word2}.build();
     }
@@ -202,9 +215,24 @@ public:
 //     }
 // }
 
+// TEST_CASE("Edit distance supersequence", "[Edit Distance]") {
+//     std::vector<std::pair<std::pair<std::string,std::string>,std::string>> input {
+//         {{"abc","def"},"abcdef"}
+//     };
+
+//     SECTION("Edit distance test cases") {
+//         std::for_each(std::begin(input), std::end(input),
+//             [&input](auto& p) { 
+//                 Distance d;
+//                 auto& [testInput, expected] = p;
+//                 REQUIRE(d.supersequence(testInput.first, testInput.second) == expected);
+//             });
+//     }
+// }
+
 TEST_CASE("Edit distance", "[Edit Distance]") {
-    std::vector<std::pair<std::pair<std::string,std::string>,std::string>> input {
-        {{"abc","def"},"abcdef"}
+    std::vector<std::pair<std::pair<std::string,std::string>,int>> input {
+        {{"abc","def"},6}
     };
 
     SECTION("Edit distance test cases") {
@@ -212,7 +240,7 @@ TEST_CASE("Edit distance", "[Edit Distance]") {
             [&input](auto& p) { 
                 Distance d;
                 auto& [testInput, expected] = p;
-                REQUIRE(d.supersequence(testInput.first, testInput.second) == expected);
+                REQUIRE(d.distance(testInput.first, testInput.second) == expected);
             });
     }
 }
