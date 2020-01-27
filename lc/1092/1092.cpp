@@ -214,7 +214,7 @@ public:
 
 TEST_CASE("Edit distance supersequence", "[Edit Distance]") {
     std::vector<std::pair<std::pair<std::string,std::string>,std::string>> input {
-        {{"abc","def"},"abcdef"},{{"abcd","bcde"},"abcde"}
+        {{"abc","def"},"abcdef"},{{"abcd","bcde"},"abcde"},{{"acd","bde"},"acbde"}
     };
 
     SECTION("Edit distance test cases") {
