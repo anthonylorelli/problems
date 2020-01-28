@@ -1,12 +1,11 @@
 // 1092. Shortest Common Supersequence
 // Problem definition: https://leetcode.com/problems/shortest-common-supersequence/
-// ?
+// 2020-01-27
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
 
 #include <string>
-#include <unordered_map>
 
 enum class Op {
     match,
@@ -92,8 +91,11 @@ private:
 
     void fill(std::string& word1, std::string& word2, std::vector<std::vector<Cell>>& m) const {
         for (size_t i{0}; i < m.size(); ++i) { 
-            row_init(m, i); 
             column_init(m, i);
+        }
+
+        for (size_t i{0}; i < m[0].size(); ++i) {
+            row_init(m, i);
         }
 
         Cell comparison, insert, remove;
@@ -111,22 +113,9 @@ private:
     }
 
 public:
-
-    int distance(std::string& word1, std::string& word2) const {
-        const size_t max{std::max(word1.length(), word2.length()) + 1};
-        std::vector<std::vector<Cell>> m(max, std::vector<Cell>(max));
-
-        fill(word1, word2, m);
-
-        return goal(m, word1, word2).cost;
-    }
-
     std::string supersequence(std::string& word1, std::string& word2) const {
-        const size_t max{std::max(word1.length(), word2.length()) + 1};
-        std::vector<std::vector<Cell>> m(max, std::vector<Cell>(max));
-
+        std::vector<std::vector<Cell>> m(word1.length()+1, std::vector<Cell>(word2.length()+1));
         fill(word1, word2, m);
-
         return StringBuilder{m, word1, word2}.build();
     }
 };
@@ -134,25 +123,25 @@ public:
 class Solution {
 public:
     std::string shortestCommonSupersequence(std::string str1, std::string str2) {
-        return "";
+        return Distance{}.supersequence(str1, str2);
     }
 };
 
-// TEST_CASE("LC test cases", "[Repeated Substring Pattern]") {
-//     std::vector<std::pair<std::pair<std::string,std::string>,std::string>> input {
-//         {{"abac","cab"},"cabac"},{{"cab","abac"},"cabac"},{{"abc","def"},"abcdef"},
-//         {{"bbbaaaba","bbababbb"},"bbabaaababb"}
-//     };
+TEST_CASE("LC test cases", "[Repeated Substring Pattern]") {
+    std::vector<std::pair<std::pair<std::string,std::string>,std::string>> input {
+        {{"abac","cab"},"cabac"},{{"cab","abac"},"cabac"},{{"abc","def"},"abcdef"},
+        {{"bbbaaaba","bbababbb"},"bbbaaababbb"}
+    };
 
-//     SECTION("LC test cases") {
-//         std::for_each(std::begin(input), std::end(input),
-//             [&input](auto& p) { 
-//                 Solution s;
-//                 auto& [testInput, expected] = p;
-//                 REQUIRE(s.shortestCommonSupersequence(testInput.first, testInput.second) == expected);
-//             });
-//     }
-// }
+    SECTION("LC test cases") {
+        std::for_each(std::begin(input), std::end(input),
+            [&input](auto& p) { 
+                Solution s;
+                auto& [testInput, expected] = p;
+                REQUIRE(s.shortestCommonSupersequence(testInput.first, testInput.second) == expected);
+            });
+    }
+}
 
 TEST_CASE("Edit distance supersequence", "[Edit Distance]") {
     std::vector<std::pair<std::pair<std::string,std::string>,std::string>> input {
@@ -165,21 +154,6 @@ TEST_CASE("Edit distance supersequence", "[Edit Distance]") {
                 Distance d;
                 auto& [testInput, expected] = p;
                 REQUIRE(d.supersequence(testInput.first, testInput.second) == expected);
-            });
-    }
-}
-
-TEST_CASE("Edit distance", "[Edit Distance]") {
-    std::vector<std::pair<std::pair<std::string,std::string>,int>> input {
-        {{"abc","def"},6},{{"horse","ors"},2},{{"intention","execution"},8}
-    };
-
-    SECTION("Edit distance test cases") {
-        std::for_each(std::begin(input), std::end(input),
-            [&input](auto& p) { 
-                Distance d;
-                auto& [testInput, expected] = p;
-                REQUIRE(d.distance(testInput.first, testInput.second) == expected);
             });
     }
 }
