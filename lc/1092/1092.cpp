@@ -184,21 +184,6 @@ TEST_CASE("Edit distance", "[Edit Distance]") {
     }
 }
 
-TEST_CASE("Suffix tree cases", "[Suffix tree cases]") {
-    std::vector<std::pair<std::pair<std::string,std::string>,int>> input {
-        {{"acab","cab"},3},{{"cab","abac"},2},{{"abac","abacab"},4}
-    };
-
-    SECTION("LC test cases") {
-        std::for_each(std::begin(input), std::end(input),
-            [&input](auto& p) { 
-                auto& [testInput, expected] = p;
-                SuffixTree tree{testInput.first};
-                REQUIRE(tree.match(testInput.second) == expected);
-            });
-    }
-}
-
 int main(int argc, char* argv[]) {
     std::ios_base::sync_with_stdio(false);
     return Catch::Session().run(argc, argv);
