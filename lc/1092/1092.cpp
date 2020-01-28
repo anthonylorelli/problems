@@ -1,67 +1,11 @@
 // 1092. Shortest Common Supersequence
 // Problem definition: https://leetcode.com/problems/shortest-common-supersequence/
-// ?
+// 2020-01-27
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
 
 #include <string>
-#include <unordered_map>
-#include <iostream>
-
-class Trie {
-public:
-    template <typename It>
-    void insert(const It& b, const It& e) {
-        if (b != e) {
-            bool terminal { b + 1 == e };
-            if (!m_children.count(*b)) {
-                m_children.insert({*b, std::make_pair(std::make_unique<Trie>(), terminal)});
-            } else {
-                m_children[*b].second = terminal;
-            }
-            m_children[*b].first->insert(b + 1, e);
-        }
-    }
-
-    template <typename It>
-    int match(const It& b, const It& e) {
-        return match(b, e, 0);
-    }
-
-private:
-    template <typename It>
-    int match(const It& b, const It& e, const int prefix) {
-        if (b != e && m_children.count(*b)) {
-            int sum {prefix + 1};
-            int rest {m_children[*b].first->match(b+1, e, sum)};
-            return (m_children[*b].second && !rest) ? sum : rest;
-        }
-        return 0;
-    }
-
-    std::unordered_map<char, std::pair<std::unique_ptr<Trie>,bool>> m_children;
-};
-
-class SuffixTree {
-public:
-    SuffixTree(const std::string& s) {
-        auto b {s.begin()};
-        auto e {s.end()};
-        while (b != e) { m_trie.insert(b++, e); }
-    }
-
-    int match(const std::string::iterator& b, const std::string::iterator& e) {
-        return m_trie.match(b, e);
-    }
-
-    int match(const std::string& s) {
-        return m_trie.match(s.begin(), s.end());
-    }
-
-private:
-    Trie m_trie;
-};
 
 enum class Op {
     match,
@@ -147,8 +91,11 @@ private:
 
     void fill(std::string& word1, std::string& word2, std::vector<std::vector<Cell>>& m) const {
         for (size_t i{0}; i < m.size(); ++i) { 
-            row_init(m, i); 
             column_init(m, i);
+        }
+
+        for (size_t i{0}; i < m[0].size(); ++i) {
+            row_init(m, i);
         }
 
         Cell comparison, insert, remove;
@@ -166,22 +113,9 @@ private:
     }
 
 public:
-
-    int distance(std::string& word1, std::string& word2) const {
-        const size_t max{std::max(word1.length(), word2.length()) + 1};
-        std::vector<std::vector<Cell>> m(max, std::vector<Cell>(max));
-
-        fill(word1, word2, m);
-
-        return goal(m, word1, word2).cost;
-    }
-
     std::string supersequence(std::string& word1, std::string& word2) const {
-        const size_t max{std::max(word1.length(), word2.length()) + 1};
-        std::vector<std::vector<Cell>> m(max, std::vector<Cell>(max));
-
+        std::vector<std::vector<Cell>> m(word1.length()+1, std::vector<Cell>(word2.length()+1));
         fill(word1, word2, m);
-
         return StringBuilder{m, word1, word2}.build();
     }
 };
@@ -189,28 +123,25 @@ public:
 class Solution {
 public:
     std::string shortestCommonSupersequence(std::string str1, std::string str2) {
-        SuffixTree s1 {str1}, s2 {str2};
-        auto pre1 {s2.match(str1)};
-        auto pre2 {s1.match(str2)};
-        return pre1 > pre2 ? str2 + str1.substr(pre1) : str1 + str2.substr(pre2);
+        return Distance{}.supersequence(str1, str2);
     }
 };
 
-// TEST_CASE("LC test cases", "[Repeated Substring Pattern]") {
-//     std::vector<std::pair<std::pair<std::string,std::string>,std::string>> input {
-//         {{"abac","cab"},"cabac"},{{"cab","abac"},"cabac"},{{"abc","def"},"abcdef"},
-//         {{"bbbaaaba","bbababbb"},"bbabaaababb"}
-//     };
+TEST_CASE("LC test cases", "[Repeated Substring Pattern]") {
+    std::vector<std::pair<std::pair<std::string,std::string>,std::string>> input {
+        {{"abac","cab"},"cabac"},{{"cab","abac"},"cabac"},{{"abc","def"},"abcdef"},
+        {{"bbbaaaba","bbababbb"},"bbbaaababbb"}
+    };
 
-//     SECTION("LC test cases") {
-//         std::for_each(std::begin(input), std::end(input),
-//             [&input](auto& p) { 
-//                 Solution s;
-//                 auto& [testInput, expected] = p;
-//                 REQUIRE(s.shortestCommonSupersequence(testInput.first, testInput.second) == expected);
-//             });
-//     }
-// }
+    SECTION("LC test cases") {
+        std::for_each(std::begin(input), std::end(input),
+            [&input](auto& p) { 
+                Solution s;
+                auto& [testInput, expected] = p;
+                REQUIRE(s.shortestCommonSupersequence(testInput.first, testInput.second) == expected);
+            });
+    }
+}
 
 TEST_CASE("Edit distance supersequence", "[Edit Distance]") {
     std::vector<std::pair<std::pair<std::string,std::string>,std::string>> input {
@@ -223,36 +154,6 @@ TEST_CASE("Edit distance supersequence", "[Edit Distance]") {
                 Distance d;
                 auto& [testInput, expected] = p;
                 REQUIRE(d.supersequence(testInput.first, testInput.second) == expected);
-            });
-    }
-}
-
-TEST_CASE("Edit distance", "[Edit Distance]") {
-    std::vector<std::pair<std::pair<std::string,std::string>,int>> input {
-        {{"abc","def"},6},{{"horse","ors"},2},{{"intention","execution"},8}
-    };
-
-    SECTION("Edit distance test cases") {
-        std::for_each(std::begin(input), std::end(input),
-            [&input](auto& p) { 
-                Distance d;
-                auto& [testInput, expected] = p;
-                REQUIRE(d.distance(testInput.first, testInput.second) == expected);
-            });
-    }
-}
-
-TEST_CASE("Suffix tree cases", "[Suffix tree cases]") {
-    std::vector<std::pair<std::pair<std::string,std::string>,int>> input {
-        {{"acab","cab"},3},{{"cab","abac"},2},{{"abac","abacab"},4}
-    };
-
-    SECTION("LC test cases") {
-        std::for_each(std::begin(input), std::end(input),
-            [&input](auto& p) { 
-                auto& [testInput, expected] = p;
-                SuffixTree tree{testInput.first};
-                REQUIRE(tree.match(testInput.second) == expected);
             });
     }
 }
