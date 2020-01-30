@@ -1,6 +1,6 @@
 // 1309. Decrypt String from Alphabet to Integer Mapping
 // Problem definition: https://leetcode.com/problems/decrypt-string-from-alphabet-to-integer-mapping/
-// ?
+// 2020-01-29
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -8,9 +8,23 @@
 #include <string>
 
 class Solution {
+private:
+    static constexpr int m_base{48};
+
 public:
     std::string freqAlphabets(std::string s) {
-        
+        std::string output;
+        for (size_t i{0}; i < s.length(); ++i) {
+            char c;
+            if (i + 2 < s.length() && s[i+2] == '#') {
+                c = (s[i] == '1' ? 10 : 20) + s[i+1] + m_base;
+                i += 2;
+            } else {
+                c = s[i] + m_base;
+            }
+            output.push_back(c);
+        }
+        return output;
     }
 };
 
