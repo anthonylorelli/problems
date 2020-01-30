@@ -6,6 +6,7 @@
 #include "../../uva/catch/catch.hpp"
 
 #include <string>
+#include <algorithm>
 
 class Solution {
 private:
@@ -14,16 +15,17 @@ private:
 public:
     std::string freqAlphabets(std::string s) {
         std::string output;
-        for (size_t i{0}; i < s.length(); ++i) {
-            char c;
-            if (i + 2 < s.length() && s[i+2] == '#') {
-                c = (s[i] == '1' ? 10 : 20) + s[i+1] + m_base;
-                i += 2;
+        char c;
+        for (int i = s.length() - 1; i >= 0; --i) {
+            if (s[i] == '#') {
+                c = (s[i-2] == '1' ? 10 : 20) + s[i-1] + m_base;
+                i -= 2;
             } else {
                 c = s[i] + m_base;
             }
             output.push_back(c);
         }
+        std::reverse(std::begin(output), std::end(output));
         return output;
     }
 };
