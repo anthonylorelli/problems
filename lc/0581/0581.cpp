@@ -16,7 +16,7 @@ public:
 
 TEST_CASE("LC test cases", "[Shortest Unsorted Continuous Subarray]") {
     std::vector<std::pair<std::vector<int>,int>> input {
-        {{2, 6, 4, 8, 10, 9, 15},5}
+        {{2, 6, 4, 8, 10, 9, 15},5},{{8,9,10,1,2,3,4,5,6,7},10}
     };
 
     SECTION("LC test cases") {
