@@ -6,10 +6,20 @@
 #include "../../uva/catch/catch.hpp"
 
 #include <vector>
+#include <algorithm>
 
 class Solution {
 public:
     int findUnsortedSubarray(std::vector<int>& nums) {
+        int min {10001}, max {0};
+        auto p1 = std::adjacent_find(nums.begin(), nums.end(), [&min](const int l, const int r) {
+            min = std::min({l, r, min});
+            return l > r;
+        });
+        auto p2 = std::adjacent_find(nums.rbegin(), nums.rend(), [&max](const int l, const int r) {
+            max = std::max({l, r, max});
+            return l < r;
+        });
         return 0;
     }
 };
