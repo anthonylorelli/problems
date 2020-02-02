@@ -7,15 +7,19 @@
 
 #include <vector>
 #include <algorithm>
+#include <functional>
 
 class Solution {
 public:
     int findUnsortedSubarray(std::vector<int>& nums) {
+        using namespace std::placeholders;
         auto p1 = std::adjacent_find(nums.begin(), nums.end(), std::greater<int>());
         auto min = p1 != nums.end() ? *std::min_element(p1 + 1, nums.end()) : nums[0];
         auto p2 = std::adjacent_find(nums.rbegin(), nums.rend(), std::less<int>());
         auto max = p2 != nums.rend() ? *std::max_element(p2 + 1, nums.rend()) : *nums.rbegin();
-        return 0;
+        auto start = std::find_if(nums.begin(), p1 + 1, std::bind(std::less<int>(), _1, min));
+        auto end = std::find_if(nums.rbegin(), p2 + 1, std::bind(std::greater(), _1, max));
+        return (nums.rend() - end) - (start - nums.begin());
     }
 };
 
