@@ -8,19 +8,26 @@
 #include <vector>
 #include <algorithm>
 #include <functional>
+#include <iostream>
+
+using namespace std::placeholders;
 
 class Solution {
 public:
     int findUnsortedSubarray(std::vector<int>& nums) {
         int min {10001}, max {0};
-        using namespace std::placeholders;
-        auto p1 = std::adjacent_find(nums.begin(), nums.end(), std::greater<int>());
+        auto p1 = std::adjacent_find(nums.begin(), nums.end(), std::greater{});
+        std::cout << "First inflection " << p1 - nums.begin() << " Value " << *p1 << "\n";
         if (p1 != nums.end()) { min = *std::min_element(p1 + 1, nums.end()); }
-        auto p2 = std::adjacent_find(nums.rbegin(), nums.rend(), std::less<int>());
+        std::cout << "Min " << min << "\n";
+        auto p2 = std::adjacent_find(nums.rbegin(), nums.rend(), std::less{});
+        std::cout << "Second inflection " << nums.rend() - p2 << " Value " << *p2 << "\n"; 
         if (p2 != nums.rend()) { max = *std::max_element(p2 + 1, nums.rend()); }
-        auto start = std::find_if(nums.begin(), p1 + 1, std::bind(std::less<int>(), _1, min));
-        auto end = std::find_if(nums.rbegin(), p2 + 1, std::bind(std::greater(), _1, max));
-        return (nums.rend() - end) - (start - nums.begin());
+        std::cout << "Max " << max << "\n";
+        auto start = std::find_if(nums.begin(), p1 + 1, std::bind(std::less{}, _1, min));
+        auto end = std::find_if(nums.rbegin(), p2 + 1, std::bind(std::greater{}, _1, max));
+        int r {nums.rend() - end}, l {start - nums.begin()};
+        return r - l < 0 ? 0 : r - l + 1;
     }
 };
 
