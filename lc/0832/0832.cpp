@@ -1,6 +1,6 @@
 // 0832. Flipping an Image
 // Problem definition: https://leetcode.com/problems/flipping-an-image/
-// ?
+// 2020-02-05
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -21,7 +21,7 @@ public:
 
 TEST_CASE("LC test cases", "[Flipping an Image]") {
     std::vector<std::pair<std::vector<std::vector<int>>,std::vector<std::vector<int>>>> input {
-        {{{1,1,0},{1,0,1},{0,0,0}},{{1,0,0},{0,1,0},{1,1,1}}},
+        {{{1,1,0},{1,0,1},{0,0,0}},{{1,0,0},{0,1,0},{1,1,1}}},{{{1}},{{0}}},{{{0}},{{1}}},
         {{{1,1,0,0},{1,0,0,1},{0,1,1,1},{1,0,1,0}},{{1,1,0,0},{0,1,1,0},{0,0,0,1},{1,0,1,0}}}
     };
 
