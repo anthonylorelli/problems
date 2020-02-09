@@ -31,8 +31,6 @@ public:
     }
 };
 
-// [['1','0','1','0','0'],['0','0','0','0',01'],['1','0','1','0','0'],['0','0','0','0','0']]
-
 TEST_CASE("LC test cases", "[Rotate Array]") {
     std::vector<std::pair<std::vector<std::vector<char>>,int>> input {
         {{},0}, {{{'1'}},1}, {{{'0'}},0},
