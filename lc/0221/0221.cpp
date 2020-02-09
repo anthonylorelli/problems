@@ -1,6 +1,6 @@
 // 0221. Maximal Square
 // Problem definition: https://leetcode.com/problems/maximal-square/
-// ?
+// 2020-02-08
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
