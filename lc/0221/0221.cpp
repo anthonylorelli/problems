@@ -15,13 +15,14 @@ public:
         std::vector<std::vector<int>> areas {matrix.size(), std::vector(matrix[0].size(), 0)};
 
         int max {0};
-        for (size_t i {0}; i < matrix.size(); ++i) { if (matrix[i][0] == '1') { areas[i][0] = max = 1; } }
-        for (size_t i {1}; i < matrix[0].size(); ++i) { if (matrix[0][i] == '1') { areas[0][i] = max = 1; } }
-        for (size_t i {1}; i < matrix.size(); ++i) {
-            for (size_t j {1}; j < matrix[0].size(); ++j) {
-                if (matrix[i][j] == '1') {
-                    int west {areas[i][j-1]}, north {areas[i-1][j]}, northwest {areas[i-1][j-1]};
-                    areas[i][j] = north && west && northwest ? std::min(north, west) + 1 : 1;
+        for (size_t i {0}; i < matrix.size(); ++i) {
+            for (size_t j {0}; j < matrix[0].size(); ++j) {
+                if (i == 0 || j == 0) {
+                    int area {matrix[i][j] - '0'};
+                    max = std::max(max, area);
+                    areas[i][j] = area;
+                } else if (matrix[i][j] == '1') {
+                    areas[i][j] = std::min({areas[i][j-1], areas[i-1][j-1], areas[i-1][j]}) + 1;
                     max = std::max(max, areas[i][j]);
                 }
             }            
