@@ -22,7 +22,7 @@ public:
                     max = std::max(max, area);
                     areas[i][j] = area;
                 } else if (matrix[i][j] == '1') {
-                    areas[i][j] = std::min({areas[i][j-1], areas[i-1][j-1], areas[i-1][j]}) + 1;
+                    areas[i][j] = std::min(std::min(areas[i][j-1], areas[i-1][j-1]), areas[i-1][j]) + 1;
                     max = std::max(max, areas[i][j]);
                 }
             }            
