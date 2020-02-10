@@ -10,6 +10,13 @@
 class Solution {
 public:
     int countBinarySubstrings(std::string s) {
+        if (s.length() == 0) { return 0; }
+        int ones {0}, zeros {0}, total {0};
+        char prev {s[0]};
+        if (prev == '0') { zeros++; } else { ones++; }
+        for (size_t i {0}; i < s.length(); ++i) {
+            
+        }
         return 0;
     }
 };
