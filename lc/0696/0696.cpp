@@ -8,16 +8,19 @@
 #include <string>
 
 class Solution {
+private:
+    template <typename T>
+    int count(const T& begin, const T& end, int prev) {
+        if (begin == end) { return 0; }
+        int current = std::count(begin, end, *begin);
+        int min {std::min(prev, current)};
+        return ((min * 2) / 2) + count(begin + current, end, current); 
+    }
+
 public:
     int countBinarySubstrings(std::string s) {
         if (s.length() == 0) { return 0; }
-        int ones {0}, zeros {0}, total {0};
-        char prev {s[0]};
-        if (prev == '0') { zeros++; } else { ones++; }
-        for (size_t i {0}; i < s.length(); ++i) {
-            
-        }
-        return 0;
+        return count(s.begin(), s.end(), 0);
     }
 };
 
