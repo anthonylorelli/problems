@@ -26,7 +26,7 @@ public:
 
 TEST_CASE("LC test cases", "[Count Binary Substrings]") {
     std::vector<std::pair<std::string,int>> input {
-        {"00110011", 6}, {"10101", 4}, {"0011001", 5}
+        {"00110011", 6}, {"10101", 4}, {"0011001", 5}, {"1", 0}, {"0", 0}
     };
 
     SECTION("LC test cases") {
