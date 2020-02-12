@@ -1,6 +1,6 @@
 // 0696. Count Binary Substrings
 // Problem definition: https://leetcode.com/problems/count-binary-substrings/
-// ?
+// 2020-02-11
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -10,11 +10,11 @@
 class Solution {
 private:
     template <typename T>
-    int count(const T& begin, const T& end, int prev) {
+    int count(const T& begin, const T& end, const int prev) const {
         if (begin == end) { return 0; }
-        int current = std::count(begin, end, *begin);
-        int min {std::min(prev, current)};
-        return ((min * 2) / 2) + count(begin + current, end, current); 
+        const auto next {std::find_if_not(begin, end, [&begin](const auto& n) { return *begin == n; })};
+        const int current = next - begin;
+        return std::min(prev, current) + count(next, end, current); 
     }
 
 public:
@@ -26,7 +26,7 @@ public:
 
 TEST_CASE("LC test cases", "[Count Binary Substrings]") {
     std::vector<std::pair<std::string,int>> input {
-        {"00110011", 6}, {"10101", 4}
+        {"00110011", 6}, {"10101", 4}, {"0011001", 5}, {"1", 0}, {"0", 0}
     };
 
     SECTION("LC test cases") {
