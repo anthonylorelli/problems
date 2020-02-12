@@ -1,6 +1,6 @@
 // 0696. Count Binary Substrings
 // Problem definition: https://leetcode.com/problems/count-binary-substrings/
-// ?
+// 2020-02-11
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
