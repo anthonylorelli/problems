@@ -13,7 +13,6 @@ class Solution {
 public:
     int minPathSum(std::vector<std::vector<int>>& grid) {
         if (grid.size() == 0 || grid[0].size() == 0) { return 0; }
-        //std::vector<std::vector<int>> matrix(grid.size(), std::vector<int>(grid[0].size()));
         for (size_t i {0}; i < grid.size(); ++i) {
             for (size_t j {0}; j < grid[0].size(); ++j) {
                 if (i == 0 && j == 0) {
