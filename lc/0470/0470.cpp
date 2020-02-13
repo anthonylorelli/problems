@@ -1,6 +1,7 @@
 // 0470. Implement Rand10() Using Rand7()
 // Problem definition: https://leetcode.com/problems/implement-rand10-using-rand7/
-// ?
+// 2020-02-12
+// Cf. https://en.wikipedia.org/wiki/Rejection_sampling
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -18,7 +19,13 @@ int rand7();
 class Solution {
 public:
     int rand10() {
-        
+        int row, column, index;
+        do {
+            row = rand7();
+            column = rand7();
+            index = column + (row - 1) * 7;
+        } while (index > 40);
+        return 1 + (index - 1) % 10;
     }
 };
 
