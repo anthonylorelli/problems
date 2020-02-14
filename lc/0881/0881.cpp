@@ -13,7 +13,7 @@ private:
     void insert(const int person, const int limit, std::vector<int>& boats) const {
         for (size_t i {0}; i < boats.size(); ++i) {
             if (boats[i] + person <= limit) {
-                boats[i] += person;
+                boats[i] = limit;
                 return;
             }
         }
