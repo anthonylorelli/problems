@@ -8,10 +8,16 @@
 #include <vector>
 #include <algorithm>
 
+bool operator<(const std::vector<int>& lhs, const std::vector<int>& rhs) {
+    return std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+}
+
 class Solution {
 public:
     std::vector<int> prevPermOpt1(std::vector<int>& A) {
-        return {};
+        std::vector perm{A};
+        std::prev_permutation(perm.begin(), perm.end());
+        return perm < A ? perm : A;
     }
 };
 
