@@ -1,30 +1,29 @@
 // 0881. Boats to Save People
 // Problem definition: https://leetcode.com/problems/boats-to-save-people/
-// ?
+// 2020-02-14
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
 
 #include <vector>
 #include <algorithm>
+#include <queue>
 
 class Solution {
 private:
-    void insert(const int person, const int limit, std::vector<int>& boats) const {
-        for (size_t i {0}; i < boats.size(); ++i) {
-            if (boats[i] + person <= limit) {
-                boats[i] = limit;
-                return;
-            }
+    void insert(const int person, const int limit, std::priority_queue<int>& boats) const {
+        if (!boats.empty() && boats.top() >= person) {
+            boats.pop();
+            boats.push(0);
+        } else {
+            boats.push(limit - person);
         }
-        boats.push_back(person);
-        return;
     }
 
 public:
     int numRescueBoats(std::vector<int>& people, int limit) {
         std::sort(people.begin(), people.end(), std::greater<int>());
-        std::vector<int> boats;
+        std::priority_queue<int> boats;
         for (const auto p : people) {
             insert(p, limit, boats);
         }
