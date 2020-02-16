@@ -7,17 +7,18 @@
 
 #include <vector>
 #include <algorithm>
-
-bool operator<(const std::vector<int>& lhs, const std::vector<int>& rhs) {
-    return std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
-}
+#include <iostream>
 
 class Solution {
 public:
     std::vector<int> prevPermOpt1(std::vector<int>& A) {
-        std::vector perm{A};
-        std::prev_permutation(perm.begin(), perm.end());
-        return perm < A ? perm : A;
+        for (auto b {A.rbegin()}; b != A.rend(); ++b) {
+            auto digit {std::find_if(b + 1, A.rend(), [&b](const auto n) { return n > *b; })};
+            if (digit != A.rend()) {
+                std::swap(*b, *digit);
+            }
+        }
+        return A;
     }
 };
 
