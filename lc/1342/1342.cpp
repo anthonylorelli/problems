@@ -10,7 +10,7 @@ public:
     int numberOfSteps(int num) {
         int steps {0};
         while (num > 1) {
-            steps += (num & 0x1) == 0x1 ? 2 : 1;
+            steps += num & 0x1 ? 2 : 1;
             num >>= 1; 
         }
         return steps + 1;
