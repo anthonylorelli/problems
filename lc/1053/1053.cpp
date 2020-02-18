@@ -1,6 +1,6 @@
 // 1053. Previous Permutation With One Swap
 // Problem definition: https://leetcode.com/problems/previous-permutation-with-one-swap/
-// ?
+// 2020-02-17
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -10,23 +10,41 @@
 #include <iostream>
 
 class Solution {
+private:
+    template <typename T>
+    auto max_element_under_n(const T& begin, const T& end, const int n) {
+        auto max {end};
+        auto predicate = [&n](const auto i) { return i < n; };
+        for (auto next = std::find_if(begin, end, predicate); next != end;
+            next = std::find_if(next + 1, end, predicate)) {
+            max = max == end ? next : *next > *max ? next : max;
+        }
+        return max;
+    }
+
 public:
     std::vector<int> prevPermOpt1(std::vector<int>& A) {
         for (auto b {A.rbegin()}; b != A.rend(); ++b) {
             auto offset {A.rend() - b};
-            std::cout << "Offset " << offset << "\n";
-            auto digit {std::find_if(A.begin() + offset, A.end(), [&b](const auto n) { return n < *b; })};
-            if (digit != A.end()) {
-                std::swap(*b, *digit);
+            auto max = max_element_under_n(A.begin() + offset, A.end(), *b);
+            std::cout << "Max found: " << (max == A.end() ? 0 : *max) << "\n";
+            // int* max {nullptr};
+            // std::for_each(A.begin() + offset, A.end(), [&b, &max](auto& n) {
+            //     if (n < *b && (!max || n > *max)) { max = &n; } 
+            // });
+
+            // auto max {A.end()};
+            // auto predicate = [&b](const auto n) { return n < *b; };
+            // auto next = std::find_if(A.begin() + offset, A.end(), predicate);
+            // while (next != A.end()) {
+            //     max = max == A.end() ? next : *next > *max ? next : max;
+            //     next = std::find_if(next + 1, A.end(), predicate);
+            // }
+            //if (max) {
+            if (max != A.end()) {
+                std::iter_swap(b, max);
                 break;
             }
-            // auto digit {std::find_if(b + 1, A.rend(), )};
-            // if (digit != A.rend()) {
-            //     auto offset {A.rend() - digit - 1};
-            //     auto leftmost {std::find(A.begin() + offset, A.end(), *b)};
-            //     std::swap(*digit, *leftmost);
-            //     break;
-            // }
         }
         return A;
     }
