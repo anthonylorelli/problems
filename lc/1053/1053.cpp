@@ -27,20 +27,6 @@ public:
         for (auto b {A.rbegin()}; b != A.rend(); ++b) {
             auto offset {A.rend() - b};
             auto max = max_element_under_n(A.begin() + offset, A.end(), *b);
-            std::cout << "Max found: " << (max == A.end() ? 0 : *max) << "\n";
-            // int* max {nullptr};
-            // std::for_each(A.begin() + offset, A.end(), [&b, &max](auto& n) {
-            //     if (n < *b && (!max || n > *max)) { max = &n; } 
-            // });
-
-            // auto max {A.end()};
-            // auto predicate = [&b](const auto n) { return n < *b; };
-            // auto next = std::find_if(A.begin() + offset, A.end(), predicate);
-            // while (next != A.end()) {
-            //     max = max == A.end() ? next : *next > *max ? next : max;
-            //     next = std::find_if(next + 1, A.end(), predicate);
-            // }
-            //if (max) {
             if (max != A.end()) {
                 std::iter_swap(b, max);
                 break;
