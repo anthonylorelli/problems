@@ -1,6 +1,6 @@
 // 0203. Remove Linked List Elements
 // Problem definition: https://leetcode.com/problems/remove-linked-list-elements/
-// ?
+// 2020-02-19
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -20,11 +20,19 @@ struct ListNode {
 class Solution {
 private:
     ListNode* remove(ListNode* head, int val) {
+        if (!head) {
+            return nullptr;
+        } else if (head->val != val) {
+            head->next = remove(head->next, val);
+            return head;
+        } else {
+            return remove(head->next, val);
+        }
     }
 
 public:
     ListNode* removeElements(ListNode* head, int val) {
-        ListNode* modified_head = remove(head, val);
+        return remove(head, val);
     }
 };
 
