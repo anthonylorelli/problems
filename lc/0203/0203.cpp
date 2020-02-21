@@ -18,21 +18,24 @@ struct ListNode {
 };
 /* */
 class Solution {
-private:
-    ListNode* remove(ListNode* head, int val) {
-        if (!head) {
-            return nullptr;
-        } else if (head->val != val) {
-            head->next = remove(head->next, val);
-            return head;
-        } else {
-            return remove(head->next, val);
-        }
-    }
-
 public:
     ListNode* removeElements(ListNode* head, int val) {
-        return remove(head, val);
+        ListNode* current {head};
+        ListNode* prev {nullptr};
+
+        while (current) {
+            if (current->val == val) {
+                if (!prev) {
+                    head = current->next;
+                } else {
+                    prev->next = current->next;
+                }
+            } else {
+                prev = current;
+            }
+            current = current->next;
+        }
+        return head;
     }
 };
 
