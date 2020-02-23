@@ -10,7 +10,19 @@
 class Solution {
 public:
     int numSubarraysWithSum(std::vector<int>& A, int S) {
-        return 0;
+        int sum {0}, count {0};
+        for (size_t i {0}, j {0}; i < A.size(); ++i) {
+            if (A[i]) {
+                sum++;
+                if (sum == S) {
+                    count++;
+                } else if (sum > S) {
+                    
+                }
+            } else if (sum == S) {
+                count++;
+            }
+        }
     }
 };
 
