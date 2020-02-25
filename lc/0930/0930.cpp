@@ -10,12 +10,12 @@
 class Solution {
 public:
     int numSubarraysWithSum(std::vector<int>& A, int S) {
-        int sum {0}, count {0};
+        int sum {0}, count {0}, leftOuter {0}, leftInner {0}, rightOuter, rightInner {0};
         for (size_t i {0}, j {0}; i < A.size(); ++i) {
             if (A[i]) {
                 sum++;
                 if (sum == S) {
-                    count++;
+                    rightInner = rightOuter = i;
                 } else if (sum > S) {
                     
                 }
