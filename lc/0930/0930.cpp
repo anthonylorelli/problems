@@ -10,7 +10,7 @@
 class Solution {
 public:
     int numSubarraysWithSum(std::vector<int>& A, int S) {
-        int sum {0};
+        int sum {0}, count {0};
         for (size_t i {0}, j {0}; i < A.size(); ++i) {
             if (A[i]) {
                 sum++;
@@ -25,8 +25,13 @@ public:
                 while (A[j] == 0) {
                     ++j;
                 }
+
+                int leftCount {j - left}, rightCount {i - right};
+                count += (leftCount * rightCount) + 1;
             }
         }
+
+        return count;
     }
 };
 
