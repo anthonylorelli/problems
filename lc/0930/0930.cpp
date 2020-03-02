@@ -28,6 +28,12 @@ public:
 
                 size_t leftCount {j - left}, rightCount {i - right};
                 count += (leftCount + 1) * (rightCount + 1);
+
+                sum--;
+                i--;
+                if (left == j) { 
+                    ++j;
+                }
             }
         }
 
@@ -37,7 +43,7 @@ public:
 
 TEST_CASE("LC test cases", "[Binary Subarrays With Sum]") {
     std::vector<std::pair<std::pair<std::vector<int>,int>,int>> input {
-        {{{0,0,0,1,1,0,0,},2},12},{{{1,0,1,0,1},2},4}
+        {{{0,0,0,1,1,0,0,},2},12},{{{0,0,0,1,0,1,0,0,},2},12},{{{1,0,1,0,1},2},4}
     };
 
     SECTION("LC test cases") {
