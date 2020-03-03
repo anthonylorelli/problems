@@ -22,7 +22,7 @@ public:
                     ++i;
                 }
                 int left = j;
-                while (A[j] == 0) {
+                while (j < A.size() && A[j] == 0) {
                     ++j;
                 }
 
@@ -43,7 +43,8 @@ public:
 
 TEST_CASE("LC test cases", "[Binary Subarrays With Sum]") {
     std::vector<std::pair<std::pair<std::vector<int>,int>,int>> input {
-        {{{0,0,0,1,1,0,0,},2},12},{{{0,0,0,1,0,1,0,0,},2},12},{{{1,0,1,0,1},2},4}
+        {{{0,0,0,1,1,0,0,},2},12},{{{0,0,0,1,0,1,0,0,},2},12},{{{1,0,1,0,1},2},4},
+        {{{0},1},0},{{{1},1},1},{{{0,0,0},0},6}
     };
 
     SECTION("LC test cases") {
