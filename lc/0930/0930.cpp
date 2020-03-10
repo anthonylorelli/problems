@@ -27,7 +27,7 @@ public:
                 }
 
                 size_t leftCount {j - left}, rightCount {i - right};
-                count += (leftCount + 1) * (rightCount + 1);
+                count += 1 + leftCount + rightCount + (leftCount * rightCount);
 
                 sum--;
                 i--;
