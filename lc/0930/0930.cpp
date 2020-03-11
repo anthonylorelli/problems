@@ -8,6 +8,10 @@
 #include <vector>
 
 class Solution {
+    constexpr int summation(int n) {
+        return (n * (n + 1)) / 2;
+    }
+
 public:
     int numSubarraysWithSum(std::vector<int>& A, int S) {
         int sum {0}, count {0};
@@ -22,12 +26,13 @@ public:
                     ++i;
                 }
                 int left = j;
-                while (j < A.size() && A[j] == 0) {
+                while (j < right && A[j] == 0) {
                     ++j;
                 }
 
                 size_t leftCount {j - left}, rightCount {i - right};
-                count += 1 + leftCount + rightCount + (leftCount * rightCount);
+                count += j == right ? summation(leftCount + rightCount) : 
+                    (1 + leftCount + rightCount + (leftCount * rightCount));
 
                 sum--;
                 i--;
@@ -44,7 +49,8 @@ public:
 TEST_CASE("LC test cases", "[Binary Subarrays With Sum]") {
     std::vector<std::pair<std::pair<std::vector<int>,int>,int>> input {
         {{{0,0,0,1,1,0,0,},2},12},{{{0,0,0,1,0,1,0,0,},2},12},{{{1,0,1,0,1},2},4},
-        {{{0},1},0},{{{1},1},1},{{{0,0,0},0},6}
+        {{{0},1},0},{{{1},1},1},{{{0,0,0},0},6},{{{0,0,0,0,0},0},15},
+        {{{0,0,0,0,0,0,1,0,0,0},0},27}
     };
 
     SECTION("LC test cases") {
