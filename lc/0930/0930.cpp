@@ -6,6 +6,7 @@
 #include "../../uva/catch/catch.hpp"
 
 #include <vector>
+#include <iostream>
 
 class Solution {
     constexpr int summation(int n) {
@@ -34,11 +35,14 @@ public:
                 count += j == right ? summation(leftCount + rightCount) : 
                     (1 + leftCount + rightCount + (leftCount * rightCount));
 
-                sum--;
-                i--;
+                if (S > 0) {
+                    sum--;
+                    i--;
+                }
                 if (left == j) { 
                     ++j;
                 }
+                std::cout << "i " << i << " j " << j << "\n";
             }
         }
 
@@ -48,8 +52,8 @@ public:
 
 TEST_CASE("LC test cases", "[Binary Subarrays With Sum]") {
     std::vector<std::pair<std::pair<std::vector<int>,int>,int>> input {
-        {{{0,0,0,1,1,0,0,},2},12},{{{0,0,0,1,0,1,0,0,},2},12},{{{1,0,1,0,1},2},4},
-        {{{0},1},0},{{{1},1},1},{{{0,0,0},0},6},{{{0,0,0,0,0},0},15},
+        //{{{0,0,0,1,1,0,0,},2},12},{{{0,0,0,1,0,1,0,0,},2},12},{{{1,0,1,0,1},2},4},
+        //{{{0},1},0},{{{1},1},1},{{{0,0,0},0},6},{{{0,0,0,0,0},0},15},
         {{{0,0,0,0,0,0,1,0,0,0},0},27}
     };
 

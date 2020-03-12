@@ -22,7 +22,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{31E2152D-550B-4EF1-9732-777A014CAC55}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>My0238</RootNamespace>
+    <RootNamespace>MyLC</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
