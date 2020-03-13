@@ -16,34 +16,26 @@ class Solution {
 public:
     int numSubarraysWithSum(std::vector<int>& A, int S) {
         int sum {0}, count {0};
-        for (size_t i {0}, j {0}; i < A.size(); ++i) {
-            if (A[i]) {
-                sum++;
-            } 
+        for (size_t i {0}, j {0}, b{0}; j < A.size(); ++j) {
+            sum += A[j];
 
             if (sum == S) {
-                int right = ++i;
-                while (i < A.size() && A[i] == 0) {
+                while (i < j && A[i] == 0) {
                     ++i;
                 }
-                int left = j;
-                while (j < right && A[j] == 0) {
-                    ++j;
+                int e = ++j;
+                while (e < A.size() && A[e] == 0) {
+                    ++e;
                 }
 
-                size_t leftCount {j - left}, rightCount {i - right};
-                count += j == right ? summation(leftCount + rightCount) : 
+                size_t leftCount {i - b}, rightCount {e - j};
+                count += i == j ? summation(leftCount + rightCount) : 
                     (1 + leftCount + rightCount + (leftCount * rightCount));
-
-                if (S > 0) {
-                    sum--;
-                    i--;
-                }
-                if (left == j) { 
-                    ++j;
-                }
-                std::cout << "i " << i << " j " << j << "\n";
+                std::cout << "b " << b << " i " << i << " j " << j << " e " << e << "\n";
             }
+
+            b = i;
+            sum -= A[i++];
         }
 
         return count;
