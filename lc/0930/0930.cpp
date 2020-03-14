@@ -16,14 +16,19 @@ class Solution {
 public:
     int numSubarraysWithSum(std::vector<int>& A, int S) {
         int sum {0}, count {0};
-        for (size_t i {0}, j {0}, b{0}; j < A.size(); ++j) {
+        for (size_t i {0}, j {0}; j < A.size(); ++j) {
             sum += A[j];
 
+            if (sum > S) {
+                sum -= A[i++];
+            } 
+            
             if (sum == S) {
+                size_t b {i};
                 while (i < j && A[i] == 0) {
                     ++i;
                 }
-                int e = ++j;
+                size_t e {++j};
                 while (e < A.size() && A[e] == 0) {
                     ++e;
                 }
@@ -31,11 +36,11 @@ public:
                 size_t leftCount {i - b}, rightCount {e - j};
                 count += i == j ? summation(leftCount + rightCount) : 
                     (1 + leftCount + rightCount + (leftCount * rightCount));
+                //count += (leftCount + 1) * (rightCount + 1);
                 std::cout << "b " << b << " i " << i << " j " << j << " e " << e << "\n";
-            }
 
-            b = i;
-            sum -= A[i++];
+                sum -= A[i++];
+            }
         }
 
         return count;
@@ -44,8 +49,8 @@ public:
 
 TEST_CASE("LC test cases", "[Binary Subarrays With Sum]") {
     std::vector<std::pair<std::pair<std::vector<int>,int>,int>> input {
-        //{{{0,0,0,1,1,0,0,},2},12},{{{0,0,0,1,0,1,0,0,},2},12},{{{1,0,1,0,1},2},4},
-        //{{{0},1},0},{{{1},1},1},{{{0,0,0},0},6},{{{0,0,0,0,0},0},15},
+        {{{0,0,0,1,1,0,0,},2},12},{{{0,0,0,1,0,1,0,0,},2},12},{{{1,0,1,0,1},2},4},
+        {{{0},1},0},{{{1},1},1},{{{0,0,0},0},6},{{{0,0,0,0,0},0},15},
         {{{0,0,0,0,0,0,1,0,0,0},0},27}
     };
 
