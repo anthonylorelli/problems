@@ -1,6 +1,6 @@
 // 0930. Binary Subarrays With Sum
 // Problem definition: https://leetcode.com/problems/binary-subarrays-with-sum/
-// Accepted ?
+// Accepted 2020-03-14
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -13,19 +13,33 @@ class Solution {
         return (n * (n + 1)) / 2;
     }
 
+    int countZeros(std::vector<int>& A) {
+        int count {0};
+        for (size_t i {0}; i < A.size(); ++i) {
+            if (A[i] == 0) {
+                size_t start {i};
+                while (i < A.size() && A[i] == 0) {
+                    ++i;
+                }
+                count += summation(i - start);
+            }
+        }
+        return count;
+    }
+
 public:
     int numSubarraysWithSum(std::vector<int>& A, int S) {
+        if (S == 0) {
+            return countZeros(A);
+        }
+
         int sum {0}, count {0};
         for (size_t i {0}, j {0}; j < A.size(); ++j) {
             sum += A[j];
-
-            if (sum > S) {
-                sum -= A[i++];
-            } 
             
             if (sum == S) {
                 size_t b {i};
-                while (i < j && A[i] == 0) {
+                while (i <= j && A[i] == 0) {
                     ++i;
                 }
                 size_t e {++j};
@@ -34,12 +48,13 @@ public:
                 }
 
                 size_t leftCount {i - b}, rightCount {e - j};
-                count += i == j ? summation(leftCount + rightCount) : 
-                    (1 + leftCount + rightCount + (leftCount * rightCount));
-                //count += (leftCount + 1) * (rightCount + 1);
-                std::cout << "b " << b << " i " << i << " j " << j << " e " << e << "\n";
+                count += 1 + leftCount + rightCount + (leftCount * rightCount);
 
-                sum -= A[i++];
+                while (i < j && sum == S) {
+                    sum -= A[i++];
+                }
+
+                j = e - 1;
             }
         }
 
