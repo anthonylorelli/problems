@@ -8,6 +8,26 @@
 #include <vector>
 #include <iostream>
 
+// Example 16 ms solution from LC
+// class Solution {
+// public:
+//     int numSubarraysWithSum(vector<int>& A, int S) {
+//         int n =A.size();
+//         int pref[n+5]={0};
+//         int sum=0, ans=0;
+//         pref[0]=1;
+//         for(int i=0;i<n;++i)
+//         {
+            
+//             sum+=A[i];
+//             if (sum-S>=0) ans+=pref[sum-S];
+//             //cout<<sum<<' '<<pref[S-sum]<<endl;
+//             pref[sum]++;
+//         }
+//         return ans;
+//     }
+// };
+
 class Solution {
     constexpr int summation(int n) {
         return (n * (n + 1)) / 2;
