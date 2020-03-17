@@ -6,11 +6,20 @@
 #include "../../uva/catch/catch.hpp"
 
 #include <vector>
+#include <algorithm>
 
 class Solution {
 public:
     int partitionDisjoint(std::vector<int>& A) {
-        return 0;
+        int max {A[0]}, length {30'001};
+        std::for_each(A.begin() + 1, A.end(), [&](const auto n) {
+            if (n < max) {
+                auto p {std::partition_point(A.begin(), A.end(), [&](const auto i) { return i < (max + 1); })};
+                auto latest {p - A.begin()};
+                length = std::min(latest, length);
+            }
+        });
+        return length;
     }
 };
 
@@ -24,7 +33,7 @@ TEST_CASE("LC test cases", "[Binary Subarrays With Sum]") {
             [&input](auto& p) { 
                 Solution s;
                 auto& [testInput, expected] = p;
-                REQUIRE(s.partitionDisjoint(testInput.first) == expected);
+                REQUIRE(s.partitionDisjoint(testInput) == expected);
             });
     }
 }
