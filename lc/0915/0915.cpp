@@ -7,25 +7,30 @@
 
 #include <vector>
 #include <algorithm>
+#include <limits>
 
 class Solution {
 public:
     int partitionDisjoint(std::vector<int>& A) {
-        int max {A[0]}, length {30'001};
+        int max {A[0]}, length {std::numeric_limits<int>::max()};
         std::for_each(A.begin() + 1, A.end(), [&](const auto n) {
             if (n < max) {
                 auto p {std::partition_point(A.begin(), A.end(), [&](const auto i) { return i < (max + 1); })};
-                auto latest {p - A.begin()};
+                int latest {p - A.begin()};
                 length = std::min(latest, length);
+            } else {
+                max = n;
             }
         });
-        return length;
+        return length == std::numeric_limits<int>::max() ? 1 : length;
     }
 };
 
 TEST_CASE("LC test cases", "[Binary Subarrays With Sum]") {
     std::vector<std::pair<std::vector<int>,int>> input {
-        {{5,0,3,8,6},3},{{1,1,1,0,6,12},4}
+        {{5,0,3,8,6},3},{{1,1,1,0,6,12},4},{{1,2},1},{{2,1},2},
+        {{2,1,3},2},{{90,47,69,10,43,92,31,73,61,97},9},
+        {{5,3,0,8,6},3}
     };
 
     SECTION("LC test cases") {
