@@ -12,17 +12,16 @@
 class Solution {
 public:
     int partitionDisjoint(std::vector<int>& A) {
-        int max {A[0]}, length {std::numeric_limits<int>::max()};
-        std::for_each(A.begin() + 1, A.end(), [&](const auto n) {
-            if (n < max) {
-                auto p {std::partition_point(A.begin(), A.end(), [&](const auto i) { return i < (max + 1); })};
-                int latest {p - A.begin()};
-                length = std::min(latest, length);
+        int localMax{A[0]}, globalMax{A[0]}, count{1};
+        std::for_each(A.begin() + 1, A.end(), [&](const auto i) {
+            if (i > localMax) {
+                count++;
+                localMax = globalMax;
             } else {
-                max = n;
+                globalMax = std::max(globalMax, i);
             }
         });
-        return length == std::numeric_limits<int>::max() ? 1 : length;
+        return count;
     }
 };
 
