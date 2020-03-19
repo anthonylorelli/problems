@@ -1,6 +1,6 @@
 // 0915. Partition Array Into Disjoint Intervals
 // Problem definition: https://leetcode.com/problems/partition-array-into-disjoint-intervals/
-// Accepted ?
+// Accepted 2020-03-19
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -12,16 +12,17 @@
 class Solution {
 public:
     int partitionDisjoint(std::vector<int>& A) {
-        int localMax{A[0]}, globalMax{A[0]}, count{1};
+        int localMax{A[0]}, globalMax{A[0]}, count{1}, total{1};
         std::for_each(A.begin() + 1, A.end(), [&](const auto i) {
-            if (i > localMax) {
-                count++;
+            count++;
+            if (i < localMax) {
+                total = count;
                 localMax = globalMax;
             } else {
                 globalMax = std::max(globalMax, i);
             }
         });
-        return count;
+        return total;
     }
 };
 
