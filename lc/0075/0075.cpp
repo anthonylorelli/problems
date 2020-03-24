@@ -6,29 +6,41 @@
 #include "../../uva/catch/catch.hpp"
 
 #include <vector>
+#include <algorithm>
 
 class Solution {
 public:
     void sortColors(std::vector<int>& nums) {
-        int zeros {0}, ones {0}, twos {0};
-        for (const auto n : nums) {
-            if (n == 0) {
-                zeros++;
-            } else if (n == 1) {
-                ones++;
-            } else {
-                twos++;
+        for (size_t z {0}, t {nums.size() - 1}, i {0}; i <= t; ++i) {
+            if (nums[i] == 2 && i != t) {
+                std::swap(nums[i], nums[t--]);
+            } else if (nums[i] == 0 && i != z) {
+                std::swap(nums[i], nums[z++]);
             }
         }
-        std::fill(nums.begin(), nums.begin() + zeros, 0);
-        std::fill(nums.begin() + zeros, nums.begin() + zeros + ones, 1);
-        std::fill(nums.begin() + zeros + ones, nums.end(), 2);
     }
+
+    // void sortColors(std::vector<int>& nums) {
+    //     int zeros {0}, ones {0}, twos {0};
+    //     for (const auto n : nums) {
+    //         if (n == 0) {
+    //             zeros++;
+    //         } else if (n == 1) {
+    //             ones++;
+    //         } else {
+    //             twos++;
+    //         }
+    //     }
+    //     std::fill(nums.begin(), nums.begin() + zeros, 0);
+    //     std::fill(nums.begin() + zeros, nums.begin() + zeros + ones, 1);
+    //     std::fill(nums.begin() + zeros + ones, nums.end(), 2);
+    // }
 };
 
 TEST_CASE("LC test cases", "[Sort Colors]") {
     std::vector<std::pair<std::vector<int>,std::vector<int>>> input {
-        {{2,0,2,1,1,0},{0,0,1,1,2,2}},{{0},{0}},{{1},{1}},{{2},{2}}
+        {{2,0,2,1,1,0},{0,0,1,1,2,2}},{{0},{0}},{{1},{1}},{{2},{2}},
+        {{1,0,2},{0,1,2}}
     };
 
     SECTION("LC test cases") {
