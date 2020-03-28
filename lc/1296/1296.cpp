@@ -7,10 +7,17 @@
 
 #include <vector>
 #include <algorithm>
+#include <set>
+#include <iterator>
 
 class Solution {
 public:
     bool isPossibleDivide(std::vector<int>& nums, int k) {
+        std::multiset<int> set;
+        std::copy(nums.begin(), nums.end(), std::inserter(set, set.end()));
+        while (nums.size() > 0) {
+            
+        }
         return false;      
     }
 };
