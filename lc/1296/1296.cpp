@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <set>
 #include <iterator>
+#include <iostream>
 
 class Solution {
 public:
@@ -16,12 +17,14 @@ public:
         if (nums.size() % k > 0) { return false; }
         std::multiset<int> set;
         std::copy(nums.begin(), nums.end(), std::inserter(set, set.end()));
-        while (nums.size() > 0) {
-            auto current {*set.begin()};
+        while (set.size() > 0) {
+            auto first {set.begin()};
+            auto current {*first};
+            set.erase(first);
             for (int i {1}; i < k; ++i) {
-                if (set.count(current + 1)) {
-                    set.extract(current);
-                    current++;
+                current++;
+                if (set.count(current)) {
+                    set.erase(set.find(current));
                 } else {
                     return false;
                 }
