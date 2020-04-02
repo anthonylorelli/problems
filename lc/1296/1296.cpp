@@ -1,6 +1,6 @@
 // 1296. Divide Array in Sets of K Consecutive Numbers
 // Problem definition: https://leetcode.com/problems/divide-array-in-sets-of-k-consecutive-numbers/
-// Accepted ?
+// Accepted 2020-04-02
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -23,8 +23,8 @@ public:
             set.erase(first);
             for (int i {1}; i < k; ++i) {
                 current++;
-                if (set.count(current)) {
-                    set.erase(set.find(current));
+                if ((first = set.find(current)) != set.end()) {
+                    set.erase(first);
                 } else {
                     return false;
                 }
