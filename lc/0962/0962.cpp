@@ -6,16 +6,24 @@
 #include "../../uva/catch/catch.hpp"
 
 #include <vector>
+#include <algorithm>
 
 class Solution {
 public:
     int maxWidthRamp(std::vector<int>& A) {
+        int max {0};
         for (int i {0}; i < A.size(); ++i) {
             for (int j {i + 1}; j < A.size(); ++j) {
-                
+                if (A[j] >= A[i]) {
+                    int localMax {j - i};
+                    max = std::max(max, localMax);
+                }
+                if (max > (A.size() - i)) {
+                    return max;
+                }
             }
         }
-        return 0;
+        return max;
     }
 };
 
