@@ -1,35 +1,35 @@
 // 0962. Maximum Width Ramp
 // Problem definition: https://leetcode.com/problems/maximum-width-ramp/
-// Accepted ?
+// Accepted 2020-04-06
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
 
 #include <vector>
 #include <algorithm>
+#include <numeric>
 
 class Solution {
 public:
     int maxWidthRamp(std::vector<int>& A) {
-        int max {0};
-        for (int i {0}; i < A.size(); ++i) {
-            for (int j {i + 1}; j < A.size(); ++j) {
-                if (A[j] >= A[i]) {
-                    int localMax {j - i};
-                    max = std::max(max, localMax);
-                }
-                if (max > (A.size() - i)) {
-                    return max;
-                }
-            }
+        std::vector<int> indices(A.size());
+        std::iota(indices.begin(), indices.end(), 0);
+        std::sort(indices.begin(), indices.end(), [&A](const auto i, const auto j) {
+            return A[i] == A[j] ? i < j : A[i] < A[j];
+        });
+        int ramp {0}, min = A.size();
+        for (const auto n : indices) {
+            ramp = std::max(ramp, n - min);
+            min = std::min(min, n);
         }
-        return max;
+        return ramp;
     }
 };
 
 TEST_CASE("LC test cases", "[Maximum Width Ramp]") {
     std::vector<std::pair<std::vector<int>,int>> input {
-        {{6,0,8,2,1,5},4},{{9,8,1,0,1,9,4,0,4,1},7}
+        {{6,0,8,2,1,5},4},{{9,8,1,0,1,9,4,0,4,1},7},
+        {{3,28,15,1,4,12,6,19,8,15,3,9,6,4,13,12,6,12,10,1,2,1,4,1,4,0,0,1,1,0},25}
     };
 
     SECTION("LC test cases") {
