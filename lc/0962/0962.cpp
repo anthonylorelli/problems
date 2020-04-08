@@ -8,10 +8,30 @@
 #include <vector>
 #include <algorithm>
 #include <numeric>
+#include <stack>
 
 class Solution {
 public:
     int maxWidthRamp(std::vector<int>& A) {
+        std::stack<int> s;
+        s.push(A[0]);
+        for (int i {1}; i < A.size(); ++i) {
+            if (A[s.top()] > A[i]) {
+                s.push(i);
+            }
+        }
+
+        int ramp {0};
+        for (int j = A.size() - 1; j >= 0; --j) {
+            while (!s.empty() && A[j] >= A[s.top()]) {
+                ramp = std::max(ramp, j - s.top());
+                s.pop();
+            }
+        }
+        return ramp;
+    }
+
+    int maxWidthRamp_sort(std::vector<int>& A) {
         std::vector<int> indices(A.size());
         std::iota(indices.begin(), indices.end(), 0);
         std::sort(indices.begin(), indices.end(), [&A](const auto i, const auto j) {
