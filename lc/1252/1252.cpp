@@ -11,6 +11,9 @@
 class Solution {
 public:
     int oddCells(int n, int m, std::vector<std::vector<int>>& indices) {
+        for (const auto& next : indices) {
+            int ri {next[0]}, ci {next[1]};
+        }
         return 0;
     }
 };
