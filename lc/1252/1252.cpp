@@ -18,12 +18,8 @@ public:
         for (const auto& next : indices) {
             int ri {next[0]}, ci {next[1]};
             total = std::accumulate(matrix[ri].begin(), matrix[ri].end(), total, count);
-            // for (int i {0}; i < m; ++i) {
-            //     total += (++matrix[ri][i] % 2) ? 1 : -1;
-            // }
-            for (int i {0}; i < n; ++i) {
-                total += (++matrix[i][ci] % 2) ? 1 : -1;
-            }
+            total = std::accumulate(matrix.begin(), matrix.end(), total,
+                [&count, &ci](const int c, auto& v) { return count(c, v[ci]); });
         }
         return total;
     }
