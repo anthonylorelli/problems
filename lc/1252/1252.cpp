@@ -7,20 +7,28 @@
 
 #include <vector>
 #include <tuple>
+#include <numeric>
 
 class Solution {
 public:
     int oddCells(int n, int m, std::vector<std::vector<int>>& indices) {
+        std::vector<std::vector<int>> matrix(n, std::vector(m, 0));
+        int total {0};
+        auto count = [](const int c, int& n) { return c + ((++n % 2) ? 1 : -1); };
         for (const auto& next : indices) {
             int ri {next[0]}, ci {next[1]};
+            total = std::accumulate(matrix[ri].begin(), matrix[ri].end(), total, count);
+            total = std::accumulate(matrix.begin(), matrix.end(), total,
+                [&count, &ci](const int c, auto& v) { return count(c, v[ci]); });
         }
-        return 0;
+        return total;
     }
 };
 
 TEST_CASE("LC test cases", "[Maximum Width Ramp]") {
     std::vector<std::tuple<int,int,std::vector<std::vector<int>>,int>> input {
-        {2,3,{{0,1},{1,1}},6}
+        {2,3,{{0,1},{1,1}},6},
+        {2,2,{{1,1},{0,0}},0}
     };
 
     SECTION("LC test cases") {
