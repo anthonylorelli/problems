@@ -1,6 +1,6 @@
 // 1252. Cells with Odd Values in a Matrix
 // Problem definition: https://leetcode.com/problems/cells-with-odd-values-in-a-matrix/
-// Accepted ?
+// Accepted 2020-04-11
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
