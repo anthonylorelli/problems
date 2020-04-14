@@ -12,6 +12,11 @@ public:
     int minTimeToVisitAllPoints(std::vector<std::vector<int>>& points) {
         return 0;
     }
+
+private:
+    std::pair<int,int> move(const std::pair<int,int>& point) {
+        return {0,0};
+    }
 };
 
 TEST_CASE("LC test cases", "[Minimum Time Visiting All Points]") {
