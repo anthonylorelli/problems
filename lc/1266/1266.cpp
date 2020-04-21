@@ -7,6 +7,8 @@
 
 #include <vector>
 
+using point = std::pair<int,int>;
+
 class Solution {
 public:
     int minTimeToVisitAllPoints(std::vector<std::vector<int>>& points) {
@@ -14,8 +16,10 @@ public:
     }
 
 private:
-    std::pair<int,int> move(const std::pair<int,int>& point) {
-        return {0,0};
+    std::pair<int,int> move(const point& current, const point& next) {
+        int x = current.first == next.first ? current.first : next.first > current.first ? current.first + 1 : current.first - 1;
+        int y = current.second == next.second ? current.second : next.second > current.second ? current.second + 1 : current.second - 1;
+        return {x,y};
     }
 };
 
