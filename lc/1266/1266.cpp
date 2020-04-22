@@ -5,6 +5,7 @@
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
 
+#include <algorithm>
 #include <vector>
 
 using point = std::pair<int,int>;
@@ -12,7 +13,16 @@ using point = std::pair<int,int>;
 class Solution {
 public:
     int minTimeToVisitAllPoints(std::vector<std::vector<int>>& points) {
-        return 0;
+        int count {0};
+        point current{points[0][0], points[0][1]};
+        std::for_each(points.begin() + 1, points.end(), [&](const auto& next) {
+            point n{next[0], next[1]};
+            while (current != n) {
+                count++;
+                current = move(current, n);
+            }
+        });
+        return count;
     }
 
 private:
