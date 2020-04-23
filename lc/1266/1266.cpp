@@ -1,6 +1,6 @@
 // 1266. Minimum Time Visiting All Points
 // Problem definition: https://leetcode.com/problems/minimum-time-visiting-all-points/
-// Accepted ?
+// Accepted 2020-04-22
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -26,7 +26,7 @@ public:
     }
 
 private:
-    std::pair<int,int> move(const point& current, const point& next) {
+    point move(const point& current, const point& next) {
         int x = current.first == next.first ? current.first : next.first > current.first ? current.first + 1 : current.first - 1;
         int y = current.second == next.second ? current.second : next.second > current.second ? current.second + 1 : current.second - 1;
         return {x,y};
@@ -35,7 +35,8 @@ private:
 
 TEST_CASE("LC test cases", "[Minimum Time Visiting All Points]") {
     std::vector<std::pair<std::vector<std::vector<int>>,int>> input {
-        {{{1,1},{3,4},{-1,0}},7},{{{3,2},{-2,2}},5}
+        {{{1,1},{3,4},{-1,0}},7},{{{3,2},{-2,2}},5},
+        {{{1,1}},0}
     };
 
     SECTION("LC test cases") {
