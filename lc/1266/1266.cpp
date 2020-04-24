@@ -7,29 +7,21 @@
 
 #include <algorithm>
 #include <vector>
+#include <tuple>
+#include <numeric>
 
 using point = std::pair<int,int>;
 
 class Solution {
 public:
     int minTimeToVisitAllPoints(std::vector<std::vector<int>>& points) {
-        int count {0};
-        point current{points[0][0], points[0][1]};
-        std::for_each(points.begin() + 1, points.end(), [&](const auto& next) {
-            point n{next[0], next[1]};
-            while (current != n) {
-                count++;
-                current = move(current, n);
-            }
+        auto total = std::accumulate(points.begin() + 1, points.end(), 
+            std::tuple{0, points[0][0], points[0][1]}, [](const auto t, const auto& next) {
+            auto [sum, x, y] = t;
+            sum += std::max(std::abs(next[0] - x), std::abs(next[1] - y));
+            return std::tuple{sum, next[0], next[1]};
         });
-        return count;
-    }
-
-private:
-    point move(const point& current, const point& next) {
-        int x = current.first == next.first ? current.first : next.first > current.first ? current.first + 1 : current.first - 1;
-        int y = current.second == next.second ? current.second : next.second > current.second ? current.second + 1 : current.second - 1;
-        return {x,y};
+        return std::get<0>(total);
     }
 };
 
