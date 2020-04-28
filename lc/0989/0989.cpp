@@ -12,6 +12,10 @@
 class Solution {
 public:
     std::vector<int> addToArrayForm(std::vector<int>& A, int K) {
+        int sum {0}; int mask {10};
+        for (int i = 0; i < A.size(); ++i) {
+
+        }
         return {};
     }
 };
