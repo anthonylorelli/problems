@@ -8,14 +8,23 @@
 #include <vector>
 #include <algorithm>
 #include <tuple>
+#include <numeric>
 
 class Solution {
 public:
     std::vector<int> addToArrayForm(std::vector<int>& A, int K) {
-        int sum {0}; int mask {10};
-        for (int i = 0; i < A.size(); ++i) {
+        int mask {1};
+        int sum = std::accumulate(A.rbegin(), A.rend(), 0, [&mask](const auto t, const auto n) {
+            int sum = n * mask;
+            mask *= 10;
+            return sum;
+        });
 
-        }
+        sum += K;
+
+        std::vector<int> J;
+
+
         return {};
     }
 };
