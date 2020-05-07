@@ -70,13 +70,41 @@ private:
     std::stack<TreeNode*> m_stack;
 };
 
+iterator end()
+{
+    return iterator{};    
+}
+
+template <typename iterator, typename output>
+void merge(iterator in1, iterator end1, iterator in2, iterator end2, output out) {
+    for ( ; in1 != end1; ++out) {
+        if (in2 == end2) {
+            while (in1 != end1) {
+                *out = *in1;
+                ++in1;
+            }
+        }
+        if (*in2 < *in1) {
+            *out = *in2;
+            ++in2;
+        } else {
+            *out = *in1;
+            ++in1;
+        }
+    }
+    while (in2 != end2) {
+        *out = *in2;
+        ++in2;
+        ++out;
+    }
+}
+
+
 class Solution {
 public:
     std::vector<int> getAllElements(TreeNode* root1, TreeNode* root2) {
         std::vector<int> result;
-        iterator i1 {root1}, i2 {root2};
-        iterator end;
-        std::merge(i1, end, i2, end, std::back_inserter(result));
+        merge(iterator{root1}, end(), iterator{root2}, end(), std::back_inserter(result));
         return result;
     }
 };
