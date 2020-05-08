@@ -10,6 +10,7 @@
 #include <tuple>
 #include <numeric>
 #include <stack>
+#include <iostream>
 
 /**
  * Definition for a binary tree node.
@@ -58,11 +59,11 @@ public:
         return *this;
     }
 
-    bool operator==(const iterator& i) {
+    bool operator==(const iterator& i) const {
         return (m_stack.empty() && i.m_stack.empty()) || (m_stack == i.m_stack);
     }
 
-    bool operator!=(const iterator& i) {
+    bool operator!=(const iterator& i) const {
         return !(*this == i);
     }
 
@@ -70,19 +71,16 @@ private:
     std::stack<TreeNode*> m_stack;
 };
 
-iterator end()
-{
-    return iterator{};    
-}
-
-template <typename iterator, typename output>
-void merge(iterator in1, iterator end1, iterator in2, iterator end2, output out) {
+template <typename Iterator, typename output>
+void merge(Iterator& in1, Iterator& end1, Iterator& in2, Iterator& end2, output out) {
     for ( ; in1 != end1; ++out) {
         if (in2 == end2) {
             while (in1 != end1) {
                 *out = *in1;
                 ++in1;
+                ++out;
             }
+            return;
         }
         if (*in2 < *in1) {
             *out = *in2;
@@ -99,30 +97,52 @@ void merge(iterator in1, iterator end1, iterator in2, iterator end2, output out)
     }
 }
 
-
 class Solution {
 public:
     std::vector<int> getAllElements(TreeNode* root1, TreeNode* root2) {
         std::vector<int> result;
-        merge(iterator{root1}, end(), iterator{root2}, end(), std::back_inserter(result));
+        ::iterator it1{root1}, it2{root2};
+        ::iterator end;
+        merge(it1, end, it2, end, std::back_inserter(result));
         return result;
     }
 };
 
 TEST_CASE("LC test cases", "[All Elements in Two Binary Search Trees]") {
-    // std::vector<std::pair<std::vector<std::vector<int>>,int>> input {
-    //     {{{1,1},{3,4},{-1,0}},7},{{{3,2},{-2,2}},5},
-    //     {{{1,1}},0}
-    // };
+    SECTION("LC test cases") {
+        auto tree1 = new TreeNode{2, new TreeNode{1}, new TreeNode{4}};
+        auto tree2 = new TreeNode{1, new TreeNode{0}, new TreeNode{3}};
+        std::vector<int> expected = {0, 1, 1, 2, 3, 4};
+        Solution s;
+        REQUIRE(s.getAllElements(tree1, tree2) == expected);
+    }
+}
 
-    // SECTION("LC test cases") {
-    //     std::for_each(std::begin(input), std::end(input),
-    //         [&input](auto& p) { 
-    //             Solution s;
-    //             auto& [testInput, expected] = p;
-    //             REQUIRE(s.minTimeToVisitAllPoints(testInput) == expected);
-    //         });
-    // }
+TEST_CASE("Basic test cases", "[All Elements in Two Binary Search Trees]") {
+    SECTION("Test case 1") {
+        auto tree = new TreeNode{2, new TreeNode{1}, new TreeNode{4}};
+        std::vector<int> expected = {1, 2, 4};
+        std::vector<int> actual;
+        ::iterator it{tree};
+        ::iterator end{};
+        while (it != end) {
+            actual.push_back(*it);
+            ++it;
+        }
+        REQUIRE(expected == actual);
+    }
+    SECTION("Test case 2") {
+        auto tree = new TreeNode{1, new TreeNode{0}, new TreeNode{3}};
+        std::vector<int> expected = {0, 1, 3};
+        std::vector<int> actual;
+        ::iterator it{tree};
+        ::iterator end{};
+        while (it != end) {
+            actual.push_back(*it);
+            ++it;
+        }
+        REQUIRE(expected == actual);
+    }
 }
 
 int main(int argc, char* argv[]) {
