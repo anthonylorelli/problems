@@ -110,10 +110,24 @@ public:
 };
 
 TEST_CASE("LC test cases", "[All Elements in Two Binary Search Trees]") {
-    SECTION("LC test cases") {
+    SECTION("LC test case 1") {
         auto tree1 = new TreeNode{2, new TreeNode{1}, new TreeNode{4}};
         auto tree2 = new TreeNode{1, new TreeNode{0}, new TreeNode{3}};
         std::vector<int> expected = {0, 1, 1, 2, 3, 4};
+        Solution s;
+        REQUIRE(s.getAllElements(tree1, tree2) == expected);
+    }
+    SECTION("LC test case 2") {
+        auto tree1 = new TreeNode{0, new TreeNode{-10}, new TreeNode{10}};
+        auto tree2 = new TreeNode{5, new TreeNode{1, new TreeNode{0}, new TreeNode{2}}, new TreeNode{7}};
+        std::vector<int> expected = {-10, 0, 0, 1, 2, 5, 7, 10};
+        Solution s;
+        REQUIRE(s.getAllElements(tree1, tree2) == expected);
+    }
+    SECTION("LC test case 3") {
+        TreeNode* tree1 {nullptr};
+        auto tree2 = new TreeNode{5, new TreeNode{1, new TreeNode{0}, new TreeNode{2}}, new TreeNode{7}};
+        std::vector<int> expected = {0, 1, 2, 5, 7};
         Solution s;
         REQUIRE(s.getAllElements(tree1, tree2) == expected);
     }
