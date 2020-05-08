@@ -71,15 +71,20 @@ private:
     std::stack<TreeNode*> m_stack;
 };
 
-template <typename Iterator, typename output>
-void merge(Iterator& in1, Iterator& end1, Iterator& in2, Iterator& end2, output out) {
+template <typename Iterator, typename Output>
+void copy(Iterator& it, Iterator& end, Output out) {
+    while (it != end) {
+        *out = *it;
+        ++it;
+        ++out;
+    }
+}
+
+template <typename Iterator, typename Output>
+void merge(Iterator& in1, Iterator& end1, Iterator& in2, Iterator& end2, Output out) {
     for ( ; in1 != end1; ++out) {
         if (in2 == end2) {
-            while (in1 != end1) {
-                *out = *in1;
-                ++in1;
-                ++out;
-            }
+            ::copy(in1, end1, out);
             return;
         }
         if (*in2 < *in1) {
@@ -90,11 +95,7 @@ void merge(Iterator& in1, Iterator& end1, Iterator& in2, Iterator& end2, output 
             ++in1;
         }
     }
-    while (in2 != end2) {
-        *out = *in2;
-        ++in2;
-        ++out;
-    }
+    ::copy(in2, end2, out);
 }
 
 class Solution {
