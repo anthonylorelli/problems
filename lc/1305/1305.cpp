@@ -131,6 +131,13 @@ TEST_CASE("LC test cases", "[All Elements in Two Binary Search Trees]") {
         Solution s;
         REQUIRE(s.getAllElements(tree1, tree2) == expected);
     }
+    SECTION("LC test case 4") {
+        TreeNode* tree1 {new TreeNode{0, new TreeNode{-10}, new TreeNode{10}}};
+        auto tree2 {nullptr};
+        std::vector<int> expected = {-10, 0, 10};
+        Solution s;
+        REQUIRE(s.getAllElements(tree1, tree2) == expected);
+    }
 }
 
 TEST_CASE("Basic test cases", "[All Elements in Two Binary Search Trees]") {
