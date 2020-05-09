@@ -1,6 +1,6 @@
 // 1305. All Elements in Two Binary Search Trees
 // Problem definition: https://leetcode.com/problems/all-elements-in-two-binary-search-trees/
-// Accepted ?
+// Accepted 2020-05-08
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -38,16 +38,10 @@ public:
     }
 
     int operator*() {
-        if (m_stack.empty()) {
-            throw std::exception("Empty stack");
-        }
         return m_stack.top()->val;
     }
 
     iterator& operator++() {
-        if (m_stack.empty()) {
-            throw std::exception("Empty stack");
-        }
         TreeNode* node {m_stack.top()};
         m_stack.pop();
         if (node->right) {
