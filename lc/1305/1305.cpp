@@ -1,6 +1,6 @@
 // 1305. All Elements in Two Binary Search Trees
 // Problem definition: https://leetcode.com/problems/all-elements-in-two-binary-search-trees/
-// Accepted ?
+// Accepted 2020-05-08
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -38,16 +38,10 @@ public:
     }
 
     int operator*() {
-        if (m_stack.empty()) {
-            throw std::exception("Empty stack");
-        }
         return m_stack.top()->val;
     }
 
     iterator& operator++() {
-        if (m_stack.empty()) {
-            throw std::exception("Empty stack");
-        }
         TreeNode* node {m_stack.top()};
         m_stack.pop();
         if (node->right) {
@@ -71,15 +65,20 @@ private:
     std::stack<TreeNode*> m_stack;
 };
 
-template <typename Iterator, typename output>
-void merge(Iterator& in1, Iterator& end1, Iterator& in2, Iterator& end2, output out) {
+template <typename Iterator, typename Output>
+void copy(Iterator& it, Iterator& end, Output out) {
+    while (it != end) {
+        *out = *it;
+        ++it;
+        ++out;
+    }
+}
+
+template <typename Iterator, typename Output>
+void merge(Iterator& in1, Iterator& end1, Iterator& in2, Iterator& end2, Output out) {
     for ( ; in1 != end1; ++out) {
         if (in2 == end2) {
-            while (in1 != end1) {
-                *out = *in1;
-                ++in1;
-                ++out;
-            }
+            ::copy(in1, end1, out);
             return;
         }
         if (*in2 < *in1) {
@@ -90,11 +89,7 @@ void merge(Iterator& in1, Iterator& end1, Iterator& in2, Iterator& end2, output 
             ++in1;
         }
     }
-    while (in2 != end2) {
-        *out = *in2;
-        ++in2;
-        ++out;
-    }
+    ::copy(in2, end2, out);
 }
 
 class Solution {
@@ -109,10 +104,45 @@ public:
 };
 
 TEST_CASE("LC test cases", "[All Elements in Two Binary Search Trees]") {
-    SECTION("LC test cases") {
+    SECTION("LC test case 1") {
         auto tree1 = new TreeNode{2, new TreeNode{1}, new TreeNode{4}};
         auto tree2 = new TreeNode{1, new TreeNode{0}, new TreeNode{3}};
         std::vector<int> expected = {0, 1, 1, 2, 3, 4};
+        Solution s;
+        REQUIRE(s.getAllElements(tree1, tree2) == expected);
+    }
+    SECTION("LC test case 2") {
+        auto tree1 = new TreeNode{0, new TreeNode{-10}, new TreeNode{10}};
+        auto tree2 = new TreeNode{5, new TreeNode{1, new TreeNode{0}, new TreeNode{2}}, new TreeNode{7}};
+        std::vector<int> expected = {-10, 0, 0, 1, 2, 5, 7, 10};
+        Solution s;
+        REQUIRE(s.getAllElements(tree1, tree2) == expected);
+    }
+    SECTION("LC test case 3") {
+        TreeNode* tree1 {nullptr};
+        auto tree2 = new TreeNode{5, new TreeNode{1, new TreeNode{0}, new TreeNode{2}}, new TreeNode{7}};
+        std::vector<int> expected = {0, 1, 2, 5, 7};
+        Solution s;
+        REQUIRE(s.getAllElements(tree1, tree2) == expected);
+    }
+    SECTION("LC test case 4") {
+        auto tree1 {new TreeNode{0, new TreeNode{-10}, new TreeNode{10}}};
+        TreeNode* tree2 {nullptr};
+        std::vector<int> expected = {-10, 0, 10};
+        Solution s;
+        REQUIRE(s.getAllElements(tree1, tree2) == expected);
+    }
+    SECTION("LC test case 5") {
+        auto tree1 {new TreeNode{1, nullptr, new TreeNode{8}}};
+        auto tree2 {new TreeNode{8, new TreeNode{1}, nullptr}};
+        std::vector<int> expected = {1, 1, 8, 8};
+        Solution s;
+        REQUIRE(s.getAllElements(tree1, tree2) == expected);
+    }
+    SECTION("LC test case 6") {
+        TreeNode* tree1 {nullptr};
+        TreeNode* tree2 {nullptr};
+        std::vector<int> expected;
         Solution s;
         REQUIRE(s.getAllElements(tree1, tree2) == expected);
     }
