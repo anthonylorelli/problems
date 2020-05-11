@@ -25,7 +25,19 @@ struct TreeNode {
 class Solution {
 public:
     TreeNode* pruneTree(TreeNode* root) {
-        return nullptr;        
+        if (root) {
+            if (allZero(root->left)) {
+                root->left = nullptr;
+            }
+            if (allZero(root->right)) {
+                root->right = nullptr;
+            }
+        }
+    }
+
+private:
+    bool allZero(TreeNode* root) {
+        return root ? (root->val == 0 && allZero(root->right) && allZero(root->left)) : true;
     }
 };
 
