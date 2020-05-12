@@ -1,6 +1,6 @@
 // 0814. Binary Tree Pruning
 // Problem definition: https://leetcode.com/problems/binary-tree-pruning/
-// Accepted ?
+// Accepted 2020-05-11
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -26,18 +26,13 @@ class Solution {
 public:
     TreeNode* pruneTree(TreeNode* root) {
         if (root) {
-            if (allZero(root->left)) {
-                root->left = nullptr;
-            }
-            if (allZero(root->right)) {
-                root->right = nullptr;
+            root->left = pruneTree(root->left);
+            root->right = pruneTree(root->right);
+            if (root->val == 0 && !root->left && !root->right) {
+                root = nullptr;
             }
         }
-    }
-
-private:
-    bool allZero(TreeNode* root) {
-        return root ? (root->val == 0 && allZero(root->right) && allZero(root->left)) : true;
+        return root;
     }
 };
 
