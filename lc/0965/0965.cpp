@@ -1,6 +1,6 @@
 // 0965. Univalued Binary Tree
 // Problem definition: https://leetcode.com/problems/univalued-binary-tree/
-// Accepted ?
+// Accepted 2020-05-13
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -20,7 +20,12 @@ struct TreeNode {
 class Solution {
 public:
     bool isUnivalTree(TreeNode* root) {
-        return false;       
+        return isUnivalTree(root, root->val);
+    }
+
+private:
+    bool isUnivalTree(TreeNode* root, int val) {
+        return root ? (root->val == val && isUnivalTree(root->left, val) && isUnivalTree(root->right, val)) : true;
     }
 };
 
