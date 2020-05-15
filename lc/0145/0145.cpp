@@ -33,10 +33,7 @@ public:
     }
 
     iterator& operator++() {
-        TreeNode* node {m_stack.top()};
-        if (m_last == node) {
-            m_stack.pop();
-        } 
+        m_stack.pop();
         if (!m_stack.empty()) {
             seek(m_stack.top()->right);
         }
@@ -60,7 +57,6 @@ private:
             m_stack.push(node);
             node = node->left ? node->left : node->right;
         }
-        m_last = m_stack.top();
     }
 };
 
