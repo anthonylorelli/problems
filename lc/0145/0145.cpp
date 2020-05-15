@@ -24,7 +24,7 @@ class iterator
 {
 public:
     iterator() = default;
-    iterator(TreeNode* node) {
+    iterator(TreeNode* node) : m_last{nullptr} {
         seek(node);
     }
 
@@ -34,8 +34,12 @@ public:
 
     iterator& operator++() {
         TreeNode* node {m_stack.top()};
-        m_stack.pop();
-        seek(node->left);
+        if (m_last == node) {
+            m_stack.pop();
+        } 
+        if (!m_stack.empty()) {
+            seek(m_stack.top()->right);
+        }
         return *this;
     }
 
@@ -49,14 +53,14 @@ public:
 
 private:
     std::stack<TreeNode*> m_stack;
+    TreeNode* m_last {nullptr};
 
     void seek(TreeNode* node) {
-        if (node) {
+        while (node) {
             m_stack.push(node);
-            while (m_stack.top()->right) {
-                m_stack.push(m_stack.top()->right);
-            }
+            node = node->left ? node->left : node->right;
         }
+        m_last = m_stack.top();
     }
 };
 
@@ -75,7 +79,7 @@ public:
 
 TEST_CASE("LC test cases", "[Binary Tree Postorder Traversal]") {
     SECTION("Case 1") {
-        auto tree = new TreeNode{1, nullptr, new TreeNode{2, nullptr, new TreeNode{3}}};
+        auto tree = new TreeNode{1, nullptr, new TreeNode{2, new TreeNode{3}, nullptr}};
         std::vector<int> expected = {3, 2, 1};
         Solution s;
         REQUIRE(s.postorderTraversal(tree) == expected);
