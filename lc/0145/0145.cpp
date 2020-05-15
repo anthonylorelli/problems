@@ -1,12 +1,13 @@
 // 0145. Binary Tree Postorder Traversal
 // Problem definition: https://leetcode.com/problems/binary-tree-postorder-traversal/
-// Accepted ?
+// Accepted 2020-05-15
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
 
 #include <vector>
 #include <stack>
+#include <tuple>
 
 /**
  * Definition for a binary tree node.
@@ -24,18 +25,19 @@ class iterator
 {
 public:
     iterator() = default;
-    iterator(TreeNode* node) : m_last{nullptr} {
+    iterator(TreeNode* node) {
         seek(node);
     }
 
     int operator*() {
-        return m_stack.top()->val;
+        return m_stack.top().first->val;
     }
 
     iterator& operator++() {
         m_stack.pop();
-        if (!m_stack.empty()) {
-            seek(m_stack.top()->right);
+        if (!m_stack.empty() && !m_stack.top().second) {
+            m_stack.top().second = true;
+            seek(m_stack.top().first->right);
         }
         return *this;
     }
@@ -49,13 +51,17 @@ public:
     }
 
 private:
-    std::stack<TreeNode*> m_stack;
-    TreeNode* m_last {nullptr};
+    std::stack<std::pair<TreeNode*,bool>> m_stack;
 
     void seek(TreeNode* node) {
         while (node) {
-            m_stack.push(node);
-            node = node->left ? node->left : node->right;
+            m_stack.push({node,false});
+            if (node->left) {
+                node = node->left;
+            } else {
+                node = node->right;
+                m_stack.top().second = true;
+            }
         }
     }
 };
