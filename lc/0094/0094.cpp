@@ -1,6 +1,6 @@
 // 0094. Binary Tree Inorder Traversal
 // Problem definition: https://leetcode.com/problems/binary-tree-inorder-traversal/
-// Accepted ?
+// Accepted 2020-05-18
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
