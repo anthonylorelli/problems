@@ -60,10 +60,22 @@ private:
     }
 };
 
+template <typename Iterator>
+int count(Iterator& begin, const Iterator& end) {
+    int count {0};
+    while (begin != end) { 
+        ++count;
+        ++begin;
+    }
+    return count;
+}
+
 class Solution {
 public:
     int minDepth(TreeNode* root) {
-        return 0;
+        ::iterator begin {root}, end {};
+        int answer {::count(begin, end) / 2};
+        return answer == 1 ? 1 : answer / 2;
     }
 };
 
