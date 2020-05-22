@@ -5,8 +5,10 @@
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
 
+#include <algorithm>
 #include <vector>
 #include <stack>
+#include <cmath>
 
 /**
  * Definition for a binary tree node.
@@ -20,62 +22,16 @@ struct TreeNode {
     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
 };
 
-class iterator
-{
-public:
-    iterator() = default;
-    iterator(TreeNode* node) {
-        traverse(node);
-    }
-
-    int operator*() {
-        return m_stack.top()->val;
-    }
-
-    iterator& operator++() {
-        TreeNode* node {m_stack.top()};
-        m_stack.pop();
-        traverse(node->right);
-        return *this;
-    }
-
-    bool operator==(const iterator& i) const {
-        return m_stack == i.m_stack;
-    }
-
-    bool operator!=(const iterator& i) const {
-        return !(*this == i);
-    }
-
-private:
-    std::stack<TreeNode*> m_stack;
-
-    void traverse(TreeNode* node) {
-        if (node) {
-            m_stack.push(node);
-            while (m_stack.top()->left) {
-                m_stack.push(m_stack.top()->left);
-            }
-        }
-    }
-};
-
-template <typename Iterator>
-int count(Iterator& begin, const Iterator& end) {
-    int count {0};
-    while (begin != end) { 
-        ++count;
-        ++begin;
-    }
-    return count;
-}
-
 class Solution {
 public:
     int minDepth(TreeNode* root) {
-        ::iterator begin {root}, end {};
-        int answer {::count(begin, end) / 2};
-        return answer == 1 ? 1 : answer / 2;
+        if (!root) {
+            return 0;
+        }
+        
+        int left {minDepth(root->left)};
+        int right {minDepth(root->right)};
+        return left && right ? 1 + std::min(left, right) : left ? left : right;
     }
 };
 
