@@ -1,6 +1,6 @@
 // 0111. Minimum Depth of Binary Tree
 // Problem definition: https://leetcode.com/problems/minimum-depth-of-binary-tree/
-// Accepted ?
+// Accepted 2020-05-22
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -31,7 +31,7 @@ public:
         
         int left {minDepth(root->left)};
         int right {minDepth(root->right)};
-        return left && right ? 1 + std::min(left, right) : left ? left : right;
+        return 1 + (left && right ? std::min(left, right) : !left && !right ? 0 : left ? left : right);
     }
 };
 
