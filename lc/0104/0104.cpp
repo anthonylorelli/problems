@@ -1,6 +1,6 @@
 // 0104. Maximum Depth of Binary Tree
 // Problem definition: https://leetcode.com/problems/maximum-depth-of-binary-tree/
-// Accepted ?
+// Accepted 2020-05-24
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -25,14 +25,22 @@ struct TreeNode {
 class Solution {
 public:
     int maxDepth(TreeNode* root) {
-        return 0;
+        if (!root) {
+            return 0;
+        } 
+
+        int left {maxDepth(root->left)};
+        int right {maxDepth(root->right)};
+
+        return 1 + (left && right ? std::max(left, right) : 
+            !left && !right ? 0 : left ? left : right);
     }
 };
 
-TEST_CASE("LC test cases", "[Minimum Depth of Binary Tree]") {
+TEST_CASE("LC test cases", "[Maximum Depth of Binary Tree]") {
     SECTION("Case 1") {
         auto tree = new TreeNode{1, nullptr, new TreeNode{2, new TreeNode{3}, nullptr}};
-        int expected = 0;
+        int expected = 3;
         Solution s;
         REQUIRE(s.maxDepth(tree) == expected);
     }
