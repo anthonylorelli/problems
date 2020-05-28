@@ -9,6 +9,7 @@
 #include <vector>
 #include <stack>
 #include <cmath>
+#include <cstdint>
 
 /**
  * Definition for a binary tree node.
@@ -59,6 +60,8 @@ private:
         }
     }
 };
+
+constexpr uint32_t c_mod {1'000'000'000 + 7};
 
 class Solution {
 public:
