@@ -72,18 +72,9 @@ public:
 
 TEST_CASE("LC test cases", "[Maximum Product of Splitted Binary Tree]") {
     SECTION("Case 1") {
-        auto tree = new TreeNode{1, nullptr, new TreeNode{2, new TreeNode{3}, nullptr}};
-        std::vector<int> expected = {1, 2, 3};
+        auto tree = new TreeNode{1, new TreeNode{2, new TreeNode{4}, new TreeNode{5}}, new TreeNode{3, new TreeNode{6}, nullptr}};
         Solution s;
-        REQUIRE(s.preorderTraversal(tree) == expected);
-    }
-    SECTION("Case 2") {
-        auto tree = new TreeNode{4, 
-            new TreeNode{3, new TreeNode{2}, new TreeNode{1}}, 
-            new TreeNode{5, new TreeNode{6}, new TreeNode{7}}};
-        std::vector<int> expected = {4, 3, 2, 1, 5, 6, 7};
-        Solution s;
-        REQUIRE(s.preorderTraversal(tree) == expected);
+        REQUIRE(s.maxProduct(tree) == 110);
     }
 }
 
