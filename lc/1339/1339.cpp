@@ -10,6 +10,7 @@
 #include <stack>
 #include <cmath>
 #include <cstdint>
+#include <iostream>
 
 /**
  * Definition for a binary tree node.
@@ -30,28 +31,29 @@ public:
     int maxProduct(TreeNode* root) {
         if (!root) { return 0; }
         const int64_t total {root->val + sumTree(root->left) + sumTree(root->right)};
-        findMax(root, total);
-        return m_max % c_mod;
+        std::transform(m_sums.begin(), m_sums.end(), m_sums.begin(), [total](const int64_t n) { return n * (total - n); });
+        auto max_it {std::max_element(m_sums.begin(), m_sums.end())};
+        return *max_it % c_mod;
     }
 
 private:
     int64_t sumTree(TreeNode* root) {
-        int64_t sum {0};
-        if (root) {
-            sum = root->val + sumTree(root->right) + sumTree(root->left);
-        }
-        return sum;
-    }
-
-    int64_t findMax(TreeNode* root, const int64_t total) {
         if (!root) { return 0; }
-        const int64_t sum {root->val + findMax(root->right, total) + findMax(root->left, total)};
-        m_max = std::max(m_max, sum * (total - sum));
+        int64_t sum {root->val + sumTree(root->right) + sumTree(root->left)};
+        m_sums.push_back(sum);
         return sum;
     }
 
-    int64_t m_max {0};
+    std::vector<int64_t> m_sums;
 };
+
+auto speed=[]()
+{
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    std::cout.tie(nullptr);
+    return nullptr;
+}();
 
 TEST_CASE("LC test cases", "[Maximum Product of Splitted Binary Tree]") {
     SECTION("Case 1") {
