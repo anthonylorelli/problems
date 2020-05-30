@@ -33,15 +33,14 @@ public:
 
 TEST_CASE("LC test cases", "[Binary Tree Level Order Traversal]") {
     SECTION("Case 1") {
-        auto tree = new TreeNode{1, new TreeNode{2, new TreeNode{4}, new TreeNode{5}}, new TreeNode{3, new TreeNode{6}, nullptr}};
-        std::vector<std::vector<int>> result = {{110}};
+        auto tree = new TreeNode{3, new TreeNode{9, nullptr, nullptr}, new TreeNode{20, new TreeNode{15}, new TreeNode{7}}};
+        std::vector<std::vector<int>> result = {{3},{9,20},{15,7}};
         Solution s;
         REQUIRE(s.levelOrder(tree) == result);
     }
 }
 
-auto speed=[]()
-{
+auto speed=[](){
     std::ios::sync_with_stdio(false);
     std::cin.tie(nullptr);
     std::cout.tie(nullptr);
