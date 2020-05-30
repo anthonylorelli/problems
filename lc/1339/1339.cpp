@@ -66,7 +66,19 @@ constexpr uint32_t c_mod {1'000'000'000 + 7};
 class Solution {
 public:
     int maxProduct(TreeNode* root) {
-        return 0;
+        if (!root) { return 0; }
+        int64_t leftSum {root->val + treeSum(root->left)};
+        int64_t rightSum {root->val + treeSum(root->right)};
+        return std::max(leftSum, rightSum) % c_mod;
+    }
+
+private:
+    int64_t treeSum(TreeNode* root) {
+        int64_t sum {0};
+        if (root) {
+            sum = root->val + treeSum(root->right) + treeSum(root->left);
+        }
+        return sum;
     }
 };
 
