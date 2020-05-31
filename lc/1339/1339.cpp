@@ -31,9 +31,9 @@ public:
     int maxProduct(TreeNode* root) {
         if (!root) { return 0; }
         const int64_t total {root->val + sumTree(root->left) + sumTree(root->right)};
-        std::transform(m_sums.begin(), m_sums.end(), m_sums.begin(), [total](const int64_t n) { return n * (total - n); });
-        auto max_it {std::max_element(m_sums.begin(), m_sums.end())};
-        return *max_it % c_mod;
+        int64_t max {m_sums[0] * (total - m_sums[0])};
+        std::for_each(m_sums.begin() + 1, m_sums.end(), [&](const int64_t n) { max = std::max(max, n * (total - n)); });
+        return max % c_mod;
     }
 
 private:
