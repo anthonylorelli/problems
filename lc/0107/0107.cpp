@@ -1,6 +1,6 @@
 // 0107. Binary Tree Level Order Traversal II
 // Problem definition: https://leetcode.com/problems/binary-tree-level-order-traversal-ii/
-// Accepted ?
+// Accepted 2020-06-01
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -27,7 +27,24 @@ struct TreeNode {
 class Solution {
 public:
     std::vector<std::vector<int>> levelOrderBottom(TreeNode* root) {
-        return {{}};
+        std::vector<std::vector<int>> results;
+        if (!root) { return results; }
+        std::queue<std::pair<TreeNode*,int>> levels;
+        levels.push({root,0});
+        while (!levels.empty()) {
+            auto [node, depth] = levels.front();
+            levels.pop();
+            int nextDepth {depth + 1};
+            if (nextDepth > results.size()) {
+                results.push_back({node->val});
+            } else {
+                results[depth].push_back(node->val);
+            }
+            if (node->left) { levels.push({node->left, nextDepth}); }
+            if (node->right) { levels.push({node->right, nextDepth}); }
+        }
+        std::reverse(results.begin(), results.end());
+        return results;
     }
 };
 
