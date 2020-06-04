@@ -1,12 +1,13 @@
 // 0103. Binary Tree Zigzag Level Order Traversal
 // Problem definition: https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/
-// Accepted ?
+// Accepted 2020-06-03
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
 
 #include <algorithm>
 #include <vector>
+#include <queue>
 #include <deque>
 #include <iostream>
 
@@ -27,25 +28,35 @@ public:
     std::vector<std::vector<int>> zigzagLevelOrder(TreeNode* root) {
         std::vector<std::vector<int>> results;
         if (!root) { return results; }
-        std::deque<std::pair<TreeNode*,int>> queue;
-        queue.push_back({root,0});
+        std::queue<std::pair<TreeNode*,int>> queue;
+        std::deque<int> values;
+        int current {0};
+        queue.push({root,current});
         while (!queue.empty()) {
             auto [node, depth] = queue.front();
-            queue.pop_front();
+            queue.pop();
             int nextDepth {depth + 1};
-            if (nextDepth > results.size()) {
-                results.push_back({node->val});
+
+            if (current != depth) {
+                results.emplace_back();
+                std::copy(values.begin(), values.end(), std::back_inserter(results[current]));
+                current = depth;
+                values.clear();
+            } 
+
+            if (depth % 2) {
+                values.push_front(node->val);
             } else {
-                results[depth].push_back(node->val);
+                values.push_back(node->val);
             }
-            if (nextDepth % 2) {
-                if (node->left) { queue.push_front({node->left, nextDepth}); }
-                if (node->right) { queue.push_front({node->right, nextDepth}); }
-            } else { 
-                if (node->left) { queue.push_back({node->left, nextDepth}); }
-                if (node->right) { queue.push_back({node->right, nextDepth}); }
-            }
+
+            if (node->left) { queue.push({node->left, nextDepth}); }
+            if (node->right) { queue.push({node->right, nextDepth}); }
         }
+
+        results.emplace_back();
+        std::copy(values.begin(), values.end(), std::back_inserter(results[results.size() - 1]));
+
         return results;
     }
 };
