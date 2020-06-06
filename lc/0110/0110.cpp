@@ -1,6 +1,6 @@
 // 0110. Balanced Binary Tree
 // Problem definition: https://leetcode.com/problems/balanced-binary-tree/
-// Accepted ?
+// Accepted 2020-06-05
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -23,7 +23,19 @@ struct TreeNode {
 class Solution {
 public:
     bool isBalanced(TreeNode* root) {
-        return false;
+        return getBalanceHeight(root, 0).first;
+    }
+
+private:
+    std::pair<bool,int> getBalanceHeight(TreeNode* root, const int height) {
+        if (!root) { return {true,height}; }
+        auto left = getBalanceHeight(root->left, height + 1);
+        auto right = getBalanceHeight(root->right, height + 1);
+        std::pair<bool,int> result;
+        result.first = (left.first && right.first) && ((left.second == right.second) ||
+            (left.second - 1 == right.second) || (left.second + 1 == right.second));
+        result.second = std::max(left.second, right.second);
+        return result;
     }
 };
 
