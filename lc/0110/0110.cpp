@@ -23,20 +23,18 @@ struct TreeNode {
 class Solution {
 public:
     bool isBalanced(TreeNode* root) {
-        return getBalanceHeight(root, 0).first;
+        return compareHeight(root) != -1;
     }
 
 private:
-    std::pair<bool,int> getBalanceHeight(TreeNode* root, const int height) {
-        if (!root) { return {true,height}; }
-        auto left = getBalanceHeight(root->left, height + 1);
-        if (!left.first) { return {false,0}; }
-        auto right = getBalanceHeight(root->right, height + 1);
-        if (!right.first) { return {false,0}; }
-        std::pair<bool,int> result;
-        result.first = std::abs(left.second - right.second) <= 1;
-        result.second = std::max(left.second, right.second);
-        return result;
+    int compareHeight(const TreeNode* root) {
+        if (!root) { return 0; }
+        const auto left = compareHeight(root->left);
+        if (left == -1) { return left; }
+        const auto right = compareHeight(root->right);
+        if (right == -1) { return right; }
+        if (std::abs(left - right) > 1) { return -1; }
+        return std::max(left, right) + 1;
     }
 };
 
