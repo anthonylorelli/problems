@@ -30,10 +30,11 @@ private:
     std::pair<bool,int> getBalanceHeight(TreeNode* root, const int height) {
         if (!root) { return {true,height}; }
         auto left = getBalanceHeight(root->left, height + 1);
+        if (!left.first) { return {false,0}; }
         auto right = getBalanceHeight(root->right, height + 1);
+        if (!right.first) { return {false,0}; }
         std::pair<bool,int> result;
-        result.first = (left.first && right.first) && ((left.second == right.second) ||
-            (left.second - 1 == right.second) || (left.second + 1 == right.second));
+        result.first = std::abs(left.second - right.second) <= 1;
         result.second = std::max(left.second, right.second);
         return result;
     }
