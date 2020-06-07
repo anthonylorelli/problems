@@ -36,11 +36,11 @@ public:
             for (int i {0}; i < count; ++i) {
                 TreeNode* node {queue.front()};
                 queue.pop();
-                result[result.size() - 1] += node->val;
+                result.back() += node->val;
                 if (node->left) { queue.push(node->left); }
                 if (node->right) { queue.push(node->right); }
             }
-            result[result.size() - 1] /= count;
+            result.back() /= count;
         }
         return result;
     }
