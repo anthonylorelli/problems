@@ -28,25 +28,20 @@ public:
     std::vector<double> averageOfLevels(TreeNode* root) {
         std::vector<double> result;
         if (!root) { return result; }
-        std::queue<std::pair<TreeNode*,int>> queue;
-        queue.push({root,0});
-        std::vector<int> counts;
+        std::queue<TreeNode*> queue;
+        queue.push(root);
         while (!queue.empty()) {
-            auto [node, depth] = queue.front();
-            queue.pop();
-            int nextDepth {depth + 1};
-            if (nextDepth > result.size()) {
-                result.push_back(node->val);
-                counts.push_back(1);
-            } else {
-                result[depth] += node->val;
-                counts[depth]++;
+            int count = queue.size();
+            result.emplace_back(0.0);
+            for (int i {0}; i < count; ++i) {
+                TreeNode* node {queue.front()};
+                queue.pop();
+                result.back() += node->val;
+                if (node->left) { queue.push(node->left); }
+                if (node->right) { queue.push(node->right); }
             }
-            if (node->left) { queue.push({node->left, nextDepth}); }
-            if (node->right) { queue.push({node->right, nextDepth}); }
+            result.back() /= count;
         }
-        std::transform(result.begin(), result.end(), counts.begin(), result.begin(), 
-            [](const auto val, const auto count) { return val / count; });
         return result;
     }
 };
