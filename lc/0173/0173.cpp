@@ -1,6 +1,6 @@
 // 0173. Binary Search Tree Iterator
 // Problem definition: https://leetcode.com/problems/binary-search-tree-iterator/
-// Accepted ?
+// Accepted 2020-06-06
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -30,6 +30,7 @@ public:
     /** @return the next smallest number */
     int next() {
         TreeNode* current {m_stack.top()};
+        m_stack.pop();
         traverse(current->right);
         return current->val;
     }
