@@ -26,7 +26,26 @@ struct TreeNode {
 class Solution {
 public:
     int widthOfBinaryTree(TreeNode* root) {
-        return 0;
+        int max {0};
+        if (!root) { return max; }
+        std::queue<TreeNode*> queue;
+        queue.push(root);
+        while (!queue.empty()) {
+            int count = queue.size();
+            int width {0};
+            int blanks {0};
+            for (int n {0}; n < count; ++n) {
+                TreeNode* current = queue.front();
+                queue.pop();
+                if (current) {
+                    width++;
+                    queue.push(current->left);
+                    queue.push(current->right);
+                } else {
+                    
+                }
+            }
+        }
     }
 };
 
