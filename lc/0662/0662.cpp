@@ -1,6 +1,6 @@
 // 0662. Maximum Width of Binary Tree
 // Problem definition: https://leetcode.com/problems/maximum-width-of-binary-tree/
-// Accepted ?
+// Accepted 2020-06-09
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -41,11 +41,19 @@ public:
                     width++;
                     queue.push(current->left);
                     queue.push(current->right);
-                } else {
-                    
+                    if (blanks) {
+                        width += blanks;
+                        blanks = 0;
+                    }
+                } else if (width) {
+                    blanks++;
+                    queue.push(nullptr);
+                    queue.push(nullptr);
                 }
             }
+            max = std::max(max, width);
         }
+        return max;
     }
 };
 
@@ -59,7 +67,7 @@ auto speed=[]()
 
 TEST_CASE("LC test cases", "[Maximum Width of Binary Tree]") {
     SECTION("Case 1") {
-        auto tree = new TreeNode{3, new TreeNode{9, nullptr, nullptr}, new TreeNode{20, new TreeNode{15}, new TreeNode{7}}};
+        auto tree = new TreeNode{1, new TreeNode{3, new TreeNode(5), new TreeNode(3)}, new TreeNode{2, nullptr, new TreeNode{9}}};
         Solution s;
         REQUIRE(s.widthOfBinaryTree(tree) == 4);
     }
