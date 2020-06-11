@@ -10,6 +10,7 @@
 #include <vector>
 #include <queue>
 #include <cstdint>
+#include <limits>
 
 /**
  * Definition for a binary tree node.
@@ -26,7 +27,14 @@ struct TreeNode {
 class Solution {
 public:
     bool isValidBST(TreeNode* root) {
-        return false;
+        return isValidBST(root, std::numeric_limits<int>::min(), std::numeric_limits<int>::max());
+    }
+
+private:
+    bool isValidBST(const TreeNode* root, const int min, const int max) const {
+        if (!root) { return true; }
+        if (root->val <= min || root->val >= max) { return false; }
+        return isValidBST(root->left, min, root->val) && isValidBST(root->right, root->val, max);
     }
 };
 
