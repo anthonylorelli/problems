@@ -52,6 +52,11 @@ TEST_CASE("LC test cases", "[Validate Binary Search Tree]") {
         Solution s;
         REQUIRE(s.isValidBST(tree) == false);
     }
+    SECTION("Case 2") {
+        auto tree = new TreeNode{2, new TreeNode{1}, new TreeNode{3}};
+        Solution s;
+        REQUIRE(s.isValidBST(tree) == true);
+    }
 }
 
 int main(int argc, char* argv[]) {
