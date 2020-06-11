@@ -28,7 +28,7 @@ public:
     int widthOfBinaryTree(TreeNode* root) {
         int max {0};
         if (!root) { return max; }
-        std::queue<std::pair<TreeNode*,int64_t>> queue;
+        std::queue<std::pair<TreeNode*,uint64_t>> queue;
         queue.push({root,1});
         while (!queue.empty()) {
             int width = queue.back().second - queue.front().second + 1;
@@ -36,7 +36,7 @@ public:
             for (int n {0}; n < length; ++n) {
                 auto [node, index] = queue.front();
                 queue.pop();
-                int64_t next {index * 2};
+                uint64_t next {index * 2};
                 if (node->left) { queue.push({node->left, next}); }
                 if (node->right) { queue.push({node->right, next + 1}); }
             }
