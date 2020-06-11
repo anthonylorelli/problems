@@ -28,28 +28,17 @@ public:
     int widthOfBinaryTree(TreeNode* root) {
         int max {0};
         if (!root) { return max; }
-        std::queue<TreeNode*> queue;
-        queue.push(root);
+        std::queue<std::pair<TreeNode*,uint64_t>> queue;
+        queue.push({root,1});
         while (!queue.empty()) {
-            int count = queue.size();
-            int width {0};
-            int blanks {0};
-            for (int n {0}; n < count; ++n) {
-                TreeNode* current = queue.front();
+            int width = queue.back().second - queue.front().second + 1;
+            int length = queue.size();
+            for (int n {0}; n < length; ++n) {
+                auto [node, index] = queue.front();
                 queue.pop();
-                if (current) {
-                    width++;
-                    queue.push(current->left);
-                    queue.push(current->right);
-                    if (blanks) {
-                        width += blanks;
-                        blanks = 0;
-                    }
-                } else if (width) {
-                    blanks++;
-                    queue.push(nullptr);
-                    queue.push(nullptr);
-                }
+                uint64_t next {index * 2};
+                if (node->left) { queue.push({node->left, next}); }
+                if (node->right) { queue.push({node->right, next + 1}); }
             }
             max = std::max(max, width);
         }
