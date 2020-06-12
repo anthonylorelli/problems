@@ -1,6 +1,6 @@
 // 0098. Validate Binary Search Tree
 // Problem definition: https://leetcode.com/problems/validate-binary-search-tree/
-// Accepted ?
+// Accepted 2020-06-11
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -27,11 +27,11 @@ struct TreeNode {
 class Solution {
 public:
     bool isValidBST(TreeNode* root) {
-        return isValidBST(root, std::numeric_limits<int>::min(), std::numeric_limits<int>::max());
+        return isValidBST(root, std::numeric_limits<int64_t>::min(), std::numeric_limits<int64_t>::max());
     }
 
 private:
-    bool isValidBST(const TreeNode* root, const int min, const int max) const {
+    bool isValidBST(const TreeNode* root, const int64_t min, const int64_t max) const {
         if (!root) { return true; }
         if (root->val <= min || root->val >= max) { return false; }
         return isValidBST(root->left, min, root->val) && isValidBST(root->right, root->val, max);
