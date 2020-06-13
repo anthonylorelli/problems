@@ -29,6 +29,11 @@ public:
     std::vector<int> findMode(TreeNode* root) {
         return {};        
     }
+
+private:
+    int findMax(TreeNode* root, int currentMax) {
+        return 0;
+    }
 };
 
 auto speed=[]()
