@@ -65,12 +65,8 @@ private:
 class Solution {
 public:
     std::vector<int> findMode(TreeNode* root) {
-        std::vector<int> result;
-        if (!root) { return result; }
-        int max {find_max(root)};
-        auto fn = [&result, &max](const int count, const int value) { if (count == max) { result.push_back(value); }};
-        group_elements(root, fn);
-        return result;
+        if (!root) { return {}; }
+        return collect_modes(root, find_max(root));
     }
 
 private:
@@ -100,6 +96,13 @@ private:
         auto fn = [&max](const int count, const int) { max = std::max(max, count); };
         group_elements(root, fn);
         return max;
+    }
+
+    std::vector<int> collect_modes(TreeNode* root, const int target) {
+        std::vector<int> result;
+        auto fn = [&result, &target](const int count, const int value) { if (count == target) { result.push_back(value); }};
+        group_elements(root, fn);
+        return result;
     }
 };
 
