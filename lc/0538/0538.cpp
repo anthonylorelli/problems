@@ -1,6 +1,6 @@
-// 0501. Find Mode in Binary Search Tree
-// Problem definition: https://leetcode.com/problems/find-mode-in-binary-search-tree/
-// Accepted 2020-06-13
+// 0538. Convert BST to Greater Tree
+// Problem definition: https://leetcode.com/problems/convert-bst-to-greater-tree/
+// Accepted ?
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -64,45 +64,8 @@ private:
 
 class Solution {
 public:
-    std::vector<int> findMode(TreeNode* root) {
-        if (!root) { return {}; }
-        return collect_modes(root, find_max(root));
-    }
-
-private:
-    template <typename F>
-    void group_elements(TreeNode* root, F fn) {
-        ::iterator begin {root};
-        ::iterator end {};
-        int prev {*begin};
-        int count {1};
-        ++begin;
-        while (begin != end) {
-            int current {*begin};
-            if (current == prev) { 
-                count++; 
-            } else {
-                fn(count, prev);
-                count = 1;
-                prev = current;
-            }
-            ++begin;
-        }
-        fn(count, prev);
-    }
-
-    int find_max(TreeNode* root) {
-        int max {1};
-        auto fn = [&max](const int count, const int) { max = std::max(max, count); };
-        group_elements(root, fn);
-        return max;
-    }
-
-    std::vector<int> collect_modes(TreeNode* root, const int target) {
-        std::vector<int> result;
-        auto fn = [&result, &target](const int count, const int value) { if (count == target) { result.push_back(value); }};
-        group_elements(root, fn);
-        return result;
+    TreeNode* convertBST(TreeNode* root) {
+        return nullptr;        
     }
 };
 
@@ -114,7 +77,7 @@ auto speed=[]()
     return nullptr;
 }();
 
-TEST_CASE("LC test cases", "[Find Mode in Binary Search Tree]") {
+TEST_CASE("LC test cases", "[Convert BST to Greater Tree]") {
     SECTION("Case 1") {
         auto tree = new TreeNode{1, new TreeNode{3, new TreeNode(5), new TreeNode(3)}, new TreeNode{2, nullptr, new TreeNode{9}}};
         std::vector<int> expected;
