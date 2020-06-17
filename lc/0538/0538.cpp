@@ -1,6 +1,6 @@
 // 0538. Convert BST to Greater Tree
 // Problem definition: https://leetcode.com/problems/convert-bst-to-greater-tree/
-// Accepted ?
+// Accepted 2020-06-16
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -24,48 +24,21 @@ struct TreeNode {
     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
 };
 
-class iterator
-{
-public:
-    iterator() = default;
-    iterator(TreeNode* node) {
-        traverse(node);
-    }
-
-    int operator*() {
-        return m_stack.top()->val;
-    }
-
-    iterator& operator++() {
-        TreeNode* node {m_stack.top()};
-        m_stack.pop();
-        traverse(node->right);
-        return *this;
-    }
-
-    bool operator==(const iterator& i) const {
-        return m_stack == i.m_stack;
-    }
-
-    bool operator!=(const iterator& i) const {
-        return !(*this == i);
-    }
-
-private:
-    std::stack<TreeNode*> m_stack;
-
-    void traverse(TreeNode* node) {
-        while (node) {
-            m_stack.push(node);
-            node = node->left;
-        }
-    }
-};
-
 class Solution {
 public:
     TreeNode* convertBST(TreeNode* root) {
-        return nullptr;        
+        convertTree(root, 0);
+        return root;
+    }
+
+private:
+    int convertTree(TreeNode* root, const int sum) {
+        if (!root) { return sum; }
+
+        int right {convertTree(root->right, sum)};
+        int current {root->val};
+        root->val += right;
+        return convertTree(root->left, root->val);
     }
 };
 
