@@ -27,7 +27,27 @@ struct TreeNode {
 class Solution {
 public:
     void flatten(TreeNode* root) {
-        return;        
+        merge(root);
+        return root;
+    }
+
+private:
+    TreeNode* merge(TreeNode* root) {
+        if (!root) { return nullptr; }
+
+        auto left {merge(root->left)};
+        auto right {merge(root->right)};
+
+        if (!left && !right) { return root; }
+        if (!left) { return right; }
+        if (!right) { 
+            std::swap(root->right, root->left);
+            return left; 
+        }
+
+        left->right = root->right;
+        root->left = nullptr;
+        return right;
     }
 };
 
