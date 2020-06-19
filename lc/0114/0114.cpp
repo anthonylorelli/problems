@@ -1,6 +1,6 @@
 // 0114. Flatten Binary Tree to Linked List
 // Problem definition: https://leetcode.com/problems/flatten-binary-tree-to-linked-list/
-// Accepted ?
+// Accepted 2020-06-18
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -28,24 +28,24 @@ class Solution {
 public:
     void flatten(TreeNode* root) {
         merge(root);
-        return root;
     }
 
 private:
     TreeNode* merge(TreeNode* root) {
         if (!root) { return nullptr; }
+        if (!root->left && !root->right) { return root; }
 
         auto left {merge(root->left)};
         auto right {merge(root->right)};
 
-        if (!left && !right) { return root; }
-        if (!left) { return right; }
-        if (!right) { 
+        if (!root->left) { return right; }
+        if (!root->right) { 
             std::swap(root->right, root->left);
             return left; 
         }
 
         left->right = root->right;
+        root->right = root->left;
         root->left = nullptr;
         return right;
     }
