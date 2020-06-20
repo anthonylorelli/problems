@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <iostream>
 #include <string>
+#include <queue>
 
 /**
  * Definition for a binary tree node.
@@ -26,7 +27,35 @@ public:
 
     // Encodes a tree to a single string.
     std::string serialize(TreeNode* root) {
+        if (!root) { return "[]"; }
+        std::string result {"["};
         
+        std::queue<TreeNode*> queue;
+        queue.push(root);
+        
+        while (!queue.empty()) {
+            int count = queue.size();
+            for (int n {0}; n < count; ++n) {
+                if (n) { 
+                    result += ",";
+                }
+                TreeNode* next {queue.front()};
+                queue.pop();
+                if (next) {
+                    result += std::to_string(next->val);
+                    queue.push(next->left);
+                    queue.push(next->right);
+                } else {
+                    result += "null";
+                }
+            }
+            if (queue.size()) {
+                result += ",";
+            }
+        }
+        result += "]";
+        
+        return result;
     }
 
     // Decodes your encoded data to tree.
