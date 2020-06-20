@@ -43,8 +43,10 @@ public:
                 queue.pop();
                 if (next) {
                     result += std::to_string(next->val);
-                    queue.push(next->left);
-                    queue.push(next->right);
+                    if (next->left || next->right) {
+                        queue.push(next->left);
+                        queue.push(next->right);
+                    }
                 } else {
                     result += "null";
                 }
@@ -54,7 +56,7 @@ public:
             }
         }
         result += "]";
-        
+
         return result;
     }
 
@@ -76,11 +78,11 @@ auto speed=[]() {
 }();
 
 TEST_CASE("LC test cases", "[Serialize and Deserialize Binary Tree]") {
-    SECTION("Case 1") {
+    SECTION("Serialize case 1") {
         auto tree = new TreeNode{1, new TreeNode{3, new TreeNode(5), new TreeNode(3)}, new TreeNode{2, nullptr, new TreeNode{9}}};
-        // std::vector<int> expected;
-        // Solution s;
-        // REQUIRE_NOTHROW(s.flatten(tree));
+        std::string expected {"[1,3,2,5,3,null,9]"};
+        Codec c;
+        REQUIRE(c.serialize(tree) == expected);
     }
 }
 
