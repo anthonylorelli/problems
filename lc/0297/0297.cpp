@@ -24,8 +24,6 @@ struct TreeNode {
 
 class Codec {
 public:
-
-    // Encodes a tree to a single string.
     std::string serialize(TreeNode* root) {
         if (!root) { return "[]"; }
         std::string result {"["};
@@ -60,9 +58,16 @@ public:
         return result;
     }
 
-    // Decodes your encoded data to tree.
     TreeNode* deserialize(std::string data) {
-        
+        if (data == "[]") { return nullptr; }
+        TreeNode* root = new TreeNode{};
+        auto next = std::find(data.begin(), data.end(), ',');
+        root->val = std::stoi(data.substr(1, (next == data.end() ? next - 1 : next) - (data.begin() + 1)));
+        std::queue<TreeNode*> queue;
+        queue.push(root);
+        while (!queue.empty()) {
+            
+        }
     }
 };
 
