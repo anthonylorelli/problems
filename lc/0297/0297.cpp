@@ -33,6 +33,7 @@ public:
         
         while (!queue.empty()) {
             int count = queue.size();
+            bool add_next {false};
             for (int n {0}; n < count; ++n) {
                 if (n) { 
                     result += ",";
@@ -42,16 +43,18 @@ public:
                 if (next) {
                     result += std::to_string(next->val);
                     if (next->left || next->right) {
-                        queue.push(next->left);
-                        queue.push(next->right);
+                        add_next = true;
                     }
+                    queue.push(next->left);
+                    queue.push(next->right);
                 } else {
                     result += "null";
                 }
             }
-            if (queue.size()) {
-                result += ",";
+            if (!add_next) {
+                break;
             }
+            result += ",";
         }
         result += "]";
 
@@ -61,12 +64,17 @@ public:
     TreeNode* deserialize(std::string data) {
         if (data == "[]") { return nullptr; }
         TreeNode* root = new TreeNode{};
-        auto next = std::find(data.begin(), data.end(), ',');
-        root->val = std::stoi(data.substr(1, (next == data.end() ? next - 1 : next) - (data.begin() + 1)));
+        auto predicate = [](const char c) { return c == ',' || c == ']'; };
+        auto next = std::find(data.begin(), data.end(), predicate);
+        root->val = std::stoi(data.substr(1, next));
         std::queue<TreeNode*> queue;
         queue.push(root);
         while (!queue.empty()) {
-            
+            next = std::find(next, data.end(), predicate);
+            if (next == data.end()) {
+                break;
+            }
+            std::string lval {data.substr()};
         }
     }
 };
@@ -86,6 +94,18 @@ TEST_CASE("LC test cases", "[Serialize and Deserialize Binary Tree]") {
     SECTION("Serialize case 1") {
         auto tree = new TreeNode{1, new TreeNode{3, new TreeNode(5), new TreeNode(3)}, new TreeNode{2, nullptr, new TreeNode{9}}};
         std::string expected {"[1,3,2,5,3,null,9]"};
+        Codec c;
+        REQUIRE(c.serialize(tree) == expected);
+    }
+    SECTION("Serialize case 2") {
+        auto tree = new TreeNode{2, new TreeNode{1}, nullptr};
+        std::string expected {"[2,1,null]"};
+        Codec c;
+        REQUIRE(c.serialize(tree) == expected);
+    }
+    SECTION("Serialize case 3") {
+        auto tree = new TreeNode{5, new TreeNode{2, new TreeNode{1}, new TreeNode{3}}, new TreeNode{6}};
+        std::string expected {"[5,2,6,1,3,null,null]"};
         Codec c;
         REQUIRE(c.serialize(tree) == expected);
     }
