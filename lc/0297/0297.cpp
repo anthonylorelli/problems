@@ -63,19 +63,38 @@ public:
 
     TreeNode* deserialize(std::string data) {
         if (data == "[]") { return nullptr; }
-        TreeNode* root = new TreeNode{};
         auto predicate = [](const char c) { return c == ',' || c == ']'; };
-        auto next = std::find(data.begin(), data.end(), predicate);
-        root->val = std::stoi(data.substr(1, next));
+        auto start = data.begin() + 1;
+        auto sentinel = std::find_if(start, data.end(), predicate);
+        TreeNode* root = new TreeNode{std::stoi(std::string{start, sentinel})};
         std::queue<TreeNode*> queue;
         queue.push(root);
         while (!queue.empty()) {
-            next = std::find(next, data.end(), predicate);
-            if (next == data.end()) {
+            TreeNode* current = queue.front();
+            queue.pop();
+
+            start = sentinel + 1;
+            sentinel = std::find_if(start, data.end(), predicate);
+            if (sentinel == data.end()) {
                 break;
             }
-            std::string lval {data.substr()};
+            std::string lval {std::string{start, sentinel}};
+            if (lval != "null") {
+                current->left = new TreeNode{std::stoi(lval)};
+                queue.push(current->left);
+            }
+            start = sentinel + 1;
+            sentinel = std::find_if(start, data.end(), predicate);
+            if (sentinel == data.end()) {
+                break;
+            }
+            std::string rval {std::string{start, sentinel}};
+            if (rval != "null") {
+                current->right = new TreeNode{std::stoi(rval)};
+                queue.push(current->right);
+            }
         }
+        return root;
     }
 };
 
@@ -108,6 +127,16 @@ TEST_CASE("LC test cases", "[Serialize and Deserialize Binary Tree]") {
         std::string expected {"[5,2,6,1,3,null,null]"};
         Codec c;
         REQUIRE(c.serialize(tree) == expected);
+    }
+    SECTION("Deserialize case 1") {
+        std::string expected {"[2,1,3]"};
+        Codec c;
+        REQUIRE(c.serialize(c.deserialize(expected)) == expected);
+    }
+    SECTION("Deserialize case 2") {
+        std::string expected {"[2,1,3,4,5,6,7]"};
+        Codec c;
+        REQUIRE(c.serialize(c.deserialize(expected)) == expected);
     }
 }
 
