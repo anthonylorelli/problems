@@ -138,6 +138,16 @@ TEST_CASE("LC test cases", "[Serialize and Deserialize Binary Tree]") {
         Codec c;
         REQUIRE(c.serialize(c.deserialize(expected)) == expected);
     }
+    SECTION("Deserialize case 3") {
+        std::string expected {"[]"};
+        Codec c;
+        REQUIRE(c.serialize(c.deserialize(expected)) == expected);
+    }
+    SECTION("Deserialize case 4") {
+        std::string expected {"[10]"};
+        Codec c;
+        REQUIRE(c.serialize(c.deserialize(expected)) == expected);
+    }
 }
 
 int main(int argc, char* argv[]) {
