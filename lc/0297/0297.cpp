@@ -1,6 +1,6 @@
 // 0297. Serialize and Deserialize Binary Tree
 // Problem definition: https://leetcode.com/problems/serialize-and-deserialize-binary-tree/
-// Accepted ?
+// Accepted 2020-06-24
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
