@@ -1,6 +1,6 @@
 // 0297. Serialize and Deserialize Binary Tree
 // Problem definition: https://leetcode.com/problems/serialize-and-deserialize-binary-tree/
-// Accepted ?
+// Accepted 2020-06-24
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -135,6 +135,16 @@ TEST_CASE("LC test cases", "[Serialize and Deserialize Binary Tree]") {
     }
     SECTION("Deserialize case 2") {
         std::string expected {"[2,1,3,4,5,6,7]"};
+        Codec c;
+        REQUIRE(c.serialize(c.deserialize(expected)) == expected);
+    }
+    SECTION("Deserialize case 3") {
+        std::string expected {"[]"};
+        Codec c;
+        REQUIRE(c.serialize(c.deserialize(expected)) == expected);
+    }
+    SECTION("Deserialize case 4") {
+        std::string expected {"[10]"};
         Codec c;
         REQUIRE(c.serialize(c.deserialize(expected)) == expected);
     }
