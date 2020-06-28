@@ -25,7 +25,25 @@ struct TreeNode {
 class Solution {
 public:
     int countNodes(TreeNode* root) {
-        return 0;
+        return search(root, 1);
+    }
+
+private:
+    int search(TreeNode* root, const int node_number) {
+        if (!root) { return -1; }
+
+        if (root->left && !root->right) {
+            return node_number * 2;
+        }
+
+        if (!root->left && !root->right) {
+            return node_number;
+        }
+
+        int left {search(root->left, node_number * 2)};
+        int right {search(root->right, (node_number * 2) + 1)};
+
+        return std::max(left, right);
     }
 };
 
