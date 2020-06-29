@@ -29,6 +29,14 @@ public:
     }
 
 private:
+    int left_depth(TreeNode* root, const int current_depth) {
+        return root ? left_depth(root->left, current_depth + 1) : current_depth;
+    }
+
+    int right_depth(TreeNode* root, const int current_depth) {
+        return root ? right_depth(root->right, current_depth + 1) : current_depth;
+    }
+
     int search(TreeNode* root, const int node_number) {
         if (!root) { return -1; }
 
