@@ -25,7 +25,7 @@ struct TreeNode {
 class Solution {
 public:
     int countNodes(TreeNode* root) {
-        return search(root, 1);
+        return root ? search(root, 1) : 0;
     }
 
 private:
@@ -38,20 +38,27 @@ private:
     }
 
     int search(TreeNode* root, const int node_number) {
-        if (!root) { return -1; }
+        if (!root->left && !root->right) { return node_number; }
 
-        if (root->left && !root->right) {
-            return node_number * 2;
+        int left_min {left_depth(root->left, 0)};
+        int left_max {right_depth(root->left, 0)};
+
+        if (left_min != left_max) {
+            return search(root->left, node_number * 2);
         }
 
-        if (!root->left && !root->right) {
-            return node_number;
+        int right_min {left_depth(root->right, 0)};
+        int right_max {right_depth(root->right, 0)};
+
+        if (right_min != right_max) {
+            return search(root->right, node_number * 2 + 1);
         }
 
-        int left {search(root->left, node_number * 2)};
-        int right {search(root->right, (node_number * 2) + 1)};
+        if (left_max != right_min) {
+            return search(root->left, node_number * 2);
+        }
 
-        return std::max(left, right);
+        return search(root->right, node_number * 2 + 1);
     }
 };
 
@@ -64,9 +71,19 @@ auto speed=[]() {
 
 TEST_CASE("LC test cases", "[Count Complete Tree Nodes]") {
     SECTION("Case 1") {
-        auto tree = new TreeNode{1, new TreeNode{3, new TreeNode(5), new TreeNode(3)}, new TreeNode{2, nullptr, new TreeNode{9}}};
+        auto tree = new TreeNode{1, new TreeNode{2, new TreeNode(4), new TreeNode(5)}, new TreeNode{3, new TreeNode{6}, nullptr}};
+        Solution s;
+        REQUIRE(s.countNodes(tree) == 6);
+    }
+    SECTION("Case 2") {
+        auto tree = nullptr;
         Solution s;
         REQUIRE(s.countNodes(tree) == 0);
+    }
+    SECTION("Case 3") {
+        auto tree = new TreeNode{1};
+        Solution s;
+        REQUIRE(s.countNodes(tree) == 1);
     }
 }
 
