@@ -75,6 +75,16 @@ TEST_CASE("LC test cases", "[Count Complete Tree Nodes]") {
         Solution s;
         REQUIRE(s.countNodes(tree) == 6);
     }
+    SECTION("Case 2") {
+        auto tree = nullptr;
+        Solution s;
+        REQUIRE(s.countNodes(tree) == 0);
+    }
+    SECTION("Case 3") {
+        auto tree = new TreeNode{1};
+        Solution s;
+        REQUIRE(s.countNodes(tree) == 1);
+    }
 }
 
 int main(int argc, char* argv[]) {
