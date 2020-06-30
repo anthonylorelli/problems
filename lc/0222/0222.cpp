@@ -1,6 +1,6 @@
 // 0222. Count Complete Tree Nodes
 // Problem definition: https://leetcode.com/problems/count-complete-tree-nodes/description/
-// Accepted ?
+// Accepted 2020-06-29
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -25,7 +25,7 @@ struct TreeNode {
 class Solution {
 public:
     int countNodes(TreeNode* root) {
-        return root ? search(root, 1) : 0;
+        return root ? search(root, 1, left_depth(root, 0) - 1, right_depth(root, 0) - 1) : 0;
     }
 
 private:
@@ -37,28 +37,26 @@ private:
         return root ? right_depth(root->right, current_depth + 1) : current_depth;
     }
 
-    int search(TreeNode* root, const int node_number) {
+    int search(TreeNode* root, const int node_number, const int left_min, const int right_max) {
         if (!root->left && !root->right) { return node_number; }
 
-        int left_min {left_depth(root->left, 0)};
         int left_max {right_depth(root->left, 0)};
 
         if (left_min != left_max) {
-            return search(root->left, node_number * 2);
+            return search(root->left, node_number * 2, left_min - 1, left_max - 1);
         }
 
         int right_min {left_depth(root->right, 0)};
-        int right_max {right_depth(root->right, 0)};
 
         if (right_min != right_max) {
-            return search(root->right, node_number * 2 + 1);
+            return search(root->right, node_number * 2 + 1, right_min - 1, right_max - 1);
         }
 
         if (left_max != right_min) {
-            return search(root->left, node_number * 2);
+            return search(root->left, node_number * 2, left_min - 1, left_max - 1);
         }
 
-        return search(root->right, node_number * 2 + 1);
+        return search(root->right, node_number * 2 + 1, right_min - 1, right_max - 1);
     }
 };
 
@@ -84,6 +82,11 @@ TEST_CASE("LC test cases", "[Count Complete Tree Nodes]") {
         auto tree = new TreeNode{1};
         Solution s;
         REQUIRE(s.countNodes(tree) == 1);
+    }
+    SECTION("Case 4") {
+        auto tree = new TreeNode{1, new TreeNode{2, new TreeNode(4), new TreeNode(5)}, new TreeNode{3, new TreeNode{6}, new TreeNode{7}}};
+        Solution s;
+        REQUIRE(s.countNodes(tree) == 7);
     }
 }
 
