@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <iostream>
 #include <stack>
+#include <tuple>
 
 /**
  * Definition for a binary tree node.
@@ -24,7 +25,33 @@ struct TreeNode {
 class Solution {
 public:
     bool isCousins(TreeNode* root, int x, int y) {
-        return false;
+        auto [x_parent, x_depth] = find(root, -1, x, 0);
+        auto [y_parent, y_depth] = find(root, -1, y, 0);
+
+        if (x_parent == -1 || y_parent == -1) {
+            return false;
+        }
+
+        if (x_parent == y_parent || x_depth != y_depth) {
+            return false;
+        }
+
+        return true;
+    }
+
+private:
+    std::pair<int,int> find(const TreeNode* node, const int parent, const int n, const int depth) {
+        if (!node) { return {-1,-1}; }
+
+        if (node->val == n) {
+            return {parent,depth};
+        }
+
+        if (n < node->val) {
+            return find(node->left, node->val, n, depth + 1);
+        }
+
+        return find(node->right, node->val, n, depth + 1);
     }
 };
 
