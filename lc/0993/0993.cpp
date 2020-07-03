@@ -1,14 +1,13 @@
 // 0993. Cousins in Binary Tree
 // Problem definition: https://leetcode.com/problems/cousins-in-binary-tree/
-// Accepted ?
+// Accepted 2020-07-02
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
 
 #include <algorithm>
 #include <iostream>
-#include <stack>
-#include <tuple>
+#include <queue>
 
 /**
  * Definition for a binary tree node.
@@ -25,33 +24,50 @@ struct TreeNode {
 class Solution {
 public:
     bool isCousins(TreeNode* root, int x, int y) {
-        auto [x_parent, x_depth] = find(root, -1, x, 0);
-        auto [y_parent, y_depth] = find(root, -1, y, 0);
+        if (!root) { return false; }
 
-        if (x_parent == -1 || y_parent == -1) {
-            return false;
+        std::queue<TreeNode*> queue;
+        queue.push(root);
+
+        int x_parent {-1}, x_depth {-1};
+        int y_parent {-1}, y_depth {-1};
+        int current_depth {0};
+
+        while (!queue.empty()) {
+            int count = queue.size();
+            for (int n {0}; n < count; ++n) {
+                auto current = queue.front();
+                queue.pop();
+
+                if (current->left) {
+                    queue.push(current->left);
+                    if (current->left->val == x) {
+                        x_parent = current->val;
+                        x_depth = current_depth;
+                    } else if (current->left->val == y) {
+                        y_parent = current->val;
+                        y_depth = current_depth;
+                    }
+                }
+
+                if (current->right) {
+                    queue.push(current->right);
+                    if (current->right->val == x) {
+                        x_parent = current->val;
+                        x_depth = current_depth;
+                    } else if (current->right->val == y) {
+                        y_parent = current->val;
+                        y_depth = current_depth;
+                    }
+                }
+            }
+            current_depth++;
         }
-
-        if (x_parent == y_parent || x_depth != y_depth) {
+        if ((x_parent == y_parent) || x_parent == -1 || y_parent == -1 || x_depth != y_depth) {
             return false;
         }
 
         return true;
-    }
-
-private:
-    std::pair<int,int> find(const TreeNode* node, const int parent, const int n, const int depth) {
-        if (!node) { return {-1,-1}; }
-
-        if (node->val == n) {
-            return {parent,depth};
-        }
-
-        if (n < node->val) {
-            return find(node->left, node->val, n, depth + 1);
-        }
-
-        return find(node->right, node->val, n, depth + 1);
     }
 };
 
