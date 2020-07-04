@@ -24,7 +24,15 @@ struct TreeNode {
 class Solution {
 public:
     int distributeCoins(TreeNode* root) {
-        return 0;
+        return distributeCoins(root, 0);
+    }
+
+private:
+    int distributeCoins(TreeNode* node, const int current) {
+        if (!node) { return current; }
+
+        int left {distributeCoins(node->left, current)};
+        return distributeCoins(node->right, node->val + left - 1);
     }
 };
 
