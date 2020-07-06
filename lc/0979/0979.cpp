@@ -1,6 +1,6 @@
 // 0979. Distribute Coins in Binary Tree
 // Problem definition: https://leetcode.com/problems/distribute-coins-in-binary-tree/
-// Accepted ?
+// Accepted 2020-07-05
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <iostream>
 #include <queue>
+#include <tuple>
 
 /**
  * Definition for a binary tree node.
@@ -24,7 +25,19 @@ struct TreeNode {
 class Solution {
 public:
     int distributeCoins(TreeNode* root) {
-        return 0;
+        auto [cost, moves] = evaluate(root);
+        return moves;
+    }
+
+private:
+    std::pair<int,int> evaluate(TreeNode* node) {
+        if (!node) { return {0,0}; }
+        
+        auto [left_cost, left_moves] = evaluate(node->left);
+        auto [right_cost, right_moves] = evaluate(node->right);
+
+        int cost {node->val - 1 + left_cost + right_cost};
+        return {cost, std::abs(cost) + left_moves + right_moves};
     }
 };
 
