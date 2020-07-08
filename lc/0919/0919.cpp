@@ -23,9 +23,7 @@ struct TreeNode {
 
 class CBTInserter {
 public:
-    CBTInserter(TreeNode* root) {
-        
-    }
+    CBTInserter(TreeNode* root) : m_root{root} { }
     
     int insert(int v) {
         
@@ -34,6 +32,9 @@ public:
     TreeNode* get_root() {
         
     }
+
+private:
+    TreeNode* m_root;
 };
 
 /**
