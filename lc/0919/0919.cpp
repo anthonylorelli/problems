@@ -23,7 +23,16 @@ struct TreeNode {
 
 class CBTInserter {
 public:
-    CBTInserter(TreeNode* root) : m_root{root} { }
+    CBTInserter(TreeNode* root) : m_root{root} { 
+        m_q.push(m_root);
+        TreeNode* node {m_root};
+        while (node->left && node->right) {
+            m_q.push(node->left);
+            m_q.push(node->right);
+            m_q.pop();
+            node = m_q.front();
+        }
+    }
     
     int insert(int v) {
         
@@ -35,6 +44,7 @@ public:
 
 private:
     TreeNode* m_root;
+    std::queue<TreeNode*> m_q;
 };
 
 /**
