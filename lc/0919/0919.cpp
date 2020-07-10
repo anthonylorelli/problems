@@ -1,6 +1,6 @@
 // 0919. Complete Binary Tree Inserter
 // Problem definition: https://leetcode.com/problems/complete-binary-tree-inserter/
-// Accepted ?
+// Accepted 2020-07-09
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -23,18 +23,41 @@ struct TreeNode {
 
 class CBTInserter {
 public:
-    CBTInserter(TreeNode* root) : m_root{root} { }
+    CBTInserter(TreeNode* root) : m_root{root} { 
+        m_q.push(m_root);
+        advance();
+    }
     
     int insert(int v) {
-        
+        TreeNode* next {m_q.front()};
+        int parent {next->val};
+        TreeNode** node = next->left ? &next->right : &next->left;
+        *node = new TreeNode{v};
+        if (next->right) {
+            m_q.push(next->left);
+            m_q.push(next->right);
+            m_q.pop();
+        }
+        return parent;
     }
     
     TreeNode* get_root() {
-        
+        return m_root;
     }
 
 private:
+    void advance() {
+        TreeNode* node {m_q.front()};
+        while (node->left && node->right) {
+            m_q.push(node->left);
+            m_q.push(node->right);
+            m_q.pop();
+            node = m_q.front();
+        }        
+    }
+
     TreeNode* m_root;
+    std::queue<TreeNode*> m_q;
 };
 
 /**
