@@ -1,6 +1,6 @@
 // 0108. Convert Sorted Array to Binary Search Tree
 // Problem definition: https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/
-// Accepted ?
+// Accepted 2020-07-11
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -24,7 +24,18 @@ struct TreeNode {
 class Solution {
 public:
     TreeNode* sortedArrayToBST(std::vector<int>& nums) {
-        return nullptr;        
+        return create(nums, 0, nums.size() - 1);
+    }
+
+private:
+    TreeNode* create(const std::vector<int>& nums, const int low, const int high) const {
+        if (low > high) { return nullptr; }
+
+        const int middle {(low + high) / 2};
+        TreeNode* next = new TreeNode{nums[middle]};
+        next->left = create(nums, low, middle - 1);
+        next->right = create(nums, middle + 1, high);
+        return next;
     }
 };
 
