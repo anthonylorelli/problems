@@ -1,6 +1,6 @@
 // 0129. Sum Root to Leaf Numbers
 // Problem definition: https://leetcode.com/problems/sum-root-to-leaf-numbers/
-// Accepted ?
+// Accepted 2020-07-13
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -24,7 +24,18 @@ struct TreeNode {
 class Solution {
 public:
     int sumNumbers(TreeNode* root) {
-        return 0;        
+        return accumulate(root, 0);
+    }
+
+private:
+    int accumulate(TreeNode* node, int current) {
+        if (!node) { return current; }
+        int next {(current * 10) + node->val};
+        if (!node->left && !node->right) {
+            return next;
+        }
+        return (node->left ? accumulate(node->left, next) : 0) + 
+            (node->right ? accumulate(node->right, next) : 0);
     }
 };
 
