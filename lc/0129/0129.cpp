@@ -24,7 +24,18 @@ struct TreeNode {
 class Solution {
 public:
     int sumNumbers(TreeNode* root) {
-        return 0;        
+        return accumulate(root, 0);
+    }
+
+private:
+    int accumulate(TreeNode* node, int current) {
+        if (!node) { return current; }
+        int next {(current * 10) + node->val};
+        int sum {accumulate(node->left, next)};
+        if (node->right) {
+            sum += accumulate(node->right, next);
+        }
+        return sum;
     }
 };
 
