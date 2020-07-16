@@ -1,14 +1,14 @@
 // 0988. Smallest String Starting From Leaf
 // Problem definition: https://leetcode.com/problems/smallest-string-starting-from-leaf/
-// Accepted ?
+// Accepted 2020-07-15
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
 
 #include <algorithm>
 #include <iostream>
-#include <queue>
 #include <string>
+#include <set>
 
 /**
  * Definition for a binary tree node.
@@ -25,8 +25,32 @@ struct TreeNode {
 class Solution {
 public:
     std::string smallestFromLeaf(TreeNode* root) {
-        return "";        
+        constexpr int size {8501};
+        char buffer[size];
+        buffer[size-1] = '\0';
+        if (root) {
+            walk(root, buffer, size - 2);
+        }
+        return m_set.size() > 0 ? *m_set.begin() : "";
     }
+
+private:
+    void walk(TreeNode* node, char* buffer, const int index) {
+        buffer[index] = node->val + 'a';
+        if (!node->left && !node->right) {
+            m_set.insert(std::string{buffer + index});
+            return;
+        }
+        const int next {index - 1};
+        if (node->left) {
+            walk(node->left, buffer, next);
+        }
+        if (node->right) {
+            walk(node->right, buffer, next);
+        }
+    }
+
+    std::set<std::string> m_set;
 };
 
 auto speed=[]() {
