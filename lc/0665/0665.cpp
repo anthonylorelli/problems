@@ -14,6 +14,23 @@ class Solution {
 public:
     bool checkPossibility(std::vector<int>& nums) {
         int count {0};
+        int limit = nums.size() - 1;
+        for (int i {0}; i < limit; ++i) {
+            if (nums[i] > nums[i+1]) {
+                count++;
+                if (i > 0 && nums[i-1] > nums[i+1]) {
+                    count++;
+                }
+                if (count > 1) {
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
+
+    bool checkPossibilityAdjacent(std::vector<int>& nums) {
+        int count {0};
         auto predicate = std::greater<int>{};
         auto it = std::adjacent_find(nums.begin(), nums.end(), predicate);
         while (it != nums.end()) {
@@ -41,6 +58,11 @@ TEST_CASE("LC test cases", "[Non-decreasing Array]") {
     }
     SECTION("Case 2") {
         std::vector<int> input = {4,2,1};
+        Solution s;
+        REQUIRE(s.checkPossibility(input) == false);
+    }
+    SECTION("Case 3") {
+        std::vector<int> input = {3,4,2,3};
         Solution s;
         REQUIRE(s.checkPossibility(input) == false);
     }
