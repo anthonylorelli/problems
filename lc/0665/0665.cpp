@@ -26,7 +26,7 @@ public:
                 }
             }
         }
-        return false;
+        return true;
     }
 
     bool checkPossibilityAdjacent(std::vector<int>& nums) {
