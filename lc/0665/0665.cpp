@@ -1,6 +1,6 @@
 // 0665. Non-decreasing Array
 // Problem definition: https://leetcode.com/problems/non-decreasing-array/
-// Accepted ?
+// Accepted 2020-07-20
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -13,31 +13,20 @@
 class Solution {
 public:
     bool checkPossibility(std::vector<int>& nums) {
-        int count {0};
+        bool updated {false};
         int limit = nums.size() - 1;
         for (int i {0}; i < limit; ++i) {
             if (nums[i] > nums[i+1]) {
-                count++;
-                if (i > 0 && nums[i-1] > nums[i+1]) {
-                    count++;
+                if (updated) { return false; }
+                if  (i == 0) {
+                    nums[i] = nums[i+1];
+                } else if (nums[i+1] > nums[i-1]) {
+                    nums[i] = nums[i+1];
+                } else { // nums[i+1] <= nums[i-1]
+                    nums[i+1] = nums[i];
                 }
-                if (count > 1) {
-                    return false;
-                }
+                updated = true;
             }
-        }
-        return true;
-    }
-
-    bool checkPossibilityAdjacent(std::vector<int>& nums) {
-        int count {0};
-        auto predicate = std::greater<int>{};
-        auto it = std::adjacent_find(nums.begin(), nums.end(), predicate);
-        while (it != nums.end()) {
-            if (++count > 1) {
-                return false;
-            }
-            it = std::adjacent_find(it + 1, nums.end(), predicate);
         }
         return true;
     }
@@ -65,6 +54,16 @@ TEST_CASE("LC test cases", "[Non-decreasing Array]") {
         std::vector<int> input = {3,4,2,3};
         Solution s;
         REQUIRE(s.checkPossibility(input) == false);
+    }
+    SECTION("Case 4") {
+        std::vector<int> input = {2,3,3,2,4};
+        Solution s;
+        REQUIRE(s.checkPossibility(input) == true);
+    }
+    SECTION("Case 5") {
+        std::vector<int> input = {-1,4,2,3};
+        Solution s;
+        REQUIRE(s.checkPossibility(input) == true);
     }
 }
 
