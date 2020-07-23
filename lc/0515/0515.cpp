@@ -1,6 +1,6 @@
 // 0665. Find Largest Value in Each Tree Row
 // Problem definition: https://leetcode.com/problems/find-largest-value-in-each-tree-row/
-// Accepted ?
+// Accepted 2020-07-22
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -8,6 +8,8 @@
 #include <algorithm>
 #include <iostream>
 #include <vector>
+#include <queue>
+#include <limits>
 
 // Definition for a binary tree node.
 struct TreeNode {
@@ -22,7 +24,23 @@ struct TreeNode {
 class Solution {
 public:
     std::vector<int> largestValues(TreeNode* root) {
-        return {};
+        if (!root) { return {}; }
+        std::vector<int> results;
+        std::queue<TreeNode*> queue;
+        queue.push(root);
+        while (!queue.empty()) {
+            int max {std::numeric_limits<int>::min()};
+            int size = queue.size();
+            for (int n {0}; n < size; ++n) {
+                TreeNode* node {queue.front()};
+                queue.pop();
+                max = std::max(max, node->val);
+                if (node->left) { queue.push(node->left); }
+                if (node->right) { queue.push(node->right); }
+            }
+            results.push_back(max);
+        }
+        return results;
     }
 };
 
