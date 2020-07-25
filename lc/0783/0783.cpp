@@ -26,6 +26,18 @@ public:
     int minDiffInBST(TreeNode* root) {
         return 0;        
     }
+
+private:
+    int find_min(TreeNode* node, int current_min) {
+        if (!node) { return current_min; }
+
+        if (node->left) {
+            
+        }
+        if (node->right) {
+
+        }
+    }
 };
 
 auto speed=[]() {
