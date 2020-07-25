@@ -1,6 +1,6 @@
 // 0783. Minimum Distance Between BST Nodes
 // Problem definition: https://leetcode.com/problems/minimum-distance-between-bst-nodes/
-// Accepted ?
+// Accepted 2020-07-25
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -10,6 +10,7 @@
 #include <vector>
 #include <queue>
 #include <limits>
+#include <stack>
 
 // Definition for a binary tree node.
 struct TreeNode {
@@ -21,25 +22,78 @@ struct TreeNode {
     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
 };
 
-class Solution {
+class tree_iterator
+{
 public:
-    int minDiffInBST(TreeNode* root) {
-        return 0;        
+    tree_iterator(TreeNode* node) {
+        traverse(node);
+    }
+
+    int get() {
+        return m_stack.top()->val;
+    }
+
+    void next() {
+        TreeNode* node {m_stack.top()};
+        m_stack.pop();
+        traverse(node->right);
+    }
+
+    bool empty() {
+        return m_stack.empty();
     }
 
 private:
-    int find_min(TreeNode* node, int current_min) {
-        if (!node) { return current_min; }
-
-        if (node->left) {
-            
-        }
-        if (node->right) {
-
+    void traverse(TreeNode* node) {
+        while (node) {
+            m_stack.push(node);
+            node = node->left;
         }
     }
+
+    std::stack<TreeNode*> m_stack;
 };
 
+class Solution {
+public:
+    Solution() : m_prev{std::numeric_limits<int>::min()},
+        m_min{std::numeric_limits<int>::max()} {}
+
+    int minDiffInBST(TreeNode* root) {
+        traverse(root);
+        return m_min;
+    }
+
+    int minDiffInBSTIterative(TreeNode* root) {
+        int min {std::numeric_limits<int>::max()};
+        tree_iterator tree{root};
+        int prev {tree.get()};
+        tree.next();
+        
+        while (!tree.empty()) {
+            int current {tree.get()};
+            min = std::min(current - prev, min);
+            prev = current;
+            tree.next();
+        }
+
+        return min;
+    }
+
+private:
+    void traverse(TreeNode* node) {
+        if (!node) { return; }
+        traverse(node->left);
+        m_min = std::min(m_min, node->val - m_prev);
+        m_prev = node->val;
+        traverse(node->right);
+    }
+
+    int64_t m_prev;
+    int64_t m_min;
+};
+
+//[90,69,null,49,89,null,52,null,null,null,null]
 auto speed=[]() {
     std::ios::sync_with_stdio(false);
     std::cin.tie(nullptr);
