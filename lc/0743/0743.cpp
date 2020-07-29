@@ -14,6 +14,7 @@
 class Solution {
 public:
     int networkDelayTime(std::vector<std::vector<int>>& times, int N, int K) {
+        
         return 0;
     }
 };
