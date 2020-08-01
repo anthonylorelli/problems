@@ -1,6 +1,6 @@
 // 0743. Network Delay Time
 // Problem definition: https://leetcode.com/problems/network-delay-time/
-// Accepted ?
+// Accepted 2020-07-31
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -13,12 +13,10 @@
 #include <forward_list>
 #include <limits>
 
-uint32_t c_n {100};
-
 class Solution {
 public:
     int networkDelayTime(std::vector<std::vector<int>>& times, int N, int K) {
-        size_t size = N + 1;
+        const size_t size = N + 1;
         std::vector<std::list<std::pair<uint32_t,uint32_t>>> adjacent(size);
 
         for (const auto& t : times) {
@@ -40,11 +38,13 @@ public:
             queue.pop();
             if (visited[current]) { continue; }
             visited[current] = true;
-            for (const auto [next,cost] : adjacent[current]) {
-                if (distance[next] > (distance[current] + cost)) {
-                    distance[next] = distance[current] + cost;
+            for (const auto [next, cost] : adjacent[current]) {
+                if (!visited[next]) {
+                    if (distance[next] > (distance[current] + cost)) {
+                        distance[next] = distance[current] + cost;
+                    }
+                    queue.push({next,distance[next]});
                 }
-                queue.push({next,distance[next]});
             }
         }
 
@@ -66,6 +66,18 @@ TEST_CASE("LC test cases", "[Non-decreasing Array]") {
         int n {4}, k {2};
         Solution s;
         REQUIRE(s.networkDelayTime(input, n, k) == 2);
+    }
+    SECTION("Case 2") {
+        std::vector<std::vector<int>> input = {{2,1,1}};
+        int n {2}, k {2};
+        Solution s;
+        REQUIRE(s.networkDelayTime(input, n, k) == 1);
+    }
+    SECTION("Case 3") {
+        std::vector<std::vector<int>> input = {{1,2,1},{2,3,1},{3,4,1},{4,5,1},{5,6,1}};
+        int n {6}, k {1};
+        Solution s;
+        REQUIRE(s.networkDelayTime(input, n, k) == 5);
     }
 }
 
