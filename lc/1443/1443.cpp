@@ -16,6 +16,11 @@
 class Solution {
 public:
     int minTime(int n, std::vector<std::vector<int>>& edges, std::vector<bool>& hasApple) {
+        const size_t size = n + 1;
+        std::vector<std::vector<int>> adjacent(size);
+        for (const auto& edge : edges) {
+            adjacent[edge[0]].push_back(edge[1]);
+        }
         return 0;
     }
 };
