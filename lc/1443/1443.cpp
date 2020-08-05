@@ -1,6 +1,6 @@
 // 1443. Minimum Time to Collect All Apples in a Tree
 // Problem definition: https://leetcode.com/problems/minimum-time-to-collect-all-apples-in-a-tree/
-// Accepted ?
+// Accepted 2020-08-04
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -19,6 +19,7 @@ public:
         m_adjacent.resize(n);
         for (const auto& edge : edges) {
             m_adjacent[edge[0]].push_back(edge[1]);
+            m_adjacent[edge[1]].push_back(edge[0]);
         }
         m_discovered.resize(n, false);
         return search(0, hasApple);
@@ -27,14 +28,15 @@ public:
 private:
     int search(const int vertex, std::vector<bool>& has_apple) {
         int count {0};
+        m_discovered[vertex] = true;
 
         for (const auto edge : m_adjacent[vertex]) {
             if (!m_discovered[edge]) {
-                m_discovered[edge] = true;
-                if (has_apple[edge]) {
-                    count += 2;
+                int sub = search(edge, has_apple);
+                if (has_apple[edge] || sub > 0) {
+                    sub += 2;
                 }
-                count += search(edge, has_apple);                
+                count += sub;
             }
         }
 
@@ -59,6 +61,13 @@ TEST_CASE("LC test cases", "[Core]") {
         int n {7};
         Solution s;
         REQUIRE(s.minTime(n, edges, has_apple) == 8);
+    }
+    SECTION("Case 2") {
+        std::vector<std::vector<int>> edges = {{0,2},{0,3},{1,2}};
+        std::vector<bool> has_apple = {false,true,false,false};
+        int n {4};
+        Solution s;
+        REQUIRE(s.minTime(n, edges, has_apple) == 4);
     }
 }
 
