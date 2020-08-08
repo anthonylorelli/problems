@@ -24,6 +24,11 @@ public:
     int countPairs(TreeNode* root, int distance) {
         return 0;        
     }
+
+private:
+    int leaf_depth(const TreeNode* node, const int distance) {
+        return 0;
+    }
 };
 
 auto speed=[]() {
