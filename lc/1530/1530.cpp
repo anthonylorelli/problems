@@ -22,7 +22,7 @@ struct TreeNode {
 class Solution {
 public:
     int countPairs(TreeNode* root, int distance) {
-        return 0;        
+        std::vector<std::vector<TreeNode*>> adjacent;
     }
 
 private:
