@@ -22,13 +22,34 @@ struct TreeNode {
 class Solution {
 public:
     int countPairs(TreeNode* root, int distance) {
-        std::vector<std::vector<TreeNode*>> adjacent;
     }
 
 private:
-    int leaf_depth(const TreeNode* node, const int distance) {
-        return 0;
+    void find_adjacent(TreeNode* node, const int index) {
+        if (!node->left && !node->right) {
+            m_leafs.push_back(index);
+            return;
+        }
+
+        if (node->left) {
+            add_adjacent(node->left, index);
+        }
+
+        if (node->right) {
+            add_adjacent(node->right, index);
+        }
     }
+
+    void add_adjacent(TreeNode* node, const int index) {
+        int next_index = m_adjacent.size();
+        m_adjacent.push_back(std::vector<int>{});
+        m_adjacent[index].push_back(next_index);
+        m_adjacent[next_index].push_back(index);
+        find_adjacent(node, next_index);
+    }
+
+    std::vector<int> m_leafs;
+    std::vector<std::vector<int>> m_adjacent;
 };
 
 auto speed=[]() {
