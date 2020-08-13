@@ -22,9 +22,37 @@ struct TreeNode {
 class Solution {
 public:
     int countPairs(TreeNode* root, int distance) {
+        add_adjacent(root, 0);
+        m_visited.resize(m_adjacent.size(), false);
+
+        m_limit = distance;
+        int count {0};
+
+        for (int vertex {0}; vertex < m_adjacent.size(); ++vertex) {
+            const auto& [is_leaf, adjacent] = m_adjacent[vertex];
+            if (!is_leaf || visited[vertex]) {
+                continue;
+            }
+
+            count += search(vertex, 0, 0);
+        }
     }
 
 private:
+    int search(const int vertex, const int distance, const int count) {
+        if (distance > m_limit) {
+            return 0;
+        }
+
+        m_visited[vertex] = true;
+
+        for (const auto& neighbor : m_adjacent[vertex].second) {
+            if (m_adjacent[neighbor].first && m_visited[neighbor]) {
+                continue;
+            }
+        }
+    }
+
     void find_adjacent(TreeNode* node, const int index) {
         if (!node->left && !node->right) {
             m_adjacent[index].first = true;
@@ -48,6 +76,8 @@ private:
         find_adjacent(node, next_index);
     }
 
+    int m_limit {0};
+    std::vector<bool> m_visited;
     std::vector<std::pair<bool,std::vector<int>>> m_adjacent;
 };
 
