@@ -29,28 +29,37 @@ public:
         int count {0};
 
         for (int vertex {0}; vertex < m_adjacent.size(); ++vertex) {
-            const auto& [is_leaf, adjacent] = m_adjacent[vertex];
-            if (!is_leaf || visited[vertex]) {
-                continue;
+            if (m_adjacent[vertex].first) {
+                count += search(vertex, 0);
             }
-
-            count += search(vertex, 0, 0);
         }
+
+        return count;
     }
 
 private:
-    int search(const int vertex, const int distance, const int count) {
-        if (distance > m_limit) {
+    int search(const int vertex, const int distance) {
+        if (distance > m_limit || (m_adjacent[vertex].first && m_visited[vertex])) {
             return 0;
         }
 
         m_visited[vertex] = true;
 
+        if (m_adjacent[vertex].first) {
+            return 1;
+        }
+
+        int count {0};
+
         for (const auto& neighbor : m_adjacent[vertex].second) {
             if (m_adjacent[neighbor].first && m_visited[neighbor]) {
                 continue;
             }
+
+            count += search(neighbor, distance + 1);
         }
+
+        return count;
     }
 
     void find_adjacent(TreeNode* node, const int index) {
