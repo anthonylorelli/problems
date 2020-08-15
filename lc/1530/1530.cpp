@@ -45,7 +45,7 @@ private:
 
         m_visited[vertex] = true;
 
-        if (m_adjacent[vertex].first) {
+        if (m_adjacent[vertex].first && distance > 0) {
             return 1;
         }
 
@@ -104,7 +104,9 @@ auto speed=[]() {
 //         REQUIRE(s.lengthOfLongestSubstring(input) == 3);
 //     }
 // }
-
+//[15,66,55,97,60,12,56,null,54,null,49,null,9,null,null,null,null,null,90]
+//5
+//Should return 3
 int main(int argc, char* argv[]) {
     std::ios_base::sync_with_stdio(false);
     return Catch::Session().run(argc, argv);
