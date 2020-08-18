@@ -3,21 +3,13 @@
 // Accepted ?
 
 #define CATCH_CONFIG_RUNNER
-#include "../../uva/catch/catch.hpp"
+#include "../../inc/catch.hpp"
+#include "../../inc/treenode.h"
+#include "../../inc/serialize.h"
 
 #include <algorithm>
 #include <string>
 #include <vector>
-
-// Definition for a binary tree node.
-struct TreeNode {
-    int val;
-    TreeNode *left;
-    TreeNode *right;
-    TreeNode() : val(0), left(nullptr), right(nullptr) {}
-    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
-    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- };
  
 class Solution {
 public:
@@ -97,17 +89,22 @@ auto speed=[]() {
     return nullptr;
 }();
 
-// TEST_CASE("LC test cases", "[Core]") {
-//     SECTION("Case 1") {
-//         std::string input {"abcabcbb"};
-//         Solution s;
-//         REQUIRE(s.lengthOfLongestSubstring(input) == 3);
-//     }
-// }
-//[15,66,55,97,60,12,56,null,54,null,49,null,9,null,null,null,null,null,90]
-//5
-//Should return 3
+TEST_CASE("LC test cases", "[Core]") {
+    SECTION("Case 1") {
+        Codec c;
+        TreeNode* root = c.deserialize("[15,66,55,97,60,12,56,null,54,null,49,null,9,null,null,null,null,null,90]");
+        int distance {5};
+        Solution s;
+        REQUIRE(s.countPairs(root, distance) == 3);
+    }
+}
+
 int main(int argc, char* argv[]) {
     std::ios_base::sync_with_stdio(false);
     return Catch::Session().run(argc, argv);
 }
+
+//                        15
+//                  65          55
+//            97,60 12,56 null,54 null,49
+// *,9 *,*  *,* *,90
