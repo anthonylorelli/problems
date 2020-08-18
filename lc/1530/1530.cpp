@@ -3,7 +3,8 @@
 // Accepted ?
 
 #define CATCH_CONFIG_RUNNER
-#include "../../uva/catch/catch.hpp"
+#include "../../inc/catch.hpp"
+#include "../../inc/seralize.h"
 
 #include <algorithm>
 #include <string>
