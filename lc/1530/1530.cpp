@@ -104,7 +104,8 @@ int main(int argc, char* argv[]) {
     return Catch::Session().run(argc, argv);
 }
 
-//                        15
-//                  65          55
-//            97,60 12,56 null,54 null,49
-// *,9 *,*  *,* *,90
+//              15
+//        65          55
+//   97     60     12     56 
+// *  54   *  49  *  9   *  * 
+//   *,*     *,90
