@@ -10,11 +10,18 @@
 #include <algorithm>
 #include <string>
 #include <vector>
- 
+#include <iostream>
+#include <unordered_set>
+
 class Solution {
 public:
+    Solution() {
+        m_adjacent.push_back({false,std::vector<int>{}});
+    }
+
     int countPairs(TreeNode* root, int distance) {
-        add_adjacent(root, 0);
+        if (!root) { return 0; }
+        find_adjacent(root, 0);
         m_visited.resize(m_adjacent.size(), false);
 
         m_limit = distance;
@@ -23,6 +30,7 @@ public:
         for (int vertex {0}; vertex < m_adjacent.size(); ++vertex) {
             if (m_adjacent[vertex].first) {
                 count += search(vertex, 0);
+                // std::cout << "\n";
             }
         }
 
@@ -32,22 +40,21 @@ public:
 private:
     int search(const int vertex, const int distance) {
         if (distance > m_limit || (m_adjacent[vertex].first && m_visited[vertex])) {
+            //std::cout << vertex << " T ";
             return 0;
         }
 
         m_visited[vertex] = true;
+        //std::cout << vertex << " ";
 
         if (m_adjacent[vertex].first && distance > 0) {
+            //std::cout << " G ";
             return 1;
         }
 
         int count {0};
 
         for (const auto& neighbor : m_adjacent[vertex].second) {
-            if (m_adjacent[neighbor].first && m_visited[neighbor]) {
-                continue;
-            }
-
             count += search(neighbor, distance + 1);
         }
 
@@ -55,6 +62,7 @@ private:
     }
 
     void find_adjacent(TreeNode* node, const int index) {
+        //std::cout << "Node: " << node->val << " Index: " << index << "\n";
         if (!node->left && !node->right) {
             m_adjacent[index].first = true;
             return;
@@ -78,7 +86,8 @@ private:
     }
 
     int m_limit {0};
-    std::vector<bool> m_visited;
+    //std::vector<bool> m_visited;
+    std::unordered_set<std::pair<int,int>> m_found;
     std::vector<std::pair<bool,std::vector<int>>> m_adjacent;
 };
 
@@ -104,8 +113,8 @@ int main(int argc, char* argv[]) {
     return Catch::Session().run(argc, argv);
 }
 
-//              15
-//        65          55
+//              15 
+//        66          55 
 //   97     60     12     56 
 // *  54   *  49  *  9   *  * 
 //   *,*     *,90
