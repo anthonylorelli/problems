@@ -15,12 +15,16 @@
 
 class Solution {
 public:
-    Solution() {
-        m_adjacent.push_back({false,std::vector<int>{}});
-    }
-
     int countPairs(TreeNode* root, int distance) {
         if (!root) { return 0; }
+        m_limit = distance;
+        count_pairs(root);
+        return m_count;  
+    }
+
+    int countPairsGenerlizedAdjacencyList(TreeNode* root, int distance) {
+        if (!root) { return 0; }
+        m_adjacent.push_back({false,std::vector<int>{}});
         find_adjacent(root, 0);
         m_visited.resize(m_adjacent.size(), std::vector<bool>(m_adjacent.size(), false));
 
@@ -37,6 +41,33 @@ public:
     }
 
 private:
+    std::vector<int> count_pairs(const TreeNode* node) {
+        if (!node) { return {}; }
+        if (!node->left && !node->right) { return {1}; }
+        std::vector left {count_pairs(node->left)};
+        std::vector right {count_pairs(node->right)};
+        for (const auto l : left) {
+            for (const auto r : right) {
+                if (l + r <= m_limit) {
+                    m_count++;
+                }
+            }
+        }
+
+        std::vector<int> leaves;
+        for (auto l : left) {
+            if (++l < m_limit) {
+                leaves.push_back(l);
+            }
+        }
+        for (auto r : right) {
+            if (++r < m_limit) {
+                leaves.push_back(r);
+            }
+        }
+        return leaves;
+    }
+
     int search(const int start, const int vertex, const int distance) {
         if (distance > m_limit || m_visited[start][vertex] || (m_adjacent[vertex].first && m_visited[vertex][start])) {
             return 0;
@@ -81,6 +112,7 @@ private:
     }
 
     int m_limit {0};
+    int m_count {0};
     std::vector<std::vector<bool>> m_visited;
     std::vector<std::pair<bool,std::vector<int>>> m_adjacent;
 };
