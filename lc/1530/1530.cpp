@@ -22,24 +22,6 @@ public:
         return m_count;  
     }
 
-    int countPairsGenerlizedAdjacencyList(TreeNode* root, int distance) {
-        if (!root) { return 0; }
-        m_adjacent.push_back({false,std::vector<int>{}});
-        find_adjacent(root, 0);
-        m_visited.resize(m_adjacent.size(), std::vector<bool>(m_adjacent.size(), false));
-
-        m_limit = distance;
-        int count {0};
-
-        for (int vertex {0}; vertex < m_adjacent.size(); ++vertex) {
-            if (m_adjacent[vertex].first) {
-                count += search(vertex, vertex, 0);
-            }
-        }
-
-        return count;
-    }
-
 private:
     std::vector<int> count_pairs(const TreeNode* node) {
         if (!node) { return {}; }
@@ -68,6 +50,34 @@ private:
         return leaves;
     }
 
+    int m_limit {0};
+    int m_count {0};
+};
+
+class GraphSolution {
+public:
+    GraphSolution() {
+        m_adjacent.push_back({false,std::vector<int>{}});
+    }
+
+    int countPairs(TreeNode* root, int distance) {
+        if (!root) { return 0; }
+        find_adjacent(root, 0);
+        m_visited.resize(m_adjacent.size(), std::vector<bool>(m_adjacent.size(), false));
+
+        m_limit = distance;
+        int count {0};
+
+        for (int vertex {0}; vertex < m_adjacent.size(); ++vertex) {
+            if (m_adjacent[vertex].first) {
+                count += search(vertex, vertex, 0);
+            }
+        }
+
+        return count;
+    }
+
+private:
     int search(const int start, const int vertex, const int distance) {
         if (distance > m_limit || m_visited[start][vertex] || (m_adjacent[vertex].first && m_visited[vertex][start])) {
             return 0;
@@ -112,10 +122,10 @@ private:
     }
 
     int m_limit {0};
-    int m_count {0};
     std::vector<std::vector<bool>> m_visited;
     std::vector<std::pair<bool,std::vector<int>>> m_adjacent;
 };
+
 
 auto speed=[]() {
     std::ios::sync_with_stdio(false);
