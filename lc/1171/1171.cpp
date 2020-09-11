@@ -10,14 +10,15 @@
 
 /**
  * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode() : val(0), next(nullptr) {}
- *     ListNode(int x) : val(x), next(nullptr) {}
- *     ListNode(int x, ListNode *next) : val(x), next(next) {}
- * };
- */
+ */ 
+struct ListNode {
+    int val;
+    ListNode *next;
+    ListNode() : val(0), next(nullptr) {}
+    ListNode(int x) : val(x), next(nullptr) {}
+    ListNode(int x, ListNode *next) : val(x), next(next) {}
+};
+
 class Solution {
 public:
     ListNode* removeZeroSumSublists(ListNode* head) {
@@ -33,13 +34,8 @@ int main(int argc, char* argv[]) {
 TEST_CASE("LC test cases", "[Core]") {
     Solution s;
     SECTION("LC test case 1") {
-        std::vector<int> v = {5, 7, 7, 8, 8, 10};
-        std::vector<int> a = {3, 4};
-        REQUIRE(s.searchRange(v, 8) == a);
-    }
-    SECTION("LC test case 2") {
-        std::vector<int> v = {5, 7, 7, 8, 8, 10};
-        std::vector<int> a = {-1, -1};
-        REQUIRE(s.searchRange(v, 6) == a);
+        std::vector<int> v = {1, 2, -3, 3, 1};
+        std::vector<int> result = {3, 1}; // {1, 2, 1} is also acceptable
+        REQUIRE(s.removeZeroSumSublists(nullptr) == nullptr);
     }
 }
