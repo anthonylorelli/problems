@@ -1,6 +1,6 @@
 // 1171. Remove Zero Sum Consecutive Nodes from Linked List
 // Problem definition: https://leetcode.com/problems/remove-zero-sum-consecutive-nodes-from-linked-list/
-// Accepted ?
+// Accepted 2020-09-13
 
 #define CATCH_CONFIG_RUNNER
 #include "../../uva/catch/catch.hpp"
@@ -22,26 +22,41 @@ struct ListNode {
 class Solution {
 public:
     ListNode* removeZeroSumSublists(ListNode* head) {
-        ListNode* node {head};
-        while (node) {
-            remove(node, node, 0);
-            node = node->next;
-        }
-    }
+        std::vector<int> sums;
+        ListNode* current {head};
+        while (current) {
+            sums.push_back(current->val);
+            current = current->next;
+            auto size {sums.size()};
+            if (size > 1) {
+                sums[size-1] += sums[size-2];
+            }
 
-private:
-    void remove(ListNode* start, ListNode* node, int sum) {
-        if (!node) { return ; }
-
-        int next {sum + node->val};
-        if (next == 0) {
-            start->next = node->next;
-            return;
-        } else {
-            remove(start, node->next, sum + next);
+            for (size_t i = 0, prefix = 0; i < sums.size(); prefix = sums[i++]) {
+                if ((sums[size-1] - prefix) == 0) {
+                    sums.erase(sums.begin() + i, sums.end());
+                }
+            }
         }
+
+        ListNode* start {nullptr};
+        if (sums.size() > 0) {
+            current = start = new ListNode(sums[0]);
+            for (size_t i = 1; i < sums.size(); ++i) {
+                current->next = new ListNode(sums[i] - sums[i-1]);
+                current = current->next;
+            }
+        }
+        return start;
     }
 };
+
+auto speed=[]() {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    std::cout.tie(nullptr);
+    return nullptr;
+}();
 
 int main(int argc, char* argv[]) {
     std::ios_base::sync_with_stdio(false);
