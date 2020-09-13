@@ -22,7 +22,24 @@ struct ListNode {
 class Solution {
 public:
     ListNode* removeZeroSumSublists(ListNode* head) {
-        return nullptr;        
+        ListNode* node {head};
+        while (node) {
+            remove(node, node, 0);
+            node = node->next;
+        }
+    }
+
+private:
+    void remove(ListNode* start, ListNode* node, int sum) {
+        if (!node) { return ; }
+
+        int next {sum + node->val};
+        if (next == 0) {
+            start->next = node->next;
+            return;
+        } else {
+            remove(start, node->next, sum + next);
+        }
     }
 };
 
