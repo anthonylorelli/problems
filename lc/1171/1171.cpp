@@ -22,32 +22,27 @@ struct ListNode {
 class Solution {
 public:
     ListNode* removeZeroSumSublists(ListNode* head) {
-        std::vector<int> sums;
+        std::vector<std::pair<int,ListNode*>> sums;
         ListNode* current {head};
         while (current) {
-            sums.push_back(current->val);
+            sums.push_back({current->val,current});
             current = current->next;
             auto size {sums.size()};
             if (size > 1) {
-                sums[size-1] += sums[size-2];
+                sums[size-1].first += sums[size-2].first;
             }
 
-            for (size_t i = 0, prefix = 0; i < sums.size(); prefix = sums[i++]) {
-                if ((sums[size-1] - prefix) == 0) {
+            for (size_t i = 0, prefix = 0; i < sums.size(); prefix = sums[i++].first) {
+                if ((sums[size-1].first - prefix) == 0) {
                     sums.erase(sums.begin() + i, sums.end());
+                    if (i > 0) {
+                        sums[i-1].second->next = current->next;
+                    }
                 }
             }
         }
 
-        ListNode* start {nullptr};
-        if (sums.size() > 0) {
-            current = start = new ListNode(sums[0]);
-            for (size_t i = 1; i < sums.size(); ++i) {
-                current->next = new ListNode(sums[i] - sums[i-1]);
-                current = current->next;
-            }
-        }
-        return start;
+        return sums.size() > 0 ? head : nullptr;
     }
 };
 
