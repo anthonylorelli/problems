@@ -7,6 +7,7 @@
 
 #include <algorithm>
 #include <vector>
+#include <unordered_map>
 
 /**
  * Definition for singly-linked list.
@@ -22,28 +23,32 @@ struct ListNode {
 class Solution {
 public:
     ListNode* removeZeroSumSublists(ListNode* head) {
-        std::vector<std::pair<int,ListNode*>> sums;
-        ListNode* current {head};
-        while (current) {
-            sums.push_back({current->val,current});
-            current = current->next;
-            auto size {sums.size()};
-            if (size > 1) {
-                sums[size-1].first += sums[size-2].first;
-            }
-
-            for (size_t i = 0, prefix = 0; i < sums.size(); prefix = sums[i++].first) {
-                if ((sums[size-1].first - prefix) == 0) {
-                    sums.erase(sums.begin() + i, sums.end());
-                    if (i > 0) {
-                        sums[i-1].second->next = current->next;
-                    }
-                }
-            }
-        }
-
-        return sums.size() > 0 ? head : nullptr;
+        std::unordered_map<int, ListNode*> map;
     }
+
+    // ListNode* removeZeroSumSublists(ListNode* head) {
+    //     std::vector<std::pair<int,ListNode*>> sums;
+    //     ListNode* current {head};
+    //     while (current) {
+    //         sums.push_back({current->val,current});
+    //         current = current->next;
+    //         auto size {sums.size()};
+    //         if (size > 1) {
+    //             sums[size-1].first += sums[size-2].first;
+    //         }
+
+    //         for (size_t i = 0, prefix = 0; i < sums.size(); prefix = sums[i++].first) {
+    //             if ((sums[size-1].first - prefix) == 0) {
+    //                 sums.erase(sums.begin() + i, sums.end());
+    //                 if (i > 0) {
+    //                     sums[i-1].second->next = current->next;
+    //                 }
+    //             }
+    //         }
+    //     }
+
+    //     return sums.size() > 0 ? head : nullptr;
+    // }
 };
 
 auto speed=[]() {
