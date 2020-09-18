@@ -23,7 +23,31 @@ struct ListNode {
 class Solution {
 public:
     ListNode* removeZeroSumSublists(ListNode* head) {
-        std::unordered_map<int, ListNode*> map;
+        std::unordered_map <int, ListNode*> map;
+        ListNode* stub = new ListNode{0};
+        stub->next = head;
+        map[0] = stub;
+        int sum {0};
+
+        while (head){
+            sum += head->val;
+            map[sum] = head;
+            head = head->next;
+        }
+
+        head = stub;
+        sum = 0;
+
+        while (head){
+            sum += head->val;
+            ListNode* temp {map[sum]};
+            if (temp != head) {
+                head->next = temp->next;
+            }
+            head = head->next;
+        }
+
+        return stub->next;
     }
 
     // ListNode* removeZeroSumSublists(ListNode* head) {
