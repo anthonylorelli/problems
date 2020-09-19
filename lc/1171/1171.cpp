@@ -29,7 +29,7 @@ public:
         map[0] = stub;
         int sum {0};
 
-        while (head){
+        while (head) {
             sum += head->val;
             map[sum] = head;
             head = head->next;
@@ -38,7 +38,7 @@ public:
         head = stub;
         sum = 0;
 
-        while (head){
+        while (head) {
             sum += head->val;
             ListNode* temp {map[sum]};
             if (temp != head) {
