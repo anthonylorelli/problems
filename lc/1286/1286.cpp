@@ -3,25 +3,35 @@
 // Accepted ?
 
 #define CATCH_CONFIG_RUNNER
-#include "../../uva/catch/catch.hpp"
+#include "../../inc/catch.hpp"
 
 #include <algorithm>
+#include <numeric>
 #include <vector>
-#include <unordered_map>
+#include <string>
 
 class CombinationIterator {
 public:
-    CombinationIterator(string characters, int combinationLength) {
-        
+    CombinationIterator(std::string characters, int combinationLength) : 
+        m_chars{characters}, m_next(combinationLength), m_index{combinationLength - 1} {
+        std::iota(m_next.begin(), m_next.end(), 0);
     }
     
-    string next() {
-        return {};
+    std::string next() {
     }
     
     bool hasNext() {
         return false;
     }
+
+private:
+    void choose() {
+        if ()
+    }
+
+    std::vector<int> m_next;
+    std::string m_chars;
+    int m_index;
 };
 
 /**
