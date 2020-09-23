@@ -18,6 +18,10 @@ public:
     }
     
     std::string next() {
+        std::string result;
+        for (const int i : m_next) {
+            results += m_chars[i];
+        }
     }
     
     bool hasNext() {
