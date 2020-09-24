@@ -12,30 +12,35 @@
 
 class CombinationIterator {
 public:
-    CombinationIterator(std::string characters, int combinationLength) : 
-        m_chars{characters}, m_next(combinationLength), m_index{combinationLength - 1} {
-        std::iota(m_next.begin(), m_next.end(), 0);
+    CombinationIterator(std::string characters, int combinationLength) : m_pos{0} {
+        std::string current{combinationLength, ' '};
+        generate(0, current, characters);
     }
     
     std::string next() {
-        std::string result;
-        for (const int i : m_next) {
-            results += m_chars[i];
-        }
+        return m_answer[m_pos++];
     }
     
     bool hasNext() {
-        return false;
+        return m_pos < m_answer.size();
     }
 
 private:
-    void choose() {
-        if ()
+    void generate(const int begin, std::string& current, const std::string& characters) {
+        if (begin == current.length()) {
+            m_answer.push_back(current);
+            return;
+        }
+
+        int limit {characters.length() - (current.length() - begin)};
+        for (int i = begin; i < limit; ++i) {
+            current[begin] = characters[i];
+            generate(begin + 1, current, characters);
+        }
     }
 
-    std::vector<int> m_next;
-    std::string m_chars;
-    int m_index;
+    std::vector<std::string> m_answer;
+    int m_pos;
 };
 
 /**
