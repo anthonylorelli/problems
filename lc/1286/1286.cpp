@@ -1,6 +1,6 @@
 // 1286. Iterator for Combination
 // Problem definition: https://leetcode.com/problems/iterator-for-combination/
-// Accepted ?
+// Accepted 2020-09-24
 
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
@@ -13,29 +13,29 @@
 class CombinationIterator {
 public:
     CombinationIterator(std::string characters, int combinationLength) : m_pos{0} {
-        std::string current{combinationLength, ' '};
-        generate(0, current, characters);
+        std::string current(combinationLength, ' ');
+        generate(0, 0, current, characters);
     }
     
     std::string next() {
         return m_answer[m_pos++];
     }
     
-    bool hasNext() {
+    bool hasNext() const {
         return m_pos < m_answer.size();
     }
 
 private:
-    void generate(const int begin, std::string& current, const std::string& characters) {
+    void generate(const int begin, const int index, std::string& current, const std::string& characters) {
         if (begin == current.length()) {
             m_answer.push_back(current);
             return;
         }
 
-        int limit {characters.length() - (current.length() - begin)};
-        for (int i = begin; i < limit; ++i) {
+        int limit = begin + (characters.length() - current.length());
+        for (int i {index}; i <= limit; ++i) {
             current[begin] = characters[i];
-            generate(begin + 1, current, characters);
+            generate(begin + 1, i + 1, current, characters);
         }
     }
 
@@ -62,8 +62,8 @@ int main(int argc, char* argv[]) {
     return Catch::Session().run(argc, argv);
 }
 
-TEST_CASE("LC test cases", "[Core]") {
-    Solution s;
-    SECTION("LC test case 1") {
-    }
-}
+// TEST_CASE("LC test cases", "[Core]") {
+//     Solution s;
+//     SECTION("LC test case 1") {
+//     }
+// }
