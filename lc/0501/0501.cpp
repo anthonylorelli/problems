@@ -3,7 +3,10 @@
 // Accepted 2020-06-13
 
 #define CATCH_CONFIG_RUNNER
-#include "../../uva/catch/catch.hpp"
+#include "../../inc/catch.hpp"
+#include "../../inc/treenode.h"
+#include "../../inc/tree_iterator.h"
+#include "../../inc/serialize.h"
 
 #include <algorithm>
 #include <iostream>
@@ -11,56 +14,6 @@
 #include <queue>
 #include <cstdint>
 #include <limits>
-
-/**
- * Definition for a binary tree node.
- */ 
-struct TreeNode {
-    int val;
-    TreeNode *left;
-    TreeNode *right;
-    TreeNode() : val(0), left(nullptr), right(nullptr) {}
-    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
-    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
-};
-
-class iterator
-{
-public:
-    iterator() = default;
-    iterator(TreeNode* node) {
-        traverse(node);
-    }
-
-    int operator*() {
-        return m_stack.top()->val;
-    }
-
-    iterator& operator++() {
-        TreeNode* node {m_stack.top()};
-        m_stack.pop();
-        traverse(node->right);
-        return *this;
-    }
-
-    bool operator==(const iterator& i) const {
-        return m_stack == i.m_stack;
-    }
-
-    bool operator!=(const iterator& i) const {
-        return !(*this == i);
-    }
-
-private:
-    std::stack<TreeNode*> m_stack;
-
-    void traverse(TreeNode* node) {
-        while (node) {
-            m_stack.push(node);
-            node = node->left;
-        }
-    }
-};
 
 class Solution {
 public:
@@ -71,13 +24,34 @@ public:
 
 private:
     int find_max(TreeNode* node) {
-        return 0;
+        if (!node) {
+            return 0;
+        }
+
+        int max {find_max(node->left)};
+
+        if (m_first) {
+            m_first = false;
+            m_current = node->val;
+            max = 1;
+        } else {
+            m_previous = m_current;
+            m_current = node->val;
+            if (m_current == m_previous) {
+                max++;
+            }
+        }
     }
 
     std::vector<int> collect_modes(TreeNode* node, const int max) {
-        return {};
+        std::vector<int> result;
+        return result;
     }
-}
+
+    bool m_first {true};
+    int m_current {0};
+    int m_previous {0};
+};
 
 class IteratorSolution {
 public:
@@ -89,8 +63,8 @@ public:
 private:
     template <typename F>
     void group_elements(TreeNode* root, F fn) {
-        ::iterator begin {root};
-        ::iterator end {};
+        tree_iterator begin {root};
+        tree_iterator end {};
         int prev {*begin};
         int count {1};
         ++begin;
