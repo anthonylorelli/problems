@@ -70,6 +70,23 @@ public:
     }
 
 private:
+    int find_max(TreeNode* node) {
+        return 0;
+    }
+
+    std::vector<int> collect_modes(TreeNode* node, const int max) {
+        return {};
+    }
+}
+
+class IteratorSolution {
+public:
+    std::vector<int> findMode(TreeNode* root) {
+        if (!root) { return {}; }
+        return collect_modes(root, find_max(root));
+    }
+
+private:
     template <typename F>
     void group_elements(TreeNode* root, F fn) {
         ::iterator begin {root};
