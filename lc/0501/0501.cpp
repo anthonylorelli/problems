@@ -1,6 +1,6 @@
 // 0501. Find Mode in Binary Search Tree
 // Problem definition: https://leetcode.com/problems/find-mode-in-binary-search-tree/
-// Accepted 2020-06-13
+// Accepted 2020-06-13, 2020-09-27
 
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
@@ -31,18 +31,9 @@ private:
 
         int left_count {traverse(node->left, count, handler)};
 
-        if (left_count == 0) {
-            left_count = 1;
-            m_previous = node->val;
-        } else if (m_previous == node->val) {
-            left_count++;
-        } else {
-            handler(m_previous, left_count);
-            left_count = 1;
-            m_previous = node->val;
-        }
-
-        std::cout << "Node: " << node->val << " Count: " << left_count << "\n";
+        left_count = (left_count == 0 || m_previous != node->val) ? 1 : left_count + 1;
+        handler(node->val, left_count);
+        m_previous = node->val;
 
         return traverse(node->right, left_count, handler);
     }
@@ -127,6 +118,16 @@ TEST_CASE("LC test cases", "[Find Mode in Binary Search Tree]") {
     SECTION("Case 2") {
         std::string input {"[6,2,8,0,4,7,9,null,null,2,6]"};
         std::vector<int> expected {2,6};
+        REQUIRE(s.findMode(c.deserialize(input)) == expected);
+    }
+    SECTION("Case 3") {
+        std::string input {"[]"};
+        std::vector<int> expected {};
+        REQUIRE(s.findMode(c.deserialize(input)) == expected);
+    }
+    SECTION("Case 4") {
+        std::string input {"[4]"};
+        std::vector<int> expected {4};
         REQUIRE(s.findMode(c.deserialize(input)) == expected);
     }
 }
