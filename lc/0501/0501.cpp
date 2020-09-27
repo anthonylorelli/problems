@@ -23,33 +23,44 @@ public:
     }
 
 private:
-    int find_max(TreeNode* node) {
+    template <typename Fn>
+    int traverse(const TreeNode* node, const int count, Fn& handler) {
         if (!node) {
-            return 0;
+            return count;
         }
 
-        int max {find_max(node->left)};
+        int left_count {traverse(node->left, count, handler)};
 
-        if (m_first) {
-            m_first = false;
-            m_current = node->val;
-            max = 1;
+        if (left_count == 0) {
+            left_count = 1;
+            m_previous = node->val;
+        } else if (m_previous == node->val) {
+            left_count++;
         } else {
-            m_previous = m_current;
-            m_current = node->val;
-            if (m_current == m_previous) {
-                max++;
-            }
+            handler(m_previous, left_count);
+            left_count = 1;
+            m_previous = node->val;
         }
+
+        std::cout << "Node: " << node->val << " Count: " << left_count << "\n";
+
+        return traverse(node->right, left_count, handler);
     }
 
-    std::vector<int> collect_modes(TreeNode* node, const int max) {
+    int find_max(const TreeNode* node) {
+        int max {1};
+        auto handler = [&max](const int, const int count) { max = std::max(max, count); };
+        traverse(node, 0, handler);
+        return max;
+    }
+
+    std::vector<int> collect_modes(TreeNode* node, const int target) {
         std::vector<int> result;
+        auto handler = [&target, &result](const int value, const int count) { if (count == target) { result.push_back(value); }};
+        traverse(node, 0, handler);
         return result;
     }
 
-    bool m_first {true};
-    int m_current {0};
     int m_previous {0};
 };
 
@@ -106,11 +117,17 @@ auto speed=[]()
 }();
 
 TEST_CASE("LC test cases", "[Find Mode in Binary Search Tree]") {
+    Solution s;
+    Codec c;
     SECTION("Case 1") {
-        auto tree = new TreeNode{1, new TreeNode{3, new TreeNode(5), new TreeNode(3)}, new TreeNode{2, nullptr, new TreeNode{9}}};
-        std::vector<int> expected;
-        Solution s;
-        REQUIRE(s.findMode(tree) == expected);
+        std::string input {"[1,null,2,2]"};
+        std::vector<int> expected {2};
+        REQUIRE(s.findMode(c.deserialize(input)) == expected);
+    }
+    SECTION("Case 2") {
+        std::string input {"[6,2,8,0,4,7,9,null,null,2,6]"};
+        std::vector<int> expected {2,6};
+        REQUIRE(s.findMode(c.deserialize(input)) == expected);
     }
 }
 
