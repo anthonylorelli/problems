@@ -3,7 +3,10 @@
 // Accepted 2020-06-13
 
 #define CATCH_CONFIG_RUNNER
-#include "../../uva/catch/catch.hpp"
+#include "../../inc/catch.hpp"
+#include "../../inc/treenode.h"
+#include "../../inc/tree_iterator.h"
+#include "../../inc/serialize.h"
 
 #include <algorithm>
 #include <iostream>
@@ -11,56 +14,6 @@
 #include <queue>
 #include <cstdint>
 #include <limits>
-
-/**
- * Definition for a binary tree node.
- */ 
-struct TreeNode {
-    int val;
-    TreeNode *left;
-    TreeNode *right;
-    TreeNode() : val(0), left(nullptr), right(nullptr) {}
-    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
-    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
-};
-
-class iterator
-{
-public:
-    iterator() = default;
-    iterator(TreeNode* node) {
-        traverse(node);
-    }
-
-    int operator*() {
-        return m_stack.top()->val;
-    }
-
-    iterator& operator++() {
-        TreeNode* node {m_stack.top()};
-        m_stack.pop();
-        traverse(node->right);
-        return *this;
-    }
-
-    bool operator==(const iterator& i) const {
-        return m_stack == i.m_stack;
-    }
-
-    bool operator!=(const iterator& i) const {
-        return !(*this == i);
-    }
-
-private:
-    std::stack<TreeNode*> m_stack;
-
-    void traverse(TreeNode* node) {
-        while (node) {
-            m_stack.push(node);
-            node = node->left;
-        }
-    }
-};
 
 class Solution {
 public:
@@ -70,14 +23,46 @@ public:
     }
 
 private:
-    int find_max(TreeNode* node) {
-        return 0;
+    template <typename Fn>
+    int traverse(const TreeNode* node, const int count, Fn& handler) {
+        if (!node) {
+            return count;
+        }
+
+        int left_count {traverse(node->left, count, handler)};
+
+        if (left_count == 0) {
+            left_count = 1;
+            m_previous = node->val;
+        } else if (m_previous == node->val) {
+            left_count++;
+        } else {
+            handler(m_previous, left_count);
+            left_count = 1;
+            m_previous = node->val;
+        }
+
+        std::cout << "Node: " << node->val << " Count: " << left_count << "\n";
+
+        return traverse(node->right, left_count, handler);
     }
 
-    std::vector<int> collect_modes(TreeNode* node, const int max) {
-        return {};
+    int find_max(const TreeNode* node) {
+        int max {1};
+        auto handler = [&max](const int, const int count) { max = std::max(max, count); };
+        traverse(node, 0, handler);
+        return max;
     }
-}
+
+    std::vector<int> collect_modes(TreeNode* node, const int target) {
+        std::vector<int> result;
+        auto handler = [&target, &result](const int value, const int count) { if (count == target) { result.push_back(value); }};
+        traverse(node, 0, handler);
+        return result;
+    }
+
+    int m_previous {0};
+};
 
 class IteratorSolution {
 public:
@@ -89,8 +74,8 @@ public:
 private:
     template <typename F>
     void group_elements(TreeNode* root, F fn) {
-        ::iterator begin {root};
-        ::iterator end {};
+        tree_iterator begin {root};
+        tree_iterator end {};
         int prev {*begin};
         int count {1};
         ++begin;
@@ -132,11 +117,17 @@ auto speed=[]()
 }();
 
 TEST_CASE("LC test cases", "[Find Mode in Binary Search Tree]") {
+    Solution s;
+    Codec c;
     SECTION("Case 1") {
-        auto tree = new TreeNode{1, new TreeNode{3, new TreeNode(5), new TreeNode(3)}, new TreeNode{2, nullptr, new TreeNode{9}}};
-        std::vector<int> expected;
-        Solution s;
-        REQUIRE(s.findMode(tree) == expected);
+        std::string input {"[1,null,2,2]"};
+        std::vector<int> expected {2};
+        REQUIRE(s.findMode(c.deserialize(input)) == expected);
+    }
+    SECTION("Case 2") {
+        std::string input {"[6,2,8,0,4,7,9,null,null,2,6]"};
+        std::vector<int> expected {2,6};
+        REQUIRE(s.findMode(c.deserialize(input)) == expected);
     }
 }
 
