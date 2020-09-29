@@ -1,6 +1,6 @@
 // 0501. Find Mode in Binary Search Tree
 // Problem definition: https://leetcode.com/problems/find-mode-in-binary-search-tree/
-// Accepted 2020-06-13, 2020-09-27
+// Accepted 2020-06-13, 2020-09-27, 2020-09-28
 
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
@@ -16,6 +16,41 @@
 #include <limits>
 
 class Solution {
+public:
+    std::vector<int> findMode(TreeNode* root) {
+        if (!root) { return {}; }
+        m_previous = root->val;
+        traverse(root, 0);
+        return m_result;
+    }
+
+private:
+    int traverse(const TreeNode* node, const int count) {
+        if (!node) {
+            return count;
+        }
+
+        int left_count {traverse(node->left, count)};
+
+        left_count = m_previous != node->val ? 1 : left_count + 1;
+        if (left_count > m_max) {
+            m_result.clear();
+            m_max = left_count;
+        }
+        if (left_count == m_max) {
+            m_result.push_back(node->val);
+        }
+        m_previous = node->val;
+
+        return traverse(node->right, left_count);
+    }
+
+    int m_max {1};
+    std::vector<int> m_result;
+    int m_previous {0};
+};
+
+class TwoPassTreeSolution {
 public:
     std::vector<int> findMode(TreeNode* root) {
         if (!root) { return {}; }
