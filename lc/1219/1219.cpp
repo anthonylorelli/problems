@@ -10,10 +10,26 @@
 #include <set>
 #include <iterator>
 #include <iostream>
+#include <queue>
+#include <tuple>
 
 class Solution {
 public:
     int getMaximumGold(std::vector<std::vector<int>>& grid) {
+        auto predicate = [](const auto& a, const auto& b) {
+            return std::get<2>(a) < std::get<2>(b);
+        };
+        std::priority_queue<std::tuple<int,int,int>, 
+            std::vector<std::tuple<int,int,int>>, decltype(predicate)> queue(predicate);
+        for (int i {0}; i < grid.size(); ++i) {
+            for (int j {0}; j < grid[i].size(); ++j) {
+                if (grid[i][j] != 0) {
+                    queue.push({i,j,grid[i][j]});
+                }
+            }
+        }
+
+        std::vector status(grid.size(), std::vector<std::pair<int,bool>>(grid[0].size(),{0,false}));
         return 0;
     }
 };
