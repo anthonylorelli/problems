@@ -21,15 +21,25 @@ public:
         };
         std::priority_queue<std::tuple<int,int,int>, 
             std::vector<std::tuple<int,int,int>>, decltype(predicate)> queue(predicate);
+        std::vector status(grid.size(), std::vector<int>(grid[0].size(), 0));
         for (int i {0}; i < grid.size(); ++i) {
             for (int j {0}; j < grid[i].size(); ++j) {
                 if (grid[i][j] != 0) {
                     queue.push({i,j,grid[i][j]});
+                    status[i][j] = grid[i][j];
                 }
             }
         }
 
-        std::vector status(grid.size(), std::vector<std::pair<int,bool>>(grid[0].size(),{0,false}));
+
+        while (!queue.empty()) {
+            auto [row, col, gold] = queue.top();
+            queue.pop();
+            // North
+            if (row > 0) {
+                if (gold + grid[row][col])
+            }
+        }
         return 0;
     }
 };
