@@ -1,53 +1,57 @@
 // 1296. Path with Maximum Gold
 // Problem definition: https://leetcode.com/problems/path-with-maximum-gold/
-// Accepted ?
+// Accepted 2020-10-05
 
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
 
 #include <vector>
 #include <algorithm>
-#include <set>
 #include <iterator>
-#include <iostream>
-#include <queue>
-#include <tuple>
 
 class Solution {
 public:
     int getMaximumGold(std::vector<std::vector<int>>& grid) {
-        auto predicate = [](const auto& a, const auto& b) {
-            return std::get<2>(a) < std::get<2>(b);
-        };
-        std::priority_queue<std::tuple<int,int,int>, 
-            std::vector<std::tuple<int,int,int>>, decltype(predicate)> queue(predicate);
-        std::vector status(grid.size(), std::vector<int>(grid[0].size(), 0));
         for (int i {0}; i < grid.size(); ++i) {
-            for (int j {0}; j < grid[i].size(); ++j) {
+            for (int j {0}; j < grid[0].size(); ++j) {
                 if (grid[i][j] != 0) {
-                    queue.push({i,j,grid[i][j]});
-                    status[i][j] = grid[i][j];
+                    walk(grid, i, j, 0);
                 }
             }
         }
 
-
-        while (!queue.empty()) {
-            auto [row, col, gold] = queue.top();
-            queue.pop();
-            // North
-            if (row > 0) {
-                if (gold + grid[row][col])
-            }
-        }
-        return 0;
+        return m_max;
     }
+
+private:
+    void walk(std::vector<std::vector<int>>& grid, const int row, const int col, const int sum) {
+        if (grid[row][col] <= 0) {
+            return;
+        }
+
+        const int latest {grid[row][col] + sum};
+        m_max = std::max(latest, m_max);
+
+        grid[row][col] *= -1;
+
+        if (col > 0) { walk(grid, row, col - 1, latest); }
+        if (row > 0) { walk(grid, row - 1, col, latest); }
+        if (row < (grid.size() - 1)) { walk(grid, row + 1, col, latest); }
+        if (col < (grid[0].size() - 1)) { walk(grid, row, col + 1, latest); }
+
+        grid[row][col] *= -1;
+    }
+
+    int m_max {0};
 };
 
 TEST_CASE("LC test cases", "[Core]") {
     std::vector<std::pair<std::vector<std::vector<int>>,int>> input {
         {{{0,6,0},{5,8,7},{0,9,0}},24},
-        {{{1,0,7},{2,0,6},{3,4,5},{0,3,0},{9,0,20}},28}
+        {{{1,0,7},{2,0,6},{3,4,5},{0,3,0},{9,0,20}},28},
+        {{{1,0},{0,1}},1},
+        {{{10}},10},
+        {{{0}},0}
     };
 
     SECTION("LC test cases") {
