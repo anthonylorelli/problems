@@ -14,6 +14,22 @@
 class Solution {
 public:
     bool isSymmetric(TreeNode* root) {
+        if (!root) { return true; }
+        return is_mirror(root->left, root->right);
+    }
+
+private:
+    bool is_mirror(const TreeNode* a, const TreeNode* b) {
+        if (!a && !b) { return true; }
+        if (!a || !b) { return false; }
+        return a->val == b->val && is_mirror(a->left, b->right) &&
+            is_mirror(a->right, b->left);
+    }
+};
+
+class OverlyComplicatedIterativeSolution {
+public:
+    bool isSymmetric(TreeNode* root) {
         if (!root) {
             return true;
         }
@@ -67,7 +83,9 @@ TEST_CASE("LC test cases", "[Core]") {
         {c.deserialize("[5,2,-5]"),false},
         {c.deserialize("[]"),true},
         {c.deserialize("[19]"),true},
-        {c.deserialize("[5,2,7,1,1,8,8]"),false}
+        {c.deserialize("[5,2,7,1,1,8,8]"),false},
+        {c.deserialize("[5,2,2,1,1,1,1]"),true},
+        {c.deserialize("[5,2,2,1,8,8,1]"),true},
     };
 
     SECTION("LC test cases") {
