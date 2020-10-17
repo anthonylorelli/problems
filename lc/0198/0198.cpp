@@ -17,7 +17,7 @@ public:
 };
 
 TEST_CASE("LC test cases", "[Core]") {
-    std::vector<std::vector<int>,int> input {
+    std::vector<std::pair<std::vector<int>,int>> input {
         {{1,2,3,1},4},
         {{2,7,9,3,1},12}
     };
