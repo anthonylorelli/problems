@@ -1,4 +1,4 @@
-// 0508. Symmetric Tree
+// 0101. Symmetric Tree
 // Problem definition: https://leetcode.com/problems/symmetric-tree/
 // Accepted ?
 #define CATCH_CONFIG_RUNNER
