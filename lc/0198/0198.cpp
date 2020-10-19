@@ -12,8 +12,15 @@
 class Solution {
 public:
     int rob(std::vector<int>& nums) {
-        return 0;
+        int max {0};
+        for (int i {0}; i < nums.size(); ++i) {
+
+        }
+        return max;
     }
+
+private:
+
 };
 
 TEST_CASE("LC test cases", "[Core]") {
