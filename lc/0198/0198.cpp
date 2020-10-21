@@ -8,33 +8,37 @@
 
 #include <vector>
 #include <algorithm>
-#include <tuple>
 
 class Solution {
 public:
     int rob(std::vector<int>& nums) {
         if (nums.size() == 0) { return 0; }
+        if (nums.size() == 1) { return nums[0]; }
 
-        int max {nums[0]};
-        int last {0};
-        std::vector<std::pair<int,int>> sums;
-        sums.push_back({0,nums[0]});
+        int even_max {nums[0]};
+        int odd_max {nums[1]};
 
-        for (int i {1}; i < nums.size(); ++i) {
-
+        for (int i {2}; i < nums.size(); ++i) {
+            bool even {i % 2 == 0};
+            int next = nums[i] + (even ? even_max : odd_max);
+            if (even) {
+                odd_max = std::max(odd_max, even_max);
+                even_max = next;
+            } else {
+                even_max = std::max(odd_max, even_max);
+                odd_max = next;
+            }
         }
 
-        return max;
+        return std::max(even_max, odd_max);
     }
-
-private:
-
 };
 
 TEST_CASE("LC test cases", "[Core]") {
     std::vector<std::pair<std::vector<int>,int>> input {
         {{1,2,3,1},4},
-        {{2,7,9,3,1},12}
+        {{2,7,9,3,1},12},
+        {{10,1,2,11},21}
     };
 
     SECTION("LC test cases") {
