@@ -1,6 +1,6 @@
 // 0198. House Robber
 // Problem definition: https://leetcode.com/problems/house-robber/
-// Accepted ?
+// Accepted 2020-10-21
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
 #include "../../inc/treenode.h"
