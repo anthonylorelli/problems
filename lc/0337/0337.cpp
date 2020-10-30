@@ -13,14 +13,29 @@
 class Solution {
 public:
     int rob(TreeNode* root) {
-        return 0;
+        auto [left, right] = traverse(root);
+        return std::max(left, right);
+    }
+
+private:
+    std::pair<int,int> traverse(TreeNode* node) {
+        if (!node) { return {0,0}; }
+
+        auto left = traverse(node->left);
+        auto right = traverse(node->right);
+
+        return {
+            std::max(left.first + right.first, left.second + right.second),
+            left.first + right.first + node->val
+        };
     }
 };
 
 TEST_CASE("LC test cases", "[Core]") {
     std::vector<std::pair<std::string,int>> input {
         {"[3,2,3,null,3,null,1]", 7},
-        {"[3,4,5,1,3,null,1]", 9}
+        {"[3,4,5,1,3,null,1]", 9},
+        {"[2,1,3,null,4]", 7}
     };
 
     SECTION("LC test cases") {
