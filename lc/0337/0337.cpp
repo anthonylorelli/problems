@@ -1,6 +1,6 @@
 // 0337. House Robber III
 // Problem definition: https://leetcode.com/problems/house-robber-iii/
-// Accepted ?
+// Accepted 2020-10-30
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
 #include "../../inc/treenode.h"
@@ -21,12 +21,12 @@ private:
     std::pair<int,int> traverse(TreeNode* node) {
         if (!node) { return {0,0}; }
 
-        auto left = traverse(node->left);
-        auto right = traverse(node->right);
+        auto [lf, ls] = traverse(node->left);
+        auto [rf, rs] = traverse(node->right);
 
         return {
-            std::max(left.first + right.first, left.second + right.second),
-            left.first + right.first + node->val
+            std::max({lf + rf, lf + rs, ls + rf, ls + rs}),
+            lf + rf + node->val
         };
     }
 };
