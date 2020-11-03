@@ -1,6 +1,6 @@
 // 0113. Path Sum II
 // Problem definition: https://leetcode.com/problems/path-sum-ii/
-// Accepted ?
+// Accepted 2020-11-02
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
 #include "../../inc/treenode.h"
