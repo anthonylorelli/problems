@@ -8,12 +8,21 @@
 
 #include <vector>
 #include <algorithm>
-#include <array>
+#include <unordered_set>
 
 class Solution {
 public:
     int pathSum(TreeNode* root, int sum) {
-        return 0;        
+        return 0;
+    }
+
+private:
+    int pathSum(const TreeNode* node, std::unordered_multiset<int> set, const int target) {
+        if (!node) { return 0; }
+        int count {0};
+        if (set.count(target - node->val)) {
+            count++;
+        }
     }
 };
 
