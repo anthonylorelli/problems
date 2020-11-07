@@ -1,6 +1,6 @@
 // 0217. Contains Duplicate
 // Problem definition: https://leetcode.com/problems/contains-duplicate/
-// Accepted ?
+// Accepted 2020-11-06
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
 #include "../../inc/treenode.h"
