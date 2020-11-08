@@ -1,6 +1,6 @@
 // 0219. Contains Duplicate II
 // Problem definition: https://leetcode.com/problems/contains-duplicate-ii/
-// Accepted ?
+// Accepted 2020-11-07
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
 #include "../../inc/treenode.h"
@@ -8,10 +8,19 @@
 
 #include <vector>
 #include <algorithm>
+#include <unordered_map>
 
 class Solution {
 public:
     bool containsNearbyDuplicate(std::vector<int>& nums, int k) {
+        std::unordered_map<int,int> map;
+        for (int i = 0; i < nums.size(); ++i) {
+            const auto n {nums[i]};
+            if (map.count(n) && (i - map[n] <= k)) {
+                return true;
+            }
+            map[n] = i;
+        }
         return false;
     }
 };
@@ -20,7 +29,9 @@ TEST_CASE("LC test cases", "[Core]") {
     std::vector<std::pair<std::pair<std::vector<int>,int>,bool>> input {
         {{{1,2,3,1},3}, true},
         {{{1,0,1,1},1}, true},
-        {{{1,2,3,1,2,3},2},false}
+        {{{1,2,3,1,2,3},2},false},
+        {{{},0},false},
+        {{{1},1},false}
     };
 
     SECTION("LC test cases") {
