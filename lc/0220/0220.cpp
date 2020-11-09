@@ -8,14 +8,18 @@
 
 #include <vector>
 #include <algorithm>
-#include <unordered_map>
+#include <map>
 
 class Solution {
 public:
     bool containsNearbyAlmostDuplicate(std::vector<int>& nums, int k, int t) {
-        std::vector<int> sorted(k);
-        std::partial_sort_copy(nums.begin(), nums.begin() + k, sorted.begin(), sorted.end());
-        return false;
+        std::map<int,int> map;
+        for (int i {0}; i < k; ++i) {
+            map[nums[i]] = i;
+        }
+        for (int i {k}; i < nums.size(); ++i) {
+            //auto n
+        }
     }
 };
 
