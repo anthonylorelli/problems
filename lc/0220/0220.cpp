@@ -13,7 +13,9 @@
 class Solution {
 public:
     bool containsNearbyAlmostDuplicate(std::vector<int>& nums, int k, int t) {
-        return false;        
+        std::vector<int> sorted(k);
+        std::partial_sort_copy(nums.begin(), nums.begin() + k, sorted.begin(), sorted.end());
+        return false;
     }
 };
 
