@@ -13,13 +13,15 @@
 class Solution {
 public:
     bool containsNearbyAlmostDuplicate(std::vector<int>& nums, int k, int t) {
-        std::map<int,int> map;
+        std::multimap<int,int> map;
         for (int i {0}; i < k; ++i) {
-            map[nums[i]] = i;
+            const auto n {nums[i]};
+            if (map.count(n)) {
+
+            }
         }
-        for (int i {k}; i < nums.size(); ++i) {
-            //auto n
-        }
+        int min {map.begin()->first};
+        int max {map.rbegin()->first};
     }
 };
 
