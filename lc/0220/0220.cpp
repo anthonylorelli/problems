@@ -8,20 +8,31 @@
 
 #include <vector>
 #include <algorithm>
-#include <map>
+#include <set>
 
 class Solution {
 public:
     bool containsNearbyAlmostDuplicate(std::vector<int>& nums, int k, int t) {
-        std::multimap<int,int> map;
-        for (int i {0}; i < k; ++i) {
-            const auto n {nums[i]};
-            if (map.count(n)) {
-
+        if (nums.size() <= 1) { return false; }
+        std::multiset<int> set;
+        for (int i {1}; i <= k; ++i) {
+            set.insert(nums[i]);
+        }
+        for (int i {0}, j {k+1}; i < nums.size(); ++i, ++j) {
+            int next {nums[i]};
+            auto target = set.lower_bound(next);
+            int nearest = target != set.end() ? *target : *set.rbegin();
+            if (std::abs(next - nearest) <= t) {
+                return true;
+            }
+            if (i < (nums.size() - 1)) {
+                set.erase(set.find(nums[i + 1]));
+            }
+            if (j < nums.size()) {
+                set.insert(nums[j]);
             }
         }
-        int min {map.begin()->first};
-        int max {map.rbegin()->first};
+        return false;
     }
 };
 
@@ -29,6 +40,12 @@ TEST_CASE("LC test cases", "[Core]") {
     std::vector<std::pair<std::tuple<std::vector<int>,int,int>,bool>> input {
         {{{1,2,3,1},3,0}, true},
         {{{1,0,1,1},1,2}, true},
+        {{{1,5,9,1,5,9},2,3}, false},
+        {{{},0,0}, false},
+        {{{1},0,0}, false},
+        {{{1,1},1,0}, true},
+        {{{1,2},1,0}, false},
+        {{{8,7,15,1,6,1,9,15},1,3}, true},
         {{{1,5,9,1,5,9},2,3},false}
     };
 
