@@ -1,6 +1,6 @@
 // 0219. Contains Duplicate III
 // Problem definition: https://leetcode.com/problems/contains-duplicate-iii/
-// Accepted ?
+// Accepted 2020-11-11
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
 #include "../../inc/treenode.h"
@@ -9,30 +9,32 @@
 #include <vector>
 #include <algorithm>
 #include <set>
+#include <iterator>
 
 class Solution {
 public:
     bool containsNearbyAlmostDuplicate(std::vector<int>& nums, int k, int t) {
         if (nums.size() <= 1) { return false; }
         std::multiset<int> set;
-        for (int i {1}; i <= k; ++i) {
-            set.insert(nums[i]);
-        }
-        for (int i {0}, j {k+1}; i < nums.size(); ++i, ++j) {
-            int next {nums[i]};
-            auto target = set.lower_bound(next);
-            int nearest = target != set.end() ? *target : *set.rbegin();
-            if (std::abs(next - nearest) <= t) {
+        for (int i {0}; i < nums.size(); ++i) {
+            auto nearest = set.lower_bound(nums[i]);
+            if (nearest != set.end() && is_nearby(*nearest, nums[i], t)) {
                 return true;
             }
-            if (i < (nums.size() - 1)) {
-                set.erase(set.find(nums[i + 1]));
+            if (nearest != set.begin() && is_nearby(nums[i], *std::prev(nearest), t)) {
+                return true;
             }
-            if (j < nums.size()) {
-                set.insert(nums[j]);
+            set.insert(nums[i]);
+            if (set.size() > k) {
+                set.erase(nums[i - k]);
             }
         }
         return false;
+    }
+
+private:
+    bool is_nearby(const int64_t lhs, const int64_t rhs, const int64_t t) const {
+        return lhs <= (rhs + t);
     }
 };
 
