@@ -1,15 +1,35 @@
 // 0061. Rotate List
 // Problem definition: https://leetcode.com/problems/rotate-list/
-// Accepted ?
+// Accepted 20202-11-12
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
 #include "../../inc/listnode.h"
 #include "../../inc/serialize.h"
 
+#include <stack>
+
 class Solution {
 public:
     ListNode* rotateRight(ListNode* head, int k) {
-        return nullptr;
+        if (!head) { return head; }
+        ListNode* first {head};
+        ListNode* current {head};
+        std::stack<ListNode*> stack;
+        while (current) { 
+            stack.push(current);
+            current = current->next;
+        }
+        int moves = k % stack.size();
+        for (int i {0}; i < moves; ++i) {
+            ListNode* node = stack.top();
+            stack.pop();
+            node->next = first;
+            first = node;
+        }
+        if (stack.size() > 0) {
+            stack.top()->next = nullptr;
+        }
+        return first;
     }
 };
 
