@@ -1,34 +1,44 @@
 // 0155. Min Stack
 // Problem definition: https://leetcode.com/problems/min-stack/
-// Accepted ?
+// Accepted 2020-11-14
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
 #include "../../inc/listnode.h"
 #include "../../inc/serialize.h"
 
+#include <vector>
+#include <limits>
+
 class MinStack {
 public:
-    /** initialize your data structure here. */
-    MinStack() {
-        
-    }
+    MinStack() : m_min{std::numeric_limits<int>::max()} {}
     
     void push(int x) {
-        
+        m_stack.push_back(x);
+        m_min = std::min(m_min, x);     
     }
     
     void pop() {
-        
+        m_stack.pop_back();
+        m_min = m_stack.size() > 0 ? *std::min_element(m_stack.begin(), m_stack.end()) : 
+            std::numeric_limits<int>::max();
     }
     
     int top() {
-        
+        return m_stack.back();
     }
     
     int getMin() {
-        
+        return m_min;
     }
+
+private:
+    std::vector<int> m_stack;
+    int m_min;
 };
+
+// ["MinStack","push","push","push","top","pop","getMin","pop","getMin","pop","push","top","getMin","push","top","getMin","pop","getMin"]
+// [[],[2147483646],[2147483646],[2147483647],[],[],[],[],[],[],[2147483647],[],[],[-2147483648],[],[],[],[]]
 
 /**
  * Your MinStack object will be instantiated and called as such:
