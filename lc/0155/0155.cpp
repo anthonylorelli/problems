@@ -6,35 +6,30 @@
 #include "../../inc/listnode.h"
 #include "../../inc/serialize.h"
 
-#include <vector>
-#include <limits>
+#include <stack>
 
 class MinStack {
 public:
-    MinStack() : m_min{std::numeric_limits<int>::max()} {}
+    MinStack() {}
     
     void push(int x) {
-        m_stack.push_back(x);
-        m_min = std::min(m_min, x);     
+        m_stack.push({x, m_stack.empty() ? x : std::min(m_stack.top().second, x)});
     }
     
     void pop() {
-        m_stack.pop_back();
-        m_min = m_stack.size() > 0 ? *std::min_element(m_stack.begin(), m_stack.end()) : 
-            std::numeric_limits<int>::max();
+        m_stack.pop();
     }
     
     int top() {
-        return m_stack.back();
+        return m_stack.top().first;
     }
     
     int getMin() {
-        return m_min;
+        return m_stack.top().second;
     }
 
 private:
-    std::vector<int> m_stack;
-    int m_min;
+    std::stack<std::pair<int,int>> m_stack;
 };
 
 // ["MinStack","push","push","push","top","pop","getMin","pop","getMin","pop","push","top","getMin","push","top","getMin","pop","getMin"]
