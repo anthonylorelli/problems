@@ -4,12 +4,26 @@
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
 #include "../../inc/listnode.h"
-#include "../../inc/serialize.h"
 
 class Solution {
 public:
     ListNode* sortList(ListNode* head) {
-        return nullptr;        
+        if (!head || !head->next) {
+            return head;
+        }
+        ListNode* mid {getMid(head)};
+        ListNode* left {sortList(head)};
+        ListNode* right {sortList(mid)};
+        return merge(left, right);
+    }
+
+private:
+    ListNode* getMid(ListNode* head) {
+        return nullptr;
+    }
+
+    ListNode* merge(ListNode* left, ListNode* right) {
+        return nullptr;
     }
 };
 
