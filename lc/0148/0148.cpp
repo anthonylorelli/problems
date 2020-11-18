@@ -11,15 +11,22 @@ public:
         if (!head || !head->next) {
             return head;
         }
-        ListNode* mid {getMid(head)};
+        ListNode* mid {halve(head)};
         ListNode* left {sortList(head)};
         ListNode* right {sortList(mid)};
         return merge(left, right);
     }
 
 private:
-    ListNode* getMid(ListNode* head) {
-        return nullptr;
+    ListNode* halve(ListNode* head) {
+        ListNode* midTail {head};
+        while (head && head->next) {
+            midTail = midTail->next;
+            head = head->next->next;
+        }
+        ListNode* mid = midTail->next;
+        midTail->next = nullptr;
+        return mid;
     }
 
     ListNode* merge(ListNode* left, ListNode* right) {
