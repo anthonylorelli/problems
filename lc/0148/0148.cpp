@@ -1,6 +1,6 @@
 // 0148. Sort List
 // Problem definition: https://leetcode.com/problems/sort-list/
-// Accepted ?
+// Accepted 2020-11-17
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
 #include "../../inc/listnode.h"
@@ -11,19 +11,41 @@ public:
         if (!head || !head->next) {
             return head;
         }
-        ListNode* mid {getMid(head)};
+        ListNode* mid {halve(head)};
         ListNode* left {sortList(head)};
         ListNode* right {sortList(mid)};
         return merge(left, right);
     }
 
 private:
-    ListNode* getMid(ListNode* head) {
-        return nullptr;
+    ListNode* halve(ListNode* head) {
+        ListNode* midTail {nullptr};
+        while (head && head->next) {
+            midTail = !midTail ? head : midTail->next;
+            head = head->next->next;
+        }
+        ListNode* mid = midTail->next;
+        midTail->next = nullptr;
+        return mid;
     }
 
     ListNode* merge(ListNode* left, ListNode* right) {
-        return nullptr;
+        ListNode headStub;
+        ListNode* current {&headStub};
+
+        while (left && right) {
+            if (left->val < right->val) {
+                current->next = left;
+                left = left->next;
+            } else {
+                current->next = right;
+                right = right->next;
+            }
+            current = current->next;
+        }
+
+        current->next = left ? left : right;
+        return headStub.next;
     }
 };
 
