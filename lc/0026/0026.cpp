@@ -6,10 +6,19 @@
 #include "../../inc/listnode.h"
 
 #include <vector>
+#include <limits>
 
 class Solution {
 public:
     int removeDuplicates(std::vector<int>& nums) {
+        if (nums.size() < 2) {
+            return nums.size();
+        }
+        for (int i {1}; i < nums.size(); ++i) {
+            if (nums[i] == nums[i-1]) {
+                nums[i-1] = std::numeric_limits<int>::min();
+            }
+        }
         return 0;
     }
 };
