@@ -15,17 +15,8 @@ public:
         }
         int left {0};
         for (int right {1}; right < nums.size(); ++right) {
-            if (nums[left] == nums[right]) {
-                while (++right < nums.size() && nums[left] == nums[right]) { }
-            } 
-
-            if (right == nums.size()) {
-                break;
-            } 
-            
-            ++left;
-
-            if (left != right) {
+            if (nums[left] != nums[right]) {
+                ++left;
                 nums[left] = nums[right];
             }
         }
