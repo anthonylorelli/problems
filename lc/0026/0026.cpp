@@ -6,10 +6,16 @@
 #include "../../inc/listnode.h"
 
 #include <vector>
+#include <algorithm>
 
 class Solution {
 public:
     int removeDuplicates(std::vector<int>& nums) {
+        auto end = std::unique(nums.begin(), nums.end());
+        return std::distance(nums.begin(), end);
+    }
+
+    int removeDuplicatesRawLoop(std::vector<int>& nums) {
         if (nums.size() < 2) {
             return nums.size();
         }
