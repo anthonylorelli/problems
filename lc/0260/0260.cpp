@@ -1,6 +1,6 @@
 // 0260. Single Number III
 // Problem definition: https://leetcode.com/problems/single-number-iii/
-// Accepted ?
+// Accepted 2020-11-24
 // Cf. https://leetcode.com/problems/single-number-iii/discuss/68921/C%2B%2B-solution-O(n)-time-and-O(1)-space-easy-understaning-with-simple-explanation
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
