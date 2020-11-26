@@ -1,6 +1,6 @@
 // 0260. Single Number III
 // Problem definition: https://leetcode.com/problems/single-number-iii/
-// Accepted ?
+// Accepted 2020-11-25
 // Cf. https://leetcode.com/problems/single-number-iii/discuss/68921/C%2B%2B-solution-O(n)-time-and-O(1)-space-easy-understaning-with-simple-explanation
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
@@ -10,6 +10,19 @@
 class Solution {
 public:
     std::vector<int> singleNumber(std::vector<int>& nums) {
+        int pattern {0}; 
+        for (const auto n : nums) { pattern ^= n; }
+        int last_bit = pattern & (-pattern);  // the last bit that a diffs b
+        std::vector<int> answer {0,0};
+        for (const auto n : nums) {
+            // based on the last bit, group the items into groupA(include a) and groupB
+            if (n & last_bit) { answer[0] ^= n; }
+            else { answer[1] ^= n; }
+        }
+        return answer;
+    }
+
+    std::vector<int> singleNumberOrig(std::vector<int>& nums) {
         int pattern {0}; 
         for (const auto n : nums) { pattern ^= n; }
         int last_bit = (pattern & (pattern - 1)) ^ pattern;  // the last bit that a diffs b
