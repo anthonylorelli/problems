@@ -9,7 +9,17 @@
 class Solution {
 public:
     int removeDuplicates(std::vector<int>& nums) {
-        return 0;
+        if (nums.size() == 0 || nums.size() == 1) {
+            return nums.size();
+        }
+        int left {0};
+        for (int right {1}; right < nums.size(); ++right) {
+            if (nums[left] != nums[right]) {
+                ++left;
+                nums[left] = nums[right];
+            }
+        }
+        return left;
     }
 };
 
