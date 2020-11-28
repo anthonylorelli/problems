@@ -17,6 +17,10 @@ public:
             if (nums[left] != nums[right]) {
                 ++left;
                 nums[left] = nums[right];
+            } else {
+                ++left;
+                auto current {nums[right]};
+                while (nums[right + 1] == current) { ++right; }
             }
         }
         return left;
@@ -26,12 +30,13 @@ public:
 TEST_CASE("LC test cases", "[Core]") {
     std::vector<std::pair<std::vector<int>,std::pair<std::vector<int>,int>>> input {
         {{1,2,3},{{1,2,3},3}},
-        {{1,1,2,2,3,3},{{1,1,2,2,3},5}},
+        {{1,1,1,2,2,3},{{1,1,2,2,3},5}},
         {{},{{},0}},
         {{1},{{1},1}},
         {{1,1,2,3},{{1,1,2,3},4}},
         {{1,2,3,3,3},{{1,2,3,3},4}},
-        {{1,1,1,1},{{1,1},2}}
+        {{1,1,1,1},{{1,1},2}},
+        {{1,2,2,2},{{1,2,2},3}}
     };
 
     SECTION("LC test cases") {
