@@ -1,6 +1,6 @@
 // 0080. Remove Duplicates from Sorted Array II
 // Problem definition: https://leetcode.com/problems/remove-duplicates-from-sorted-array-ii/
-// Accepted ?
+// Accepted 2020-11-28
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
 
@@ -19,11 +19,11 @@ public:
                 nums[left] = nums[right];
             } else {
                 ++left;
-                auto current {nums[right]};
-                while (nums[right + 1] == current) { ++right; }
+                auto current = nums[left] = nums[right];
+                while ((right + 1) < nums.size() && nums[right + 1] == current) { ++right; }
             }
         }
-        return left;
+        return left + 1;
     }
 };
 
@@ -36,7 +36,8 @@ TEST_CASE("LC test cases", "[Core]") {
         {{1,1,2,3},{{1,1,2,3},4}},
         {{1,2,3,3,3},{{1,2,3,3},4}},
         {{1,1,1,1},{{1,1},2}},
-        {{1,2,2,2},{{1,2,2},3}}
+        {{1,2,2,2},{{1,2,2},3}},
+        {{1,2,2,2,3},{{1,2,2,3},4}}
     };
 
     SECTION("LC test cases") {
