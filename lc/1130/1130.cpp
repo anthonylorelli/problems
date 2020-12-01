@@ -9,6 +9,7 @@
 class Solution {
 public:
     int mctFromLeafValues(std::vector<int>& arr) {
+        std::vector<std::vector<int>> dp(arr.size(), std::vector<int>(arr.size(),0));
         return 0;
     }
 };
