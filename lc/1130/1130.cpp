@@ -1,6 +1,7 @@
 // 1130. Minimum Cost Tree From Leaf Values
 // Problem definition: https://leetcode.com/problems/minimum-cost-tree-from-leaf-values/
 // Accepted ?
+// Cf. https://leetcode.com/problems/minimum-cost-tree-from-leaf-values/discuss/340033/C%2B%2B-with-comments
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
 
