@@ -15,8 +15,10 @@ public:
 };
 
 TEST_CASE("LC test cases", "[Core]") {
-    std::vector<std::pair<std::vector<int>,int>> input {
-        {{6,2,4},32}
+    std::vector<std::pair<std::string,int>> input {
+        {"3+2*2", 7},
+        {"3/2", 1},
+        {"3+5 / 2", 5}
     };
 
     SECTION("LC test cases") {
@@ -24,7 +26,7 @@ TEST_CASE("LC test cases", "[Core]") {
             [&input](auto& p) {
                 Solution s;
                 auto& [testInput, expected] = p;
-                REQUIRE(s.mctFromLeafValues(testInput) == expected);
+                REQUIRE(s.calculate(testInput) == expected);
             });
     }
 }
