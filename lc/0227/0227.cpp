@@ -6,11 +6,58 @@
 
 #include <algorithm>
 #include <string>
+#include <stack>
+#include <sstream>
 
 class Solution {
 public:
     int calculate(std::string s) {
-        return 0;        
+        std::istringstream in{s};
+        std::stack<int> stack;
+        std::stack<char> ops;
+        int lhs {0}, rhs {0};
+        char op {'\0'};
+        in >> lhs;
+        stack.push(lhs);
+        while (in) {
+            in >> op >> rhs;
+            switch (op) {
+            case '+':
+            case '-':
+                stack.push(rhs);
+                ops.push(op);
+                break;
+            case '/':
+                lhs = stack.top();
+                stack.pop();
+                lhs /= rhs;
+                stack.push(lhs);
+                break;
+            case '*':
+                lhs = stack.top();
+                stack.pop();
+                lhs *= rhs;
+                stack.push(lhs);
+                break;
+            default:
+                break;
+            }
+        }
+        while (!ops.empty()) {
+            op = ops.top();
+            ops.pop();
+            rhs = stack.top();
+            stack.pop();
+            lhs = stack.top();
+            stack.pop();
+            if (op == '+') {
+                lhs += rhs;
+            } else {
+                lhs -= rhs;
+            }
+            stack.push(lhs);
+        }
+        return stack.top();
     }
 };
 
