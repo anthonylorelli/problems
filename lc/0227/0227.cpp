@@ -19,8 +19,8 @@ public:
         char op {'\0'};
         in >> lhs;
         stack.push(lhs);
-        while (in) {
-            in >> op >> rhs;
+        while (in >> op) {
+            in >> rhs;
             switch (op) {
             case '+':
             case '-':
@@ -65,7 +65,10 @@ TEST_CASE("LC test cases", "[Core]") {
     std::vector<std::pair<std::string,int>> input {
         {"3+2*2", 7},
         {"3/2", 1},
-        {"3+5 / 2", 5}
+        {"3+5 / 2", 5},
+        {"3", 3},
+        {"1/2", 0},
+        {"1-1+1", 1}
     };
 
     SECTION("LC test cases") {
