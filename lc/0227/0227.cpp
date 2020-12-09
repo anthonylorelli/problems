@@ -1,63 +1,57 @@
 // 0227. Basic Calculator II
 // Problem definition: https://leetcode.com/problems/basic-calculator-ii/
-// Accepted ?
+// Accepted 2020-12-08
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
 
 #include <algorithm>
 #include <string>
-#include <stack>
+#include <deque>
 #include <sstream>
 
 class Solution {
 public:
     int calculate(std::string s) {
         std::istringstream in{s};
-        std::stack<int> stack;
-        std::stack<char> ops;
+        std::deque<int> stack;
         int lhs {0}, rhs {0};
         char op {'\0'};
         in >> lhs;
-        stack.push(lhs);
+        stack.push_back(lhs);
         while (in >> op) {
             in >> rhs;
             switch (op) {
             case '+':
+                stack.push_back(rhs);
+                break;
             case '-':
-                stack.push(rhs);
-                ops.push(op);
+                stack.push_back(-rhs);
                 break;
             case '/':
-                lhs = stack.top();
-                stack.pop();
+                lhs = stack.back();
+                stack.pop_back();
                 lhs /= rhs;
-                stack.push(lhs);
+                stack.push_back(lhs);
                 break;
             case '*':
-                lhs = stack.top();
-                stack.pop();
+                lhs = stack.back();
+                stack.pop_back();
                 lhs *= rhs;
-                stack.push(lhs);
+                stack.push_back(lhs);
                 break;
             default:
                 break;
             }
         }
-        while (!ops.empty()) {
-            op = ops.top();
-            ops.pop();
-            rhs = stack.top();
-            stack.pop();
-            lhs = stack.top();
-            stack.pop();
-            if (op == '+') {
-                lhs += rhs;
-            } else {
-                lhs -= rhs;
-            }
-            stack.push(lhs);
+        while (stack.size() > 1) {
+            lhs = stack.front();
+            stack.pop_front();
+            rhs = stack.front();
+            stack.pop_front();
+            lhs += rhs;
+            stack.push_front(lhs);
         }
-        return stack.top();
+        return stack.front();
     }
 };
 
@@ -68,7 +62,8 @@ TEST_CASE("LC test cases", "[Core]") {
         {"3+5 / 2", 5},
         {"3", 3},
         {"1/2", 0},
-        {"1-1+1", 1}
+        {"1-1+1", 1},
+        {"0-2147483647",-2147483647}
     };
 
     SECTION("LC test cases") {
