@@ -10,10 +10,29 @@
 #include <algorithm>
 #include <set>
 #include <iterator>
+#include <iostream>
 
 class Solution {
 public:
     bool containsNearbyAlmostDuplicate(std::vector<int>& nums, int k, int t) {
+        if (nums.size() <= 1) { return false; }
+        std::multiset<int64_t> set;
+        int64_t delta {t};
+        for (int i {0}; i < nums.size(); ++i) {
+            int64_t lower {nums[i] - delta}, upper {nums[i] + delta};
+            auto nearest = set.lower_bound(lower);
+           if (nearest != set.end() && *nearest <= upper) {
+                return true;
+            }
+            set.insert(nums[i]);
+            if (set.size() > k) {
+                set.erase(nums[i - k]);
+            }
+        }
+        return false;
+    }
+
+    bool containsNearbyAlmostDuplicateOrig(std::vector<int>& nums, int k, int t) {
         if (nums.size() <= 1) { return false; }
         std::multiset<int> set;
         for (int i {0}; i < nums.size(); ++i) {
@@ -48,7 +67,9 @@ TEST_CASE("LC test cases", "[Core]") {
         {{{1,1},1,0}, true},
         {{{1,2},1,0}, false},
         {{{8,7,15,1,6,1,9,15},1,3}, true},
-        {{{1,5,9,1,5,9},2,3},false}
+        {{{1,5,9,1,5,9},2,3},false},
+        {{{2147483640,2147483641},1,100},true},
+        {{{-2'147'483'640,-2'147'483'641},1,100},true}
     };
 
     SECTION("LC test cases") {
