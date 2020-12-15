@@ -21,7 +21,7 @@ public:
         for (int i {0}; i < nums.size(); ++i) {
             int64_t lower {nums[i] - delta}, upper {nums[i] + delta};
             auto nearest = set.lower_bound(lower);
-           if (nearest != set.end() && *nearest <= upper) {
+            if (nearest != set.end() && *nearest <= upper) {
                 return true;
             }
             set.insert(nums[i]);
