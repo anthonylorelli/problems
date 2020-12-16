@@ -1,6 +1,6 @@
 // 0767. Reorganize String
 // Problem definition: https://leetcode.com/problems/reorganize-string/
-// Accepted ?
+// Accepted 2020-12-15
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
 #include "../../inc/treenode.h"
@@ -14,7 +14,7 @@
 class Solution {
 public:
     std::string reorganizeString(std::string s) {
-        std::array<int,26> counts;
+        std::array<int,26> counts{};
         for (const auto c : s) {
             counts[c - 'a']++;
         }
@@ -23,8 +23,11 @@ public:
         };
         std::priority_queue<std::pair<char,int>, std::vector<std::pair<char,int>>, 
             decltype(predicate)> queue(predicate);
-        const auto limit {s.size() + 1 / 2};
+        const auto limit {(s.size() + 1) / 2};
         for (int i {0}; i < 26; ++i) {
+            if (counts[i] == 0) {
+                continue;
+            }
             if (counts[i] > limit) {
                 return "";
             }
@@ -38,8 +41,8 @@ public:
             queue.pop();
             result.push_back(achar);
             result.push_back(bchar);
-            queue.push({achar, --acount});
-            queue.push({bchar, --bcount});
+            if (--acount > 0) { queue.push({achar, acount}); }
+            if (--bcount > 0) { queue.push({bchar, bcount}); }
         }
         if (queue.size() > 0) {
             result.push_back(queue.top().first);
@@ -51,7 +54,8 @@ public:
 TEST_CASE("LC test cases", "[Core]") {
     std::vector<std::pair<std::string,std::string>> input {
         {"aab","aba"},
-        {"aaab",""}
+        {"aaab",""},
+        {"a", "a"}
     };
 
     SECTION("LC test cases") {
