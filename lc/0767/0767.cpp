@@ -8,11 +8,43 @@
 
 #include <algorithm>
 #include <string>
+#include <queue>
+#include <array>
 
 class Solution {
 public:
     std::string reorganizeString(std::string s) {
-        return "";
+        std::array<int,26> counts;
+        for (const auto c : s) {
+            counts[c - 'a']++;
+        }
+        auto predicate = [](const auto lhs, const auto rhs) {
+            return lhs.second < rhs.second;
+        };
+        std::priority_queue<std::pair<char,int>, std::vector<std::pair<char,int>>, 
+            decltype(predicate)> queue(predicate);
+        const auto limit {s.size() + 1 / 2};
+        for (int i {0}; i < 26; ++i) {
+            if (counts[i] > limit) {
+                return "";
+            }
+            queue.push({i + 'a', counts[i]});
+        }
+        std::string result;
+        while (queue.size() > 1) {
+            auto [achar, acount] = queue.top();
+            queue.pop();
+            auto [bchar, bcount] = queue.top();
+            queue.pop();
+            result.push_back(achar);
+            result.push_back(bchar);
+            queue.push({achar, --acount});
+            queue.push({bchar, --bcount});
+        }
+        if (queue.size() > 0) {
+            result.push_back(queue.top().first);
+        }
+        return result;
     }
 };
 
