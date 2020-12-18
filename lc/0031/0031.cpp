@@ -1,6 +1,6 @@
 // 0031. Next Permutation
 // Problem definition: https://leetcode.com/problems/next-permutation/
-// Accepted ?
+// Accepted 2020-12-17
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
 
@@ -10,7 +10,7 @@
 class Solution {
 public:
     void nextPermutation(std::vector<int>& nums) {
-        
+        std::next_permutation(nums.begin(), nums.end());
     }
 };
 
