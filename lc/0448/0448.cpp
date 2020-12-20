@@ -10,13 +10,28 @@
 class Solution {
 public:
     std::vector<int> findDisappearedNumbers(std::vector<int>& nums) {
-        return {};
+        std::vector<int> result;
+        for (int i {0}; i < nums.size(); ++i) {
+            while (nums[i] != (i + 1) && nums[i] != nums[nums[i] - 1]) {
+                std::swap(nums[i], nums[nums[i] - 1]);
+            }
+        }
+        for (int i {0}; i < nums.size(); ++i) {
+            if (nums[i] != (i + 1)) {
+                result.push_back(i + 1);
+            }
+        }
+        return result;
     }
 };
 
 TEST_CASE("LC test cases", "[Core]") {
     std::vector<std::pair<std::vector<int>,std::vector<int>>> input {
-        {{4,3,2,7,8,2,3,1},{5,6}}
+        {{4,3,2,7,8,2,3,1},{5,6}},
+        {{1,1,2,2,3,3},{4,5,6}},
+        {{6,6,5,5,4,4},{1,2,3}},
+        {{6,1,4,2,1,6},{3,5}},
+        {{5,4,3,2,1},{}}
     };
 
     SECTION("LC test cases") {
