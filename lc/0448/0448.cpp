@@ -1,6 +1,6 @@
 // 0448. Find All Numbers Disappeared in an Array
 // Problem definition: https://leetcode.com/problems/find-all-numbers-disappeared-in-an-array/
-// Accepted ?
+// Accepted 2020-12-19
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
 
