@@ -10,6 +10,7 @@
 class Solution {
 public:
     int stoneGameII(std::vector<int>& piles) {
+        std::vector<std::vector<int>> dp;
         return 0;
     }
 };
