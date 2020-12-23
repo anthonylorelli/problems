@@ -1,6 +1,7 @@
 // 1140. Stone Game II
 // Problem definition: https://leetcode.com/problems/stone-game-ii/
 // Accepted ?
+// Cf. https://leetcode.com/problems/stone-game-ii/discuss/919472/C%2B%2B-Easy-DP-top-down-%2B-prefix-sums
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
 
