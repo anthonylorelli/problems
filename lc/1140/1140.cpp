@@ -13,41 +13,26 @@ class Solution {
 public:
     int stoneGameII(std::vector<int>& piles) {
         int n = piles.size();
-        m_sum.resize(n);
-        m_dp.resize(n);
-        for(int i=0;i<n;i++) {
-            m_dp[i].resize(n);
+        std::vector<std::vector<int>> memo(n,std::vector<int>(n,0));
+        std::vector<int> presum(piles.begin(), piles.end());
+        for (int i = n - 2; i >= 0; --i) {
+            presum[i] += presum[i+1];
         }
-        
-        for(int i=0;i<n;i++) {
-            for(int j=0;j<n;j++) {
-                m_dp[i][j] = -1; 
-            }
-        }
-        
-        m_sum[n-1] = piles[n-1];
-        for(int i=n-2; i>=0; i--) {
-            m_sum[i] = m_sum[i+1] + piles[i];
-        }
-            
-        return find_solution(piles, 0, n, 1);
+        return dfs(piles,1,0,presum,memo);
     }
 
 private:
-    int find_solution(std::vector<int>& arr, int index, int n, int X){
-        if (index >= n) { return 0; }
-        if (m_dp[index][X] != -1) { return m_dp[index][X]; }
-        
-        int min_value = m_sum[index];
-        for (int k=index; k< index + 2 * X && k <n ; k++){
-            min_value = std::min(min_value, find_solution(arr, k+1, n, std::max(k-index+1, X)));
-        }
-        m_dp[index][X] = m_sum[index] - min_value;
-        return m_dp[index][X];
-    }
+    int dfs(std::vector<int>& piles, int m, int p, std::vector<int>& presum, std::vector<std::vector<int>>& memo) {
+        if (p+2*m >= piles.size()) { return presum[p]; }
+        if (memo[p][m] > 0) { return memo[p][m]; }
 
-    std::vector<int> m_sum;
-    std::vector<std::vector<int>> m_dp;
+        int res=0;
+        for (int i = 1; i <= 2*m; ++i) {
+            res = std::max(res, presum[p] - dfs(piles, std::max(i,m), p+i, presum, memo));
+        }
+        memo[p][m] = res;
+        return res;
+    }
 };
 
 class Solution1 {
