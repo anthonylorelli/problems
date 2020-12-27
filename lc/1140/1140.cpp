@@ -12,17 +12,16 @@
 class Solution {
 public:
     int stoneGameII(std::vector<int>& piles) {
-        int n = piles.size();
-        std::vector<std::vector<int>> memo(n,std::vector<int>(n,0));
+        const int n = piles.size();
+        std::vector<std::vector<int>> memo(n, std::vector<int>(n, 0));
         std::vector<int> presum(piles.begin(), piles.end());
-        for (int i = n - 2; i >= 0; --i) {
-            presum[i] += presum[i+1];
-        }
-        return dfs(piles,1,0,presum,memo);
+        std::partial_sum(presum.rbegin(), presum.rend(), presum.rbegin());
+        return dfs(piles, 1, 0, presum, memo);
     }
 
 private:
-    int dfs(std::vector<int>& piles, int m, int p, std::vector<int>& presum, std::vector<std::vector<int>>& memo) {
+    int dfs(const std::vector<int>& piles, const int m, const int p, 
+        const std::vector<int>& presum, std::vector<std::vector<int>>& memo) const {
         if (p+2*m >= piles.size()) { return presum[p]; }
         if (memo[p][m] > 0) { return memo[p][m]; }
 
@@ -30,8 +29,7 @@ private:
         for (int i = 1; i <= 2*m; ++i) {
             res = std::max(res, presum[p] - dfs(piles, std::max(i,m), p+i, presum, memo));
         }
-        memo[p][m] = res;
-        return res;
+        return memo[p][m] = res;
     }
 };
 
