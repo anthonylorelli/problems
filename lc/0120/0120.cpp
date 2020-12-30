@@ -1,6 +1,6 @@
 // 0120. Triangle
 // Problem definition: https://leetcode.com/problems/triangle/
-// Accepted 2020-12-29
+// Accepted ?
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
 
