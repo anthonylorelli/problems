@@ -5,11 +5,6 @@
 #include "../../inc/catch.hpp"
 #include "../../inc/treenode.h"
 
-#include <algorithm>
-#include <vector>
-#include <functional>
-#include <iostream>
-
 class Solution {
 public:
     bool isSameTree(TreeNode* p, TreeNode* q) {
