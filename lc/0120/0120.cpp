@@ -5,11 +5,32 @@
 #include "../../inc/catch.hpp"
 
 #include <vector>
+#include <algorithm>
+#include <limits>
 
 class Solution {
 public:
     int minimumTotal(std::vector<std::vector<int>>& triangle) {
-        return 0;
+        if (triangle.size() == 1) { return triangle[0][0]; }
+        std::vector<std::vector<int>> memo(triangle.size());
+        memo[0].push_back(triangle[0][0]);
+        for (int i {1}; i < triangle.size(); ++i) {
+            int limit = triangle[i-1].size();
+            for (int j {0}; j < triangle[i].size(); ++j) {
+                int min {std::numeric_limits<int>::max()};
+                if (j > 0) {
+                    min = std::min(min, memo[i-1][j-1]);
+                }
+                if (j < limit) {
+                    min = std::min(min, memo[i-1][j]);
+                }
+                if (j + 1 < limit) {
+                    min = std::min(min, memo[i-1][j+1]);
+                }
+                memo[i].push_back(triangle[i][j] + min);
+            }
+        }
+        return *std::min_element(memo.back().begin(), memo.back().end());
     }
 };
 
@@ -24,8 +45,7 @@ TEST_CASE("LC test cases", "[Core]") {
             [&input](auto& p) {
                 Solution s;
                 auto& [testInput, expected] = p;
-                auto& [array, target] = testInput;
-                REQUIRE(s.search(array, target) == expected);
+                REQUIRE(s.minimumTotal(testInput) == expected);
             });
     }
 }
