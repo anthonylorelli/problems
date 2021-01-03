@@ -1,24 +1,23 @@
 // 0088. Merge Sorted Array
 // Problem definition: https://leetcode.com/problems/merge-sorted-array/
-// Accepted ?
+// Accepted 2021-01-02
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
 
 #include <algorithm>
 #include <vector>
 #include <tuple>
+#include <functional>
 
 class Solution {
 public:
-    void merge(std::vector<int>& nums1, int m, std::vector<int>& nums2, int n) {
-        auto first = nums1.begin();
-        auto second = nums2.begin();
-    }
+    // void merge(std::vector<int>& nums1, int m, std::vector<int>& nums2, int n) {
+    //     auto first = nums1.begin();
+    //     auto second = nums2.begin();
+    // }
 
-    void merge_library(std::vector<int>& nums1, int m, std::vector<int>& nums2, int n) {
-        std::vector<int> buffer;
-        std::merge(nums1.begin(), nums1.begin() + m, nums2.begin(), nums2.end(), std::back_inserter(buffer));
-        nums1 = buffer;
+    void merge(std::vector<int>& nums1, int m, std::vector<int>& nums2, int n) {
+        std::merge(nums1.rbegin() + n, nums1.rend(), nums2.rbegin(), nums2.rend(), nums1.rbegin(), std::greater<int>{});
     }
 };
 
