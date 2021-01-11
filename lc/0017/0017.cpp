@@ -8,19 +8,46 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
+#include <queue>
 
 class Solution {
 public:
-    std::vector<string> letterCombinations(std::string digits) {
-        return {};        
+    std::vector<std::string> letterCombinations(std::string digits) {
+        if (digits.size() == 0) {
+            return {};
+        }
+
+        std::queue<std::string> queue;
+        for (const auto c : m_map[digits[0]]) {
+            queue.push(std::string{c});
+        }
+
+        std::for_each(digits.begin() + 1, digits.end(), [&](const auto c) {
+            int n = queue.size();
+            for (int i {0}; i < n; ++i) {
+                const std::string& chars {m_map[c]};
+                auto next = queue.front();
+                queue.pop();
+                for (const auto c : chars) {
+                    queue.push(next + c);
+                }
+            }
+        });
+
+        std::vector<std::string> result;
+        while (!queue.empty()) {
+            result.emplace_back(queue.front());
+            queue.pop();
+        }
+        return result;
     }
 
 private:
-    std::unordered_map<char,std::string> {
+    std::unordered_map<char,std::string> m_map {
         {'2',"abc"}, {'3',"def"}, {'4',"ghi"},
         {'5',"jkl"}, {'6',"mno"}, {'7',"pqrs"},
-        {'8','tuv'}, {'9',"wxyz"}
-    }
+        {'8',"tuv"}, {'9',"wxyz"}
+    };
 };
 
 TEST_CASE("LC test cases", "[Core]") {
@@ -34,8 +61,8 @@ TEST_CASE("LC test cases", "[Core]") {
         std::for_each(std::begin(input), std::end(input),
             [&input](auto& p) {
                 Solution s;
-                auto& [testInput, target, expected] = p;
-                REQUIRE(s.combinationSum2(testInput, target) == expected);
+                auto& [testInput, expected] = p;
+                REQUIRE(s.letterCombinations(testInput) == expected);
             });
     }
 }
