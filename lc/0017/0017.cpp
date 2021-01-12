@@ -1,6 +1,6 @@
 // 0017. Letter Combinations of a Phone Number
 // Problem definition: https://leetcode.com/problems/letter-combinations-of-a-phone-number/
-// Accepted ?
+// Accepted 2021-01-11
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
 
@@ -29,7 +29,9 @@ public:
                 auto next = queue.front();
                 queue.pop();
                 for (const auto c : chars) {
-                    queue.push(next + c);
+                    next.push_back(c);
+                    queue.push(next);
+                    next.pop_back();
                 }
             }
         });
