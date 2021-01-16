@@ -1,6 +1,6 @@
 // 0740. Delete and Earn
 // Problem definition: https://leetcode.com/problems/delete-and-earn/
-// Accepted ?
+// Accepted 2021-01-15
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
 
@@ -10,7 +10,21 @@
 class Solution {
 public:
     int deleteAndEarn(std::vector<int>& nums) {
-        return 0;
+        std::vector<int> count(10001, 0);
+        for (const int n : nums) {
+            count[n]++;
+        }
+        int use {0}, avoid {0}, prev {-1};
+
+        for (int k {1}; k <= 10000; ++k) {
+            if (count[k] == 0) { continue; }
+            int m = std::max(avoid, use);
+            use = (k - 1 != prev) ? k * count[k] + m : k * count[k] + avoid;
+            avoid = m;
+            prev = k;
+        }
+
+        return std::max(avoid, use);
     }
 };
 
