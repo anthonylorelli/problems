@@ -1,6 +1,6 @@
 // 0169. Majority Element
 // Problem definition: https://leetcode.com/problems/majority-element/
-// Accepted ?
+// Accepted 2021-01-18
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
 
@@ -10,7 +10,8 @@
 class Solution {
 public:
     int majorityElement(std::vector<int>& nums) {
-        return 0;
+        std::sort(nums.begin(), nums.end());
+        return nums[nums.size() / 2];
     }
 };
 
