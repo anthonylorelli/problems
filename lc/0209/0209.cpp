@@ -6,11 +6,22 @@
 
 #include <algorithm>
 #include <vector>
+#include <cstdint>
+#include <limits>
 
 class Solution {
 public:
     int minSubArrayLen(int s, std::vector<int>& nums) {
-        return 0;        
+        int min {std::numeric_limits<int>::max()};
+        for (int32_t left {0}, right {0}, sum {0}; right < nums.size(); ++right) {
+            sum += nums[right];
+            if (sum == s) { min = std::min(min, right - left + 1); }
+            while (sum > s && left < right) { 
+                sum -= nums[left];
+                ++left;
+            }
+        }
+        return min;
     }
 };
 
