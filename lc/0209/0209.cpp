@@ -1,6 +1,6 @@
 // 0209. Minimum Size Subarray Sum
 // Problem definition: https://leetcode.com/problems/minimum-size-subarray-sum/
-// Accepted ?
+// Accepted 2021-01-22
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
 
@@ -15,19 +15,23 @@ public:
         int min {std::numeric_limits<int>::max()};
         for (int32_t left {0}, right {0}, sum {0}; right < nums.size(); ++right) {
             sum += nums[right];
-            if (sum == s) { min = std::min(min, right - left + 1); }
-            while (sum > s && left < right) { 
-                sum -= nums[left];
-                ++left;
+            while (sum >= s) {
+                min = std::min(min, right - left + 1); 
+                sum -= nums[left++];
             }
         }
-        return min;
+        return min == std::numeric_limits<int>::max() ? 0 : min;
     }
 };
 
 TEST_CASE("LC test cases", "[Core]") {
     std::vector<std::tuple<int,std::vector<int>,int>> input {
-        {7,{2,3,1,2,4,3},2}
+        {7,{2,3,1,2,4,3},2},
+        {5,{2,1,1,1,3,2},2},
+        {5,{2,1,1,1,1,1,1,2},4},
+        {100,{},0},
+        {100,{1},0},
+        {11,{1,2,3,4,5},3}
     };
 
     SECTION("LC test cases") {
