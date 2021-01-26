@@ -1,19 +1,33 @@
 // 0204. Count Primes
 // Problem definition: https://leetcode.com/problems/count-primes/
-// Accepted ?
+// Accepted 2021-01-25
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
 
 #include <vector>
-#include <tuple>
-#include <limits>
 #include <algorithm>
-#include <cmath>
 
 class Solution {
 public:
     int countPrimes(int n) {
-        return 0;
+        std::vector<bool> primes = sieve(n);
+        return std::count(primes.begin(), primes.end(), true);
+    }
+
+private:
+    std::vector<bool> sieve(const int n) {
+        if (n < 2) {
+            return std::vector<bool>(n, false);
+        }
+        std::vector<bool> primes(n, true);
+        primes[0] = primes[1] = false;
+        for (int32_t i {2}; i * i < n; ++i) {
+            if (!primes[i]) { continue; }
+            for (int32_t j {i*i}; j < n; j += i) {
+                primes[j] = false;
+            }
+        }
+        return primes;
     }
 };
 
