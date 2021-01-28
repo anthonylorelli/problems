@@ -1,6 +1,7 @@
 // 0062. Unique Paths
 // Problem definition: https://leetcode.com/problems/unique-paths/
-// Accepted ?
+// Accepted 2021-01-27
+// Cf. https://leetcode.com/problems/unique-paths/discuss/391856/c%2B%2B-backtracking-to-2D-DP-and-finally-1D-DP
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
 
@@ -10,7 +11,13 @@
 class Solution {
 public:
     int uniquePaths(int m, int n) {
-        return 0;
+        std::vector<int32_t> dp(n, 1);
+        for (int32_t i {1}; i < m; ++i) {
+            for (int32_t j {1}; j < n; ++j) {
+                dp[j] += dp[j-1];
+            }
+        }
+        return dp.back();
     }
 };
 
