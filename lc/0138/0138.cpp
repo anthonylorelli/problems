@@ -40,9 +40,11 @@ public:
                     map[next] = node;
                 }
             }
-            uint64_t random = reinterpret_cast<uint64_t>(node->random);
-            if (!map.count(random)) {
-                queue.push(node->random);
+            if (node->random) {
+                uint64_t random = reinterpret_cast<uint64_t>(node->random);
+                if (!map.count(random)) {
+                    queue.push(node->random);
+                }
             }
         }
         if (queue.empty()) {
