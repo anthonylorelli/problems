@@ -1,43 +1,51 @@
-// 0138. Copy List With Random Pointer
-// Problem definition: https://leetcode.com/problems/copy-list-with-random-pointer/
-// Accepted 2021-02-02
+// 0133. Clone Graph
+// Problem definition: https://leetcode.com/problems/clone-graph/
+// Accepted 2021-02-04
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
 
 #include <algorithm>
 #include <unordered_map>
+#include <vector>
 
 // Definition for a Node.
 class Node {
 public:
     int val;
-    Node* next;
-    Node* random;
-    
+    std::vector<Node*> neighbors;
+    Node() {
+        val = 0;
+        neighbors = std::vector<Node*>();
+    }
     Node(int _val) {
         val = _val;
-        next = NULL;
-        random = NULL;
+        neighbors = std::vector<Node*>();
+    }
+    Node(int _val, std::vector<Node*> _neighbors) {
+        val = _val;
+        neighbors = _neighbors;
     }
 };
 
 class Solution {
 public:
-    Node* copyRandomList(Node* head) {
+    Node* cloneGraph(Node* node) {
         std::unordered_map<Node*,Node*> map;
-        return copy(head, map);
+        return cloneGraph(node, map);
     }
 
-    Node* copy(Node* head, std::unordered_map<Node*,Node*>& map) {
-        if (!head) { return nullptr; }
+    Node* cloneGraph(Node* node, std::unordered_map<Node*,Node*>& map) {
+        if (!node) { return nullptr; }
 
-        Node* copyHead = new Node(head->val);
-        map[head] = copyHead;
-        copyHead->next = copy(head->next, map);
-        if (head->random) {
-            copyHead->random = map[head->random];
+        Node* clone = new Node(node->val, node->neighbors);
+        map[node] = clone;
+
+        for (auto& neighbor : clone->neighbors) {
+            neighbor = map.count(neighbor) ? map[neighbor] :
+                cloneGraph(neighbor, map);
         }
-        return copyHead;
+
+        return clone;
     }
 };
 
