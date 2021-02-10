@@ -10,7 +10,10 @@
 
 class Solution {
 public:
-    int nthSuperUglyNumber(int n, vector<int>& primes) {
+    int nthSuperUglyNumber(int n, std::vector<int>& primes) {
+        if (n == 0) { return 0; }
+        std::vector<int32_t> vi(primes.size(), 0);
+        std::vector<int32_t> dp(n, 0);
         return 0;
     }
 };
