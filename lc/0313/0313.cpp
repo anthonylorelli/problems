@@ -1,12 +1,11 @@
 // 0313. Super Ugly Number
 // Problem definition: https://leetcode.com/problems/super-ugly-number/
-// Accepted ?
+// Accepted 2021-02-10
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
 
 #include <algorithm>
 #include <vector>
-#include <array>
 
 class Solution {
 public:
@@ -17,9 +16,10 @@ public:
         std::vector<int32_t> dp(n, 0);
         dp[0] = 1;
         for (int32_t i {1}; i < n; ++i) {
-            for (int32_t j {0}; j < primes.size(); ++j) {
-                mp[j] = dp[vi[j]] * primes[j];
-            }
+            std::transform(vi.begin(), vi.end(), primes.begin(), mp.begin(), 
+                [&dp](const auto a, const auto b) {
+                    return dp[a] * b;
+                });
             dp[i] = *std::min_element(mp.begin(), mp.end());
             for (int32_t j {0}; j < primes.size(); ++j) {
                 if (mp[j] == dp[i]) { ++vi[j]; }
