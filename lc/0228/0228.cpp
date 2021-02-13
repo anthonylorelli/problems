@@ -10,8 +10,24 @@
 
 class Solution {
 public:
-    std::vector<string> summaryRanges(std::vector<int>& nums) {
-        return {};
+    std::vector<std::string> summaryRanges(std::vector<int>& nums) {
+        std::vector<std::string> result;
+        for (auto left {nums.begin()}; left != nums.end(); ) {
+            std::string value {std::to_string(*left)};
+            auto right = std::adjacent_find(left, nums.end(), [](const auto& a, const auto& b) {
+                return (a + 1) != b;
+            });
+            if (right == nums.end()) {
+                
+            }
+            if (left != right) {
+                value += "->";
+                value += std::to_string(*right);
+            }
+            result.push_back(value);
+            left = right + 1;
+        }
+        return result;
     }
 };
 
