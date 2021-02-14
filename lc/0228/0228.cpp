@@ -1,6 +1,6 @@
 // 0228. Summary Ranges
 // Problem definition: https://leetcode.com/problems/summary-ranges/
-// Accepted ?
+// Accepted 2021-02-13
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
 
