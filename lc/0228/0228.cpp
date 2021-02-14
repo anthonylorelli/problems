@@ -1,6 +1,6 @@
 // 0228. Summary Ranges
 // Problem definition: https://leetcode.com/problems/summary-ranges/
-// Accepted ?
+// Accepted 2021-02-13
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
 
@@ -18,7 +18,7 @@ public:
                 return (a + 1) != b;
             });
             if (right == nums.end()) {
-                
+                --right;
             }
             if (left != right) {
                 value += "->";
@@ -35,6 +35,7 @@ TEST_CASE("LC test cases", "[Core]") {
     std::vector<std::tuple<std::vector<int>,std::vector<std::string>>> input {
         {{0,1,2,4,5,7},{"0->2","4->5","7"}},
         {{0,2,3,4,6,8,9},{"0","2->4","6","8->9"}},
+        {{0,1,2,3,4},{"0->4"}},
         {{},{}},
         {{-1},{"-1"}},
         {{0},{"0"}}
