@@ -1,6 +1,7 @@
 // 0421. Maximum XOR of Two Numbers in an Array
 // Problem definition: https://leetcode.com/problems/maximum-xor-of-two-numbers-in-an-array/
 // Accepted ?
+// Cf. https://leetcode.com/problems/maximum-xor-of-two-numbers-in-an-array/discuss/850340/C%2B%2B-from-Brute-Force-To-using-Trie-Data-Structure
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
 
@@ -8,9 +9,33 @@
 #include <vector>
 #include <string>
 
+struct TrieNode {
+    TrieNode* left;
+    TrieNode* right;
+};
+
+TrieNode* insert(int value, TrieNode* head) {
+    TrieNode* current = head;
+    for (int32_t i {31}; i >= 0; --i) {
+        int32_t bit = (value>>i)&1;
+        if (bit == 0) {
+            if (!current->left) {
+                current->left = new TrieNode{};
+            }
+            current = current->left;
+        } else {
+            if (!current->right) {
+                current->right = new TrieNode{};
+            }
+            current = current->right;
+        }
+    }
+    return head;
+}
+
 class Solution {
 public:
-    int findMaximumXOR(vector<int>& nums) {
+    int findMaximumXOR(std::vector<int>& nums) {
         return 0;
     }
 };
