@@ -1,13 +1,13 @@
 // 0421. Maximum XOR of Two Numbers in an Array
 // Problem definition: https://leetcode.com/problems/maximum-xor-of-two-numbers-in-an-array/
-// Accepted ?
+// Accepted 2021-02-17
 // Cf. https://leetcode.com/problems/maximum-xor-of-two-numbers-in-an-array/discuss/850340/C%2B%2B-from-Brute-Force-To-using-Trie-Data-Structure
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
 
 #include <algorithm>
 #include <vector>
-#include <string>
+#include <limits>
 
 struct TrieNode {
     TrieNode* left;
@@ -36,7 +36,42 @@ TrieNode* insert(int value, TrieNode* head) {
 class Solution {
 public:
     int findMaximumXOR(std::vector<int>& nums) {
-        return 0;
+        TrieNode* head {new TrieNode{}};
+        for (auto n : nums) {
+            insert(n, head);
+        }
+        return xorMax(head, nums);
+    }
+
+    int xorMax(TrieNode* head, std::vector<int>& nums) {
+        int32_t max = std::numeric_limits<int32_t>::min();
+
+        for (auto n : nums) {
+            int curXor {0};
+            TrieNode* current {head};
+
+            for (int32_t i {31}; i >= 0; --i) {
+                if ((n >> i) & 1) {
+                    if (current->left) {
+                        curXor += std::pow(2,i);
+                        current = current->left;
+                    } else {
+                        current = current->right;
+                    }
+                } else {
+                    if (current->right) {
+                        curXor += std::pow(2,i);
+                        current = current->right;
+                    } else {
+                        current = current->left;
+                    }
+                }
+            }
+
+            max = std::max(max, curXor);
+        }
+
+        return max;
     }
 };
 
