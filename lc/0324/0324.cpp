@@ -5,13 +5,16 @@
 #include "../../inc/catch.hpp"
 
 #include <algorithm>
+#include <numeric>
 #include <vector>
 #include <limits>
 
 class Solution {
 public:
     void wiggleSort(std::vector<int>& nums) {
-        
+        auto average = std::accumulate(nums.begin(), nums.end(), 0) / nums.size();
+        auto right = std::partition(nums.begin(), nums.end(), [average](const auto n) { return n <= average; });
+
     }
 };
 
