@@ -12,9 +12,8 @@
 class Solution {
 public:
     void wiggleSort(std::vector<int>& nums) {
-        auto average = std::accumulate(nums.begin(), nums.end(), 0) / nums.size();
-        auto right = std::partition(nums.begin(), nums.end(), [average](const auto n) { return n <= average; });
-
+        auto size {nums.size()};
+        std::nth_element(nums.begin(), nums.begin() + size / 2, nums.end());
     }
 };
 
