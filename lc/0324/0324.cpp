@@ -1,6 +1,7 @@
 // 0421. Wiggle Sort II
 // Problem definition: https://leetcode.com/problems/wiggle-sort-ii/
 // Accepted ?
+// Cf. https://leetcode.com/problems/wiggle-sort-ii/discuss/494141/C%2B%2B%3A-Virtual-indexing-64ms
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
 
