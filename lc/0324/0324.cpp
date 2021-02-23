@@ -15,12 +15,27 @@ public:
     void wiggleSort(std::vector<int>& nums) {
         auto size {nums.size()};
         std::nth_element(nums.begin(), nums.begin() + size / 2, nums.end());
+
+        int m {*(nums.begin() + (size / 2))};
+        for (int i = 0, l = 0, r = size - 1; i <= r;) {
+            if (nums[index(i, size)] > m) {
+                std::swap(nums[index(i++, size)], nums[index(l++, size)]);
+            } else if (nums[index(i,size)] < m) {
+                std::swap(nums[index(i, size)], nums[index(r--,size)]);
+            } else {
+                i++;
+            }
+        }
+    }
+
+    constexpr size_t index(int32_t i, size_t size) {
+        return (1 + 2*(i)) % (size | 1);
     }
 };
 
 TEST_CASE("LC test cases", "[Core]") {
     std::vector<std::tuple<std::vector<int>,std::vector<int>>> input {
-        {{1,5,1,1,6,4},{1,6,1,5,1,4}},
+        {{1,5,1,1,6,4},{1,5,1,6,1,4}},
         {{1,3,2,2,3,1},{2,3,1,3,1,2}}
     };
 
