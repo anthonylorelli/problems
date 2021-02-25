@@ -16,9 +16,9 @@ public:
 
 TEST_CASE("LC test cases", "[Core]") {
     std::vector<std::tuple<std::vector<char>,int,int>> input {
-        {{"A","A","A","B","B","B"},2,8},
-        {{"A","A","A","B","B","B"},0,6},
-        {{"A","A","A","A","A","A","B","C","D","E","F","G"},2,16}
+        {{'A','A','A','B','B','B'},2,8},
+        {{'A','A','A','B','B','B'},0,6},
+        {{'A','A','A','A','A','A','B','C','D','E','F','G'},2,16}
     };
 
     SECTION("LC test cases") {
