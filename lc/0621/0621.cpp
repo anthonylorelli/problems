@@ -1,6 +1,7 @@
 // 0621. Task Scheduler
 // Problem definition: https://leetcode.com/problems/task-scheduler/
-// Accepted ?
+// Accepted 2021-02-25
+// Cf. https://leetcode.com/problems/task-scheduler/discuss/760569/C%2B%2B-Greedy-O(n)-time-O(1)-space-with-explanation-in-5-lines.
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
 
@@ -10,7 +11,11 @@
 class Solution {
 public:
     int leastInterval(std::vector<char>& tasks, int n) {
-        return 0;        
+        int32_t count[26] {};
+        for (const auto t : tasks) { count[t - 'A']++; }
+        int32_t max = *std::max_element(std::begin(count), std::end(count));
+        size_t instances = std::count(std::begin(count), std::end(count), max);
+        return std::max(tasks.size(), (max - 1) * (n + 1) + instances);
     }
 };
 
