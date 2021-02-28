@@ -1,15 +1,19 @@
 // 0473. Matchsticks to Square
 // Problem definition: https://leetcode.com/problems/matchsticks-to-square/
 // Accepted ?
+// Cf. https://leetcode.com/problems/matchsticks-to-square/discuss/491204/4ms-C%2B%2B-DFS-with-pruning
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
 
 #include <algorithm>
 #include <vector>
+#include <numeric>
 
 class Solution {
 public:
     bool makesquare(std::vector<int>& nums) {
+        auto sum = std::accumulate(nums.begin(), nums.end(), 0);
+        if (sums % 4) { return false; }
         return false;        
     }
 };
