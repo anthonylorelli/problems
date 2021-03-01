@@ -1,6 +1,6 @@
 // 0473. Matchsticks to Square
 // Problem definition: https://leetcode.com/problems/matchsticks-to-square/
-// Accepted ?
+// Accepted 2021-02-28
 // Cf. https://leetcode.com/problems/matchsticks-to-square/discuss/491204/4ms-C%2B%2B-DFS-with-pruning
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
@@ -13,8 +13,27 @@ class Solution {
 public:
     bool makesquare(std::vector<int>& nums) {
         auto sum = std::accumulate(nums.begin(), nums.end(), 0);
-        if (sums % 4) { return false; }
-        return false;        
+        if (sum % 4) { return false; }
+        std::sort(nums.begin(), nums.end(), [](const auto a, const auto b) { return a > b; });
+        return dfs(nums, 0, 0, sum / 4, 0);
+    }
+
+private:
+    bool dfs(const std::vector<int>& nums, const int sum, const int status, 
+        const int target, const int side) {
+        const int n = nums.size();
+        if (status == (1 << n) - 1) { return side == 4; }
+
+        for (int i {0}; i < n; ++i) {
+            if (status & (1 << i)) { continue; }
+            int nextSum {sum};
+            int nextSide {side};
+            if (sum + nums[i] > target) { return false; }
+            nextSum = sum + nums[i] == target ? ++nextSide, 0 : sum + nums[i];
+            if (dfs(nums, nextSum, status | (1 << i), target, nextSide)) { return true; }
+        }
+
+        return false;
     }
 };
 
