@@ -7,11 +7,20 @@
 #include <algorithm>
 #include <vector>
 #include <string>
+#include <iterator>
 
 class Solution {
 public:
     std::string reverseWords(std::string s) {
-        return "";
+        std::string result;
+        bool isw{false};
+        std::copy_if(s.rbegin(), s.rend(), std::back_inserter(result), [&isw](const auto c) {
+            bool prevws = isw;
+            isw = static_cast<bool>(std::isspace(c));
+            return !(prevws && isw);
+        });
+        std::reverse(result.begin(), result.end());
+        return result;
     }
 };
 
