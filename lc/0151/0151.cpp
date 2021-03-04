@@ -8,6 +8,7 @@
 #include <vector>
 #include <string>
 #include <iterator>
+#include <iostream>
 
 class Solution {
 public:
@@ -19,7 +20,14 @@ public:
             isw = static_cast<bool>(std::isspace(c));
             return !(prevws && isw);
         });
-        std::reverse(result.begin(), result.end());
+        std::cout << result << "\n";
+        for (auto start {result.begin()}; start != result.end(); ) {
+            auto end = std::adjacent_find(start, result.end(), [](const auto a, const auto b) {
+                return std::isspace(a) && !std::isspace(b);
+            });
+            std::reverse(start, end);
+            start = end == result.end() ? end : end + 1;
+        }
         return result;
     }
 };
