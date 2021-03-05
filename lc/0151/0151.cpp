@@ -1,6 +1,6 @@
 // 0151. Reverse Words in a String
 // Problem definition: https://leetcode.com/problems/reverse-words-in-a-string/
-// Accepted ?
+// Accepted 2021-03-04
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
 
