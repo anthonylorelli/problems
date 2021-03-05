@@ -13,14 +13,16 @@
 class Solution {
 public:
     std::string reverseWords(std::string s) {
+        auto predicate = [](const char c) { return static_cast<bool>(std::isspace(c)); };
+        auto start_delta = std::distance(s.begin(), std::find_if_not(s.begin(), s.end(), predicate));
+        auto end_delta = std::distance(s.rbegin(), std::find_if_not(s.rbegin(), s.rend(), predicate));
         std::string result;
         bool isw{false};
-        std::copy_if(s.rbegin(), s.rend(), std::back_inserter(result), [&isw](const auto c) {
+        std::copy_if(s.rbegin() + end_delta, s.rend() - start_delta, std::back_inserter(result), [&](const auto c) {
             bool prevws = isw;
-            isw = static_cast<bool>(std::isspace(c));
+            isw = predicate(c);
             return !(prevws && isw);
         });
-        std::cout << result << "\n";
         for (auto start {result.begin()}; start != result.end(); ) {
             auto end = std::adjacent_find(start, result.end(), [](const auto a, const auto b) {
                 return std::isspace(a) && !std::isspace(b);
