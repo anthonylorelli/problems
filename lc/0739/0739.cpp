@@ -1,15 +1,18 @@
 // 0739. Daily Temperatures
 // Problem definition: https://leetcode.com/problems/daily-temperatures/
 // Accepted ?
+// Cf. https://leetcode.com/problems/daily-temperatures/discuss/384123/100-Speed-and-100-Space-C%2B%2B
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
 
 #include <algorithm>
 #include <vector>
+#include <stack>
 
 class Solution {
 public:
     std::vector<int> dailyTemperatures(std::vector<int>& T) {
+        if (T.empty()) { return {}; }
         return {};
     }
 };
