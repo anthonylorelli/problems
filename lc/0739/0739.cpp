@@ -8,12 +8,31 @@
 #include <algorithm>
 #include <vector>
 #include <stack>
+#include <tuple>
 
 class Solution {
 public:
     std::vector<int> dailyTemperatures(std::vector<int>& T) {
         if (T.empty()) { return {}; }
-        return {};
+        std::stack<std::pair<int,int>> s;
+        s.push({T.back(), 0});
+        std::vector<int> result(T.size(), 0);
+        std::transform(T.rbegin() + 1, T.rend(), result.rbegin() + 1, [&](const auto n) {
+            int32_t counter {1};
+            while (!s.empty() && n > s.top().first) {
+                counter += s.top().second;
+                s.pop();
+            }
+
+            if (s.empty()) {
+                s.push({n, 0});
+            } else {
+                s.push({n, counter});
+                return counter;
+            }
+            return 0;
+        });
+        return result;
     }
 };
 
