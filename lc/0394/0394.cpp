@@ -12,6 +12,12 @@ public:
     std::string decodeString(std::string s) {
         return "";
     }
+
+private:
+    template <typename T>
+    void push(T it, std::string& result) {
+                
+    }
 };
 
 TEST_CASE("LC test cases", "[Core]") {
