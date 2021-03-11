@@ -10,13 +10,20 @@
 class Solution {
 public:
     std::string decodeString(std::string s) {
-        return "";
+        if (s.empty()) { return ""; }
+        return decode(s.begin(), s.end());
     }
 
 private:
     template <typename T>
-    void push(T it, std::string& result) {
-                
+    std::string decode(T begin, T end) {
+        std::string result;
+        auto next = std::find_if(begin, end, [](const auto c) {
+            return std::isdigit(c);
+        });
+        std::copy(begin, next, std::back_inserter(result));
+        auto open_bracket = std::find_if(next + 1, end, [](const auto c) { return c == '['; });
+        int count = std::stoi(std::string{next, open_bracket});
     }
 };
 
