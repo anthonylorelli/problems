@@ -6,6 +6,7 @@
 
 #include <algorithm>
 #include <string>
+#include <iterator>
 
 class Solution {
 public:
@@ -22,8 +23,10 @@ private:
             return std::isdigit(c);
         });
         std::copy(begin, next, std::back_inserter(result));
-        auto open_bracket = std::find_if(next + 1, end, [](const auto c) { return c == '['; });
+        auto open_bracket = std::find(next + 1, end, '[');
         int count = std::stoi(std::string{next, open_bracket});
+        std::reverse_iterator rbegin {end - 1};
+        auto close_bracket = std::find(rbegin, std::reverse_iterator{next}, ']');
     }
 };
 
