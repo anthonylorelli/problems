@@ -19,14 +19,15 @@ private:
     template <typename T>
     std::string decode(T begin, T end) {
         std::string result;
-        auto next = std::find_if(begin, end, [](const auto c) {
-            return std::isdigit(c);
-        });
-        std::copy(begin, next, std::back_inserter(result));
-        auto open_bracket = std::find(next + 1, end, '[');
-        int count = std::stoi(std::string{next, open_bracket});
-        std::reverse_iterator rbegin {end - 1};
-        auto close_bracket = std::find(rbegin, std::reverse_iterator{next}, ']');
+        std::string::iterator next;
+        while ((next = std::find_if(begin, end, [](const auto c) {
+                return std::isdigit(c) || c == ']';
+            })) != end) {
+            std::copy(begin, next, std::back_inserter(result));
+            auto open_bracket = std::find(next + 1, end, '[');
+            int count = std::stoi(std::string{next, open_bracket});
+            std::string sub = decode(open_bracket + 1, end);
+        }
     }
 };
 
