@@ -1,6 +1,6 @@
 // 0394. Decode String
 // Problem definition: https://leetcode.com/problems/decode-string/
-// Accepted ?
+// Accepted 2021-03-14
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
 
@@ -12,22 +12,28 @@ class Solution {
 public:
     std::string decodeString(std::string s) {
         if (s.empty()) { return ""; }
-        return decode(s.begin(), s.end());
+        std::string result;
+        decode(s.begin(), s.end(), result);
+        return result;
     }
 
 private:
-    template <typename T>
-    std::string decode(T begin, T end) {
-        std::string result;
-        std::string::iterator next;
-        while ((next = std::find_if(begin, end, [](const auto c) {
-                return std::isdigit(c) || c == ']';
-            })) != end) {
-            std::copy(begin, next, std::back_inserter(result));
-            auto open_bracket = std::find(next + 1, end, '[');
-            int count = std::stoi(std::string{next, open_bracket});
-            std::string sub = decode(open_bracket + 1, end);
+    template <typename It>
+    It decode(It begin, It end, std::string& result) {
+        while (begin != end && *begin != ']') {
+            if (std::isdigit(*begin)) {
+                auto bracket = std::find(begin, end, '[');
+                auto times = std::stoi(std::string{begin, bracket});
+                std::string inner;
+                begin = decode(bracket + 1, end, inner) + 1;
+                while (times-- > 0) {
+                    result += inner;
+                }
+            } else {
+                result += *begin++;
+            }
         }
+        return begin;
     }
 };
 
