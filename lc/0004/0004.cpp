@@ -1,6 +1,7 @@
 // 0004. Median of Two Sorted Arrays
 // Problem definition: https://leetcode.com/problems/median-of-two-sorted-arrays/
 // Accepted ?
+// Cf. https://medium.com/@hazemu/finding-the-median-of-2-sorted-arrays-in-logarithmic-time-1d3f2ecbeb46
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
 
