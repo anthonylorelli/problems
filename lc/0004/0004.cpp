@@ -11,6 +11,17 @@
 class Solution {
 public:
     double findMedianSortedArrays(std::vector<int>& nums1, std::vector<int>& nums2) {
+        auto sizea {nums1.size()};
+        auto sizeb {nums2.size()};
+
+        std::vector<int>* a {&nums1};
+        std::vector<int>* b {&nums2};
+
+        if (sizea > sizeb) {
+            std::swap(sizea, sizeb);
+            std::swap(a, b);
+        }
+
         return 0.0;
     }
 };
