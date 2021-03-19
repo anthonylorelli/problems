@@ -22,6 +22,11 @@ public:
             std::swap(a, b);
         }
 
+        auto left_len = (sizea + sizeb + 1) / 2;
+
+        int32_t a_min {0};
+        int32_t a_max = sizea;
+
         return 0.0;
     }
 };
