@@ -27,6 +27,10 @@ public:
         int32_t a_min {0};
         int32_t a_max = sizea;
 
+        while (a_min <= a_max) {
+
+        }
+
         return 0.0;
     }
 };
