@@ -28,7 +28,8 @@ public:
         int32_t a_max = sizea;
 
         while (a_min <= a_max) {
-
+            int a_count = a_min + ((a_max - a_min) / 2);
+            int b_count = left_len - a_count;
         }
 
         return 0.0;
