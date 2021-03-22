@@ -30,6 +30,10 @@ public:
         while (a_min <= a_max) {
             int a_count = a_min + ((a_max - a_min) / 2);
             int b_count = left_len - a_count;
+
+            if (a_count < sizea && nums2[b_count - 1] > nums1[a_count]) {
+                a_min = a_count + 1;
+            }
         }
 
         return 0.0;
