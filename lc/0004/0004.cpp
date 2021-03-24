@@ -33,6 +33,8 @@ public:
 
             if (a_count < sizea && nums2[b_count - 1] > nums1[a_count]) {
                 a_min = a_count + 1;
+            } else if (a_count < sizea && nums2[b_count - 1] > nums1[a_count]) {
+                a_min = a_count + 1;
             }
         }
 
