@@ -10,6 +10,8 @@
 
 class Solution {
 public:
+    constexpr bool isodd(const int x) { return (x & 1) == 1; }
+    
     double findMedianSortedArrays(std::vector<int>& nums1, std::vector<int>& nums2) {
         auto sizea {nums1.size()};
         auto sizeb {nums2.size()};
@@ -32,9 +34,14 @@ public:
             int b_count = left_len - a_count;
 
             if (a_count < sizea && nums2[b_count - 1] > nums1[a_count]) {
-                a_min = a_count + 1;
+                a_max = a_count + 1;
             } else if (a_count < sizea && nums2[b_count - 1] > nums1[a_count]) {
                 a_min = a_count + 1;
+            } else {
+                int left_half_end = (a_count == 0) ?
+                    nums2[b_count - 1] : (b_count == 0) ?
+                    nums1[a_count - 1] : std::max(nums1[a_count - 1], nums2[b_count - 1]);
+                
             }
         }
 
