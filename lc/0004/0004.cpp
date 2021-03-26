@@ -41,6 +41,10 @@ public:
                 int left_half_end = (a_count == 0) ?
                     nums2[b_count - 1] : (b_count == 0) ?
                     nums1[a_count - 1] : std::max(nums1[a_count - 1], nums2[b_count - 1]);
+
+                if (isodd(sizea + sizeb)) {
+                    return left_half_end;
+                }
                 
             }
         }
