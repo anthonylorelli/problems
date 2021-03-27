@@ -33,19 +33,23 @@ public:
             int a_count = a_min + ((a_max - a_min) / 2);
             int b_count = left_len - a_count;
 
-            if (a_count < sizea && nums2[b_count - 1] > nums1[a_count]) {
+            if (a_count > 0 && b->at(b_count - 1) > a->at(a_count)) {
                 a_max = a_count + 1;
-            } else if (a_count < sizea && nums2[b_count - 1] > nums1[a_count]) {
+            } else if (a_count < sizea && b->at(b_count - 1) > a->at(a_count)) {
                 a_min = a_count + 1;
             } else {
                 int left_half_end = (a_count == 0) ?
-                    nums2[b_count - 1] : (b_count == 0) ?
-                    nums1[a_count - 1] : std::max(nums1[a_count - 1], nums2[b_count - 1]);
+                    b->at(b_count - 1) : (b_count == 0) ?
+                    a->at(a_count - 1) : std::max(a->at(a_count - 1), b->at(b_count - 1));
 
                 if (isodd(sizea + sizeb)) {
                     return left_half_end;
                 }
                 
+                int right_half_start = (a_count == sizea) ?
+                    b->at(b_count) : (b_count == sizeb) ?
+                    a->at(a_count) : std::min(a->at(a_count), b->at(b_count));
+                return (left_half_end + right_half_start) / 2.0;
             }
         }
 
