@@ -13,21 +13,21 @@ public:
     constexpr bool isodd(const int x) { return (x & 1) == 1; }
     
     double findMedianSortedArrays(std::vector<int>& nums1, std::vector<int>& nums2) {
-        auto sizea {nums1.size()};
-        auto sizeb {nums2.size()};
+        auto a_len {nums1.size()};
+        auto b_len {nums2.size()};
 
         std::vector<int>* a {&nums1};
         std::vector<int>* b {&nums2};
 
-        if (sizea > sizeb) {
-            std::swap(sizea, sizeb);
+        if (a_len > b_len) {
+            std::swap(a_len, b_len);
             std::swap(a, b);
         }
 
-        auto left_len = (sizea + sizeb + 1) / 2;
+        auto left_len = (a_len + b_len + 1) / 2;
 
         int32_t a_min {0};
-        int32_t a_max = sizea;
+        int32_t a_max = a_len;
 
         while (a_min <= a_max) {
             int a_count = a_min + ((a_max - a_min) / 2);
@@ -35,19 +35,19 @@ public:
 
             if (a_count > 0 && b->at(b_count - 1) > a->at(a_count)) {
                 a_max = a_count + 1;
-            } else if (a_count < sizea && b->at(b_count - 1) > a->at(a_count)) {
+            } else if (a_count < a_len && b->at(b_count - 1) > a->at(a_count)) {
                 a_min = a_count + 1;
             } else {
                 int left_half_end = (a_count == 0) ?
                     b->at(b_count - 1) : (b_count == 0) ?
                     a->at(a_count - 1) : std::max(a->at(a_count - 1), b->at(b_count - 1));
 
-                if (isodd(sizea + sizeb)) {
+                if (isodd(a_len + b_len)) {
                     return left_half_end;
                 }
                 
-                int right_half_start = (a_count == sizea) ?
-                    b->at(b_count) : (b_count == sizeb) ?
+                int right_half_start = (a_count == a_len) ?
+                    b->at(b_count) : (b_count == b_len) ?
                     a->at(a_count) : std::min(a->at(a_count), b->at(b_count));
                 return (left_half_end + right_half_start) / 2.0;
             }
