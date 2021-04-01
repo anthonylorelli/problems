@@ -1,6 +1,7 @@
 // 0187. Repeated DNA Sequences
 // Problem definition: https://leetcode.com/problems/repeated-dna-sequences/
 // Accepted ?
+// Rabin-Karp Cf. https://en.wikipedia.org/wiki/Rabin%E2%80%93Karp_algorithm
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
 
