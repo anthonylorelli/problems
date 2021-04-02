@@ -11,9 +11,14 @@
 
 class Solution {
 public:
+    constexpr uint32_t hash(const uint32_t h, const char c) const noexcept { return ((h * c_base) + c) % c_mod; }
     std::vector<std::string> findRepeatedDnaSequences(std::string s) {
         return {};        
     }
+
+private:
+    static constexpr uint32_t c_base {256};
+    static constexpr uint32_t c_mod {7778777};
 };
 
 TEST_CASE("LC test cases", "[Core]") {
