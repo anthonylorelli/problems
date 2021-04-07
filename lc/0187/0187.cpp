@@ -9,6 +9,8 @@
 #include <string>
 #include <vector>
 #include <string_view>
+#include <unordered_set>
+#include <iostream>
 
 constexpr uint32_t pow(const uint32_t exp, const uint32_t base, const uint32_t mod) {
     return exp == 0 ? 1 : (pow(exp - 1, base, mod) * base) % mod;
@@ -16,7 +18,7 @@ constexpr uint32_t pow(const uint32_t exp, const uint32_t base, const uint32_t m
 
 class RollingHash {
 public:
-    RollingHash(std::string_view& s, const uint32_t length) : m_s{s}, m_length{length} { 
+    RollingHash(const std::string_view& s, const uint32_t length) : m_s{s}, m_length{length} { 
         // We assume length < s.size()
         while (m_current < length) {
             m_hash = hash(m_hash, m_s[m_current]);
@@ -25,13 +27,13 @@ public:
     }
 
     bool has_next() const noexcept {
-        return m_current < m_s.size();
+        return m_current <= m_s.size();
     }
 
     uint32_t next() noexcept {
         auto cache = m_hash;
-        if (has_next()) {
-            m_hash = ((m_hash + c_mod) - m_s[m_current - m_length]) * c_offset;
+        if (m_current < m_s.size()) {
+            m_hash = (m_hash + c_mod) - ((m_s[m_current - m_length] * c_offset) % c_mod);
             m_hash = hash(m_hash, m_s[m_current]);
             ++m_current;
         }
@@ -56,7 +58,16 @@ private:
 class Solution {
 public:
     std::vector<std::string> findRepeatedDnaSequences(std::string s) {
-        return {};        
+        std::vector<std::string> result;
+        if (s.size() < 11) {
+            return result;
+        }
+        RollingHash hash(std::string_view{s}, 10);
+        std::unordered_set<uint32_t> found;
+        while (hash.has_next()) {
+            auto current = hash.next();
+        }
+        return result;
     }
 };
 
@@ -77,17 +88,13 @@ public:
 // }
 
 TEST_CASE("LC test cases", "[RollingHash class unit tests]") {
-    // std::vector<std::tuple<std::string,std::vector<std::string>>> input {
-    //     {"AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT",{"AAAAACCCCC","CCCCCAAAAA"}},
-    //     {"AAAAAAAAAAAAA",{"AAAAAAAAAA"}}
-    // };
-
     SECTION("LC test cases") {
         std::string_view testInput {"AAAAAAAAAAAA"};
         RollingHash hash(testInput, 10);
         auto current = hash.next();
         while (hash.has_next()) {
             auto next = hash.next();
+            std::cout << "Current: " << current << " Next: " << next << "\n";
             REQUIRE(current == next);
             current = next;
         }
