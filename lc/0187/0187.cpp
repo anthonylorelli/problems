@@ -20,22 +20,24 @@ class RollingHash {
 public:
     RollingHash(const std::string_view& s, const uint32_t length) : m_s{s}, m_length{length} { 
         // We assume length < s.size()
-        while (m_current < length) {
+        uint32_t limit {length - 1};
+        while (m_current < limit) {
             m_hash = hash(m_hash, m_s[m_current]);
             ++m_current;
         }
+        m_hash = hash(m_hash, m_s[m_current]);
     }
 
     bool has_next() const noexcept {
-        return m_current <= m_s.size();
+        return m_current < m_s.size();
     }
 
     uint32_t next() noexcept {
         auto cache = m_hash;
-        if (m_current < m_s.size()) {
+        ++m_current;
+        if (has_next()) {
             m_hash = (m_hash + c_mod) - ((m_s[m_current - m_length] * c_offset) % c_mod);
             m_hash = hash(m_hash, m_s[m_current]);
-            ++m_current;
         }
         return cache;
     }
