@@ -1,6 +1,6 @@
 // 0187. Repeated DNA Sequences
 // Problem definition: https://leetcode.com/problems/repeated-dna-sequences/
-// Accepted ?
+// Accepted 2021-04-09
 // Rabin-Karp Cf. https://en.wikipedia.org/wiki/Rabin%E2%80%93Karp_algorithm
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
@@ -61,8 +61,7 @@ private:
     uint64_t m_hash {0};
 
     static constexpr uint64_t c_base {8};
-    static constexpr uint64_t c_mod {406586897};
-    //static constexpr uint64_t c_mod {7778777};
+    static constexpr uint64_t c_mod {1073807359};
     static constexpr uint64_t c_offset {pow(9, c_base, c_mod)};
     static constexpr uint64_t c_seed[] = {
         1,0,3,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,0,7
@@ -72,6 +71,23 @@ private:
 class Solution {
 public:
     std::vector<std::string> findRepeatedDnaSequences(std::string s) {
+        std::vector<std::string> result;
+        if (s.size() < 11) {
+            return result;
+        }
+        RollingHash hash(std::string_view{s}, 10);
+        std::unordered_map<uint64_t,int32_t> found;
+        while (hash.has_next()) {
+            auto current = hash.next();
+            found[current]++;
+            if (found[current] == 2) {
+                result.push_back(hash.str());
+            }
+        }
+        return result;
+    }
+
+    std::vector<std::string> findRepeatedDnaSequencesChained(std::string s) {
         std::vector<std::string> result;
         if (s.size() < 11) {
             return result;
