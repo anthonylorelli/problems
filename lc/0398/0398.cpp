@@ -5,16 +5,23 @@
 #include "../../inc/catch.hpp"
 
 #include <algorithm>
+#include <vector>
+#include <random>
 
 class Solution {
 public:
-    Solution(vector<int>& nums) {
+    Solution(std::vector<int>& nums) : m_rd{}, m_gen{m_rd()} {
         
     }
     
     int pick(int target) {
-        
+        // std::uniform_int_distribution distrib(1, 6)
+        // distrib(m_gen)        
     }
+
+private:
+    std::random_device m_rd;
+    std::mt19937 m_gen;
 };
 
 /**
