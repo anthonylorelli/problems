@@ -1,6 +1,7 @@
 // 0464. Can I Win
 // Problem definition: https://leetcode.com/problems/can-i-win/
 // Accepted ?
+// Cf. https://leetcode.com/problems/can-i-win/discuss/95320/Clean-C%2B%2B-beat-98.4-DFS-with-early-termination-check-(detailed-explanation)
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
 
