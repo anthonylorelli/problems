@@ -10,6 +10,25 @@
 class Solution {
 public:
     bool canIWin(int maxChoosableInteger, int desiredTotal) {
+        int32_t sum = maxChoosableInteger * (maxChoosableInteger + 1) / 2;
+        if (desiredTotal < 2) {
+            return true;
+        }
+        if (sum < desiredTotal) {
+            return false;
+        }
+        if (sum == desiredTotal) {
+            return is_odd(maxChoosableInteger);
+        }
+        return dfs(maxChoosableInteger, desiredTotal, 0);
+    }
+
+private:
+    constexpr bool is_odd(int32_t n) {
+        return n & 1;
+    }
+
+    bool dfs(int m, int t, int k) {
         return false;
     }
 };
