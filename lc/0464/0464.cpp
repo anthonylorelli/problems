@@ -7,6 +7,10 @@
 
 #include <algorithm>
 
+constexpr int32_t pow2(const int32_t exp) {
+    return 1 << exp;
+}
+
 class Solution {
 public:
     bool canIWin(int maxChoosableInteger, int desiredTotal) {
@@ -29,8 +33,25 @@ private:
     }
 
     bool dfs(int m, int t, int k) {
+        if (m_mem[k] != 0) {
+            return m_mem[k] > 0;
+        }
+        if (t <= 0) {
+            return false;
+        }
+
+        for (int32_t i {0}; i < m; ++i) {
+            if (!(k & (1 << i)) && !dfs(m, t - i - 1, k | (1 << i))) {
+                m_mem[k] = 1;
+                return true;
+            }
+        }
+
+        m_mem[k] = -1;
         return false;
     }
+
+    int32_t m_mem[pow2(20)] = {};
 };
 
 TEST_CASE("LC test cases", "[Core]") {
