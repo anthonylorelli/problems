@@ -6,6 +6,8 @@
 #include "../../inc/catch.hpp"
 
 #include <algorithm>
+#include <array>
+#include <iostream>
 
 constexpr int32_t pow2(const int32_t exp) {
     return 1 << exp;
@@ -13,7 +15,10 @@ constexpr int32_t pow2(const int32_t exp) {
 
 class Solution {
 public:
+    Solution() : m_mem{} { }
+
     bool canIWin(int maxChoosableInteger, int desiredTotal) {
+        std::cout << "canIWin(" << maxChoosableInteger << ", " << desiredTotal << ")\n";
         int32_t sum = maxChoosableInteger * (maxChoosableInteger + 1) / 2;
         if (desiredTotal < 2) {
             return true;
@@ -28,11 +33,12 @@ public:
     }
 
 private:
-    constexpr bool is_odd(int32_t n) {
+    constexpr bool is_odd(const int32_t n) const noexcept {
         return n & 1;
     }
 
-    bool dfs(int m, int t, int k) {
+    bool dfs(const int m, const int t, const int k) {
+        std::cout << "dfs(" << m << ", " << t << ", " << k << ")\n";
         if (m_mem[k] != 0) {
             return m_mem[k] > 0;
         }
@@ -41,7 +47,7 @@ private:
         }
 
         for (int32_t i {0}; i < m; ++i) {
-            if (!(k & (1 << i)) && !dfs(m, t - i - 1, k | (1 << i))) {
+            if (!(k & pow2(i)) && !dfs(m, t - i - 1, k | pow2(i))) {
                 m_mem[k] = 1;
                 return true;
             }
@@ -51,11 +57,11 @@ private:
         return false;
     }
 
-    int32_t m_mem[pow2(20)] = {};
+    std::array<int32_t,pow2(20)> m_mem;
 };
 
 TEST_CASE("LC test cases", "[Core]") {
-    std::vector<std::tuple<int,int, bool>> input {
+    std::vector<std::tuple<int,int,bool>> input {
         {10, 11, false}, {10, 0, true}, {10, 1, true}
     };
 
@@ -63,8 +69,8 @@ TEST_CASE("LC test cases", "[Core]") {
         std::for_each(std::begin(input), std::end(input),
             [&input](auto& p) {
                 Solution s;
-                auto& [max, desired, expected] = p;
-                REQUIRE(s.canIWin(max, desired) == expected);
+                auto& [maxInt, desired, expected] = p;
+                REQUIRE(s.canIWin(maxInt, desired) == expected);
             });
     }
 }
