@@ -13,12 +13,11 @@ constexpr int32_t pow2(const int32_t exp) {
     return 1 << exp;
 }
 
+int32_t g_mem[pow2(20)] = {};
+
 class Solution {
 public:
-    Solution() : m_mem{} { }
-
     bool canIWin(int maxChoosableInteger, int desiredTotal) {
-        std::cout << "canIWin(" << maxChoosableInteger << ", " << desiredTotal << ")\n";
         int32_t sum = maxChoosableInteger * (maxChoosableInteger + 1) / 2;
         if (desiredTotal < 2) {
             return true;
@@ -38,9 +37,8 @@ private:
     }
 
     bool dfs(const int m, const int t, const int k) {
-        std::cout << "dfs(" << m << ", " << t << ", " << k << ")\n";
-        if (m_mem[k] != 0) {
-            return m_mem[k] > 0;
+        if (g_mem[k] != 0) {
+            return g_mem[k] > 0;
         }
         if (t <= 0) {
             return false;
@@ -48,39 +46,28 @@ private:
 
         for (int32_t i {0}; i < m; ++i) {
             if (!(k & pow2(i)) && !dfs(m, t - i - 1, k | pow2(i))) {
-                m_mem[k] = 1;
+                g_mem[k] = 1;
                 return true;
             }
         }
 
-        m_mem[k] = -1;
+        g_mem[k] = -1;
         return false;
     }
-
-    std::array<int32_t,pow2(20)> m_mem;
 };
 
 TEST_CASE("LC test cases", "[Core]") {
-    std::vector<std::tuple<int,int,bool>> input {
-        {10, 11, false}, {10, 0, true}, {10, 1, true}
-    };
-
-    SECTION("LC test cases") {
+    SECTION("Test cases") {
+        std::vector<std::tuple<int,int,bool>> input {
+            {10, 11, false}, {10, 0, true}, {10, 1, true}, {4, 6, true}
+        };
         std::for_each(std::begin(input), std::end(input),
-            [&input](auto& p) {
-                Solution s;
-                auto& [maxInt, desired, expected] = p;
-                REQUIRE(s.canIWin(maxInt, desired) == expected);
+            [&](auto& p) {
+                auto [maxInt, desired, expected] = p;
+                REQUIRE(Solution{}.canIWin(maxInt, desired) == expected);
             });
     }
 }
-
-auto speed=[](){
-    std::ios::sync_with_stdio(false);
-    std::cin.tie(nullptr);
-    std::cout.tie(nullptr);
-    return nullptr;
-}();
 
 int main(int argc, char* argv[]) {
     std::ios_base::sync_with_stdio(false);
