@@ -1,6 +1,6 @@
 // 0464. Can I Win
 // Problem definition: https://leetcode.com/problems/can-i-win/
-// Accepted ?
+// Accepted 2021-04-21
 // Cf. https://leetcode.com/problems/can-i-win/discuss/95320/Clean-C%2B%2B-beat-98.4-DFS-with-early-termination-check-(detailed-explanation)
 #define CATCH_CONFIG_RUNNER
 #include "../../inc/catch.hpp"
@@ -8,15 +8,16 @@
 #include <algorithm>
 #include <array>
 #include <iostream>
+#include <vector>
 
 constexpr int32_t pow2(const int32_t exp) {
     return 1 << exp;
 }
 
-int32_t g_mem[pow2(20)] = {};
-
 class Solution {
 public:
+    Solution() : m_mem(pow2(20),0) { }
+
     bool canIWin(int maxChoosableInteger, int desiredTotal) {
         int32_t sum = maxChoosableInteger * (maxChoosableInteger + 1) / 2;
         if (desiredTotal < 2) {
@@ -37,8 +38,8 @@ private:
     }
 
     bool dfs(const int m, const int t, const int k) {
-        if (g_mem[k] != 0) {
-            return g_mem[k] > 0;
+        if (m_mem[k] != 0) {
+            return m_mem[k] > 0;
         }
         if (t <= 0) {
             return false;
@@ -46,14 +47,16 @@ private:
 
         for (int32_t i {0}; i < m; ++i) {
             if (!(k & pow2(i)) && !dfs(m, t - i - 1, k | pow2(i))) {
-                g_mem[k] = 1;
+                m_mem[k] = 1;
                 return true;
             }
         }
 
-        g_mem[k] = -1;
+        m_mem[k] = -1;
         return false;
     }
+
+    std::vector<int> m_mem;
 };
 
 TEST_CASE("LC test cases", "[Core]") {
