@@ -1,17 +1,19 @@
 // 1720. Decode XORed Array
 // Problem definition: https://leetcode.com/problems/decode-xored-array/
-// Accepted ?
+// Accepted 2021-04-27
 #define CATCH_CONFIG_RUNNER
 #include "../inc/catch.hpp"
 
 #include <algorithm>
-#include <string>
 #include <vector>
 
 class Solution {
 public:
     std::vector<int> decode(std::vector<int>& encoded, int first) {
-        return {};
+        std::vector<int> result(encoded.size() + 1, first);
+        std::transform(encoded.begin(), encoded.end(), result.begin(), result.begin() + 1, 
+            [](const auto n1, const auto n2) { return n1 ^ n2; });
+        return result;
     }
 };
 
