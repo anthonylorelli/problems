@@ -7,10 +7,17 @@
 #include <algorithm>
 #include <string>
 #include <vector>
+#include <cctype>
 
 class Solution {
 public:
     std::string shortestCompletingWord(std::string licensePlate, std::vector<std::string>& words) {
+        int32_t counts[26]{};
+        for (const auto c : licensePlate) {
+            if (std::isalpha(c)) {
+                counts[std::tolower(c) - 'a']++;
+            }
+        }
         return "";
     }
 };
