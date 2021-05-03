@@ -18,6 +18,12 @@ public:
                 counts[std::tolower(c) - 'a']++;
             }
         }
+        for (const auto& word : words) {
+            int32_t word_count[26]{};
+            for (const auto c : word) {
+                word_count[c - 'a']++;
+            }
+        }
         return "";
     }
 };
