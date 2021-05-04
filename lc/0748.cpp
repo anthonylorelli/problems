@@ -1,6 +1,6 @@
 // 0748. Shortest Completing Word
 // Problem definition: https://leetcode.com/problems/shortest-completing-word/
-// Accepted ?
+// Accepted 2021-05-03
 #define CATCH_CONFIG_RUNNER
 #include "../inc/catch.hpp"
 
@@ -18,13 +18,21 @@ public:
                 counts[std::tolower(c) - 'a']++;
             }
         }
-        for (const auto& word : words) {
+        std::string* answer {nullptr};
+        for (auto& word : words) {
             int32_t word_count[26]{};
             for (const auto c : word) {
                 word_count[c - 'a']++;
             }
+            auto found = std::equal(std::begin(counts), std::end(counts), 
+                std::begin(word_count), std::end(word_count),
+                [](const auto n1, const auto n2) { return !(n1 > n2); });
+
+            if (found) {
+                answer = !answer ? &word : answer->length() > word.length() ? &word : answer;
+            }
         }
-        return "";
+        return *answer;
     }
 };
 
