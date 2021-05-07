@@ -1,6 +1,6 @@
 // 0225. Implement Stack Using Queues
 // Problem definition: https://leetcode.com/problems/implement-stack-using-queues/
-// Accepted ?
+// Accepted 2021-05-06
 #define CATCH_CONFIG_RUNNER
 #include "../inc/catch.hpp"
 
@@ -10,29 +10,38 @@
 class MyStack {
 public:
     /** Initialize your data structure here. */
-    MyStack() {
-        
-    }
+    MyStack() { }
     
     /** Push element x onto stack. */
     void push(int x) {
-        
+        m_queue.push(x);
+        auto s = m_queue.size();
+        while (s > 1) {
+            m_queue.push(m_queue.front());
+            m_queue.pop();
+            s--;
+        }
     }
     
     /** Removes the element on top of the stack and returns that element. */
     int pop() {
-        
+        auto top = m_queue.front();
+        m_queue.pop();
+        return top;
     }
     
     /** Get the top element. */
     int top() {
-        
+        return m_queue.front();
     }
     
     /** Returns whether the stack is empty. */
     bool empty() {
-        
+        return m_queue.empty();        
     }
+
+private:
+    std::queue<int> m_queue;
 };
 
 /**
