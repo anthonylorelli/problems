@@ -5,11 +5,15 @@
 #include "../inc/catch.hpp"
 
 #include <algorithm>
+#include <numeric>
 #include <vector>
 
 class Solution {
 public:
     int waysToSplit(std::vector<int>& nums) {
+        constexpr int32_t mod {1'000'000'000+7};
+        std::vector<int32_t> prefix(nums.size());
+        std::partial_sum(nums.begin(), nums.end(), prefix.begin());
         return 0;        
     }
 };
