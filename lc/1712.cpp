@@ -1,6 +1,7 @@
 // 1712. Ways to Split Array Into Three Subarrays
 // Problem definition: https://leetcode.com/problems/ways-to-split-array-into-three-subarrays/
 // Accepted ?
+// Cf. https://leetcode.com/problems/ways-to-split-array-into-three-subarrays/discuss/1184986/Prefix-Sums-%2B-Binary-Search-or-C%2B%2B
 #define CATCH_CONFIG_RUNNER
 #include "../inc/catch.hpp"
 
@@ -11,10 +12,21 @@
 class Solution {
 public:
     int waysToSplit(std::vector<int>& nums) {
-        constexpr int32_t mod {1'000'000'000+7};
-        std::vector<int32_t> prefix(nums.size());
+        constexpr int32_t mod {1'000'000'007};
+        const auto s {nums.size()};
+        std::vector<int32_t> prefix(s);
         std::partial_sum(nums.begin(), nums.end(), prefix.begin());
-        return 0;        
+        int64_t answer {0};
+        for (int32_t x {0}; x < s; ++x) {
+            int32_t i = std::distance(prefix.begin(), 
+                std::lower_bound(prefix.begin() + x + 1, prefix.end(), 2 * prefix[x]));
+            int32_t j = std::distance(prefix.begin(), 
+                std::upper_bound(prefix.begin(), prefix.end() - 1, (prefix.back() + prefix[x]) / 2));
+            if (j > i && j < s && i < s) {
+                answer += (j - i);
+            }
+        }
+        return answer % mod;
     }
 };
 
