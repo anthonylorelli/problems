@@ -1,7 +1,8 @@
 // 1712. Ways to Split Array Into Three Subarrays
 // Problem definition: https://leetcode.com/problems/ways-to-split-array-into-three-subarrays/
-// Accepted ?
+// Accepted 2021-05-10
 // Cf. https://leetcode.com/problems/ways-to-split-array-into-three-subarrays/discuss/1184986/Prefix-Sums-%2B-Binary-Search-or-C%2B%2B
+//     https://leetcode.com/problems/ways-to-split-array-into-three-subarrays/discuss/999596/Easy-C%2B%2B-Ways-to-Split-Array-Into-Three-Subarrays
 #define CATCH_CONFIG_RUNNER
 #include "../inc/catch.hpp"
 
