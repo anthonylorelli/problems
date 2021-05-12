@@ -13,22 +13,26 @@
 class Solution {
 public:
     int waysToSplit(std::vector<int>& nums) {
-        constexpr int32_t mod {1'000'000'007};
         const auto s {nums.size()};
         std::vector<int32_t> prefix(s);
         std::partial_sum(nums.begin(), nums.end(), prefix.begin());
         int64_t answer {0};
-        for (int32_t x {0}; x < s; ++x) {
+        for (int32_t x {0}; x < s - 2; ++x) {
+            int32_t left {prefix[x]}, remain {prefix.back() - prefix[x]};
+            if (remain < left * 2) { break; }
             int32_t i = std::distance(prefix.begin(), 
-                std::lower_bound(prefix.begin() + x + 1, prefix.end(), 2 * prefix[x]));
+                std::lower_bound(prefix.begin() + x + 1, prefix.end() - 1, 2 * left));
             int32_t j = std::distance(prefix.begin(), 
-                std::upper_bound(prefix.begin(), prefix.end() - 1, (prefix.back() + prefix[x]) / 2));
-            if (j > i && j < s && i < s) {
-                answer += (j - i);
+                std::upper_bound(prefix.begin() + x + 1, prefix.end() - 1, left + remain / 2)) - 1;
+            if (j - i + 1 > 0) {
+                answer += j - i + 1;
             }
         }
-        return answer % mod;
+        return answer % c_mod;
     }
+
+private:
+    static constexpr int32_t c_mod {1'000'000'007};
 };
 
 TEST_CASE("LC test cases", "[Core]") {
