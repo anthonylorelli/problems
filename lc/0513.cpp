@@ -6,8 +6,7 @@
 #include "../inc/treenode.h"
 
 #include <algorithm>
-#include <numeric>
-#include <vector>
+#include <queue>
 
 /**
  * Definition for a binary tree node.
@@ -23,7 +22,14 @@
 class Solution {
 public:
     int findBottomLeftValue(TreeNode* root) {
-        return 0;
+        int left_most = root->val;
+        std::queue<std::pair<int32_t,bool>> q;
+        while (!q.empty()) {
+            auto s = q.size();
+            for (size_t i {0}; i < s; ++i) {
+                
+            }
+        }
     }
 };
 
