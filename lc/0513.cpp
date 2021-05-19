@@ -1,6 +1,6 @@
 // 0513. Find Bottom Left Tree Value
 // Problem definition: https://leetcode.com/problems/find-bottom-left-tree-value/
-// Accepted ?
+// Accepted 2021-05-18
 #define CATCH_CONFIG_RUNNER
 #include "../inc/catch.hpp"
 #include "../inc/treenode.h"
@@ -22,14 +22,24 @@
 class Solution {
 public:
     int findBottomLeftValue(TreeNode* root) {
-        int left_most = root->val;
-        std::queue<std::pair<int32_t,bool>> q;
+        int left_most {};
+        std::queue<TreeNode*> q;
+        q.push(root);
         while (!q.empty()) {
             auto s = q.size();
+            left_most = q.front()->val;
             for (size_t i {0}; i < s; ++i) {
-                
+                auto node = q.front();
+                q.pop();
+                if (node->left) {
+                    q.push(node->left);
+                }
+                if (node->right) {
+                    q.push(node->right);
+                }
             }
         }
+        return left_most;
     }
 };
 
