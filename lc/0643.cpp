@@ -7,11 +7,17 @@
 
 #include <algorithm>
 #include <vector>
-#include <string>
 
 class Solution {
 public:
     double findMaxAverage(std::vector<int>& nums, int k) {
+        double average {0.0};
+        for (int32_t i {0}, j {0}, sum {0}; i < nums.size(); ++i) {
+            sum += nums[i];
+            if (i > k) {
+                sum -= nums[j++];
+            }
+        }
         return 0.0;
     }
 };
