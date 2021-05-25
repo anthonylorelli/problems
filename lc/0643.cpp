@@ -7,18 +7,14 @@
 
 #include <algorithm>
 #include <vector>
+#include <numeric>
 
 class Solution {
 public:
     double findMaxAverage(std::vector<int>& nums, int k) {
-        double average {0.0};
-        for (int32_t i {0}, j {0}, sum {0}; i < nums.size(); ++i) {
-            sum += nums[i];
-            if (i > k) {
-                sum -= nums[j++];
-            }
-        }
-        return 0.0;
+        int32_t sum = std::accumulate(nums.begin(), nums.begin() + k, 0);
+        const double denom {static_cast<double>(k)};
+        double avg = sum / denom;
     }
 };
 
