@@ -1,24 +1,26 @@
 // 0643. Maximum Average Subarray I
 // Problem definition: https://leetcode.com/problems/maximum-average-subarray-i/
-// Accepted ?
+// Accepted 2021-05-24
 #define CATCH_CONFIG_RUNNER
 #include "../inc/catch.hpp"
 #include "../inc/treenode.h"
 
 #include <algorithm>
 #include <vector>
+#include <numeric>
 
 class Solution {
 public:
     double findMaxAverage(std::vector<int>& nums, int k) {
-        double average {0.0};
-        for (int32_t i {0}, j {0}, sum {0}; i < nums.size(); ++i) {
-            sum += nums[i];
-            if (i > k) {
-                sum -= nums[j++];
-            }
-        }
-        return 0.0;
+        int32_t sum = std::accumulate(nums.begin(), nums.begin() + k, 0);
+        int32_t max_sum = sum;
+        std::transform(nums.begin() + k, nums.end(), nums.begin(), nums.begin(), 
+            [&](const auto a, const auto b) {
+                sum = sum + a - b;
+                avg = std::max(max_sum, sum);
+                return b;
+            });
+        return max_sum / static_cast<double>(k);
     }
 };
 
