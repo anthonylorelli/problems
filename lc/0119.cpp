@@ -11,7 +11,8 @@
 class Solution {
 public:
     std::vector<int> getRow(int rowIndex) {
-        return {};
+        std::vector<int> result;
+        return result;
     }
 };
 
