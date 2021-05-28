@@ -11,6 +11,9 @@
 class Solution {
 public:
     std::vector<int> getRow(int rowIndex) {
+        if (rowIndex == 0) { return {}; }
+        if (rowIndex == 1) { return {1}; }
+        if (rowIndex == 2) { return {1,1}; }
         std::vector<int> result;
         return result;
     }
