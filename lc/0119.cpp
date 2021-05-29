@@ -14,8 +14,10 @@ public:
         if (rowIndex == 0) { return {}; }
         if (rowIndex == 1) { return {1}; }
         if (rowIndex == 2) { return {1,1}; }
-        std::vector<int> result;
-        return result;
+        std::vector<int> v1(rowIndex + 1, 1);
+        std::vector<int> v2;
+
+        return v1;
     }
 };
 
