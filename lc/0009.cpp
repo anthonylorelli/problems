@@ -6,14 +6,14 @@
 #include "../inc/treenode.h"
 
 #include <algorithm>
-#include <numeric>
-#include <vector>
-#include <functional>
-#include <iostream>
+#include <stack>
 
 class Solution {
 public:
     bool isPalindrome(int x) {
+        if (x < 0 || (x != 0 && x % 10 == 0)) {
+            return false;
+        }
         return false;
     }
 };
