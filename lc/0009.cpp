@@ -1,6 +1,6 @@
 // 0009. Palindrome Number
 // Problem definition: https://leetcode.com/problems/palindrome-number/
-// Accepted ?
+// Accepted 2021-06-04
 #define CATCH_CONFIG_RUNNER
 #include "../inc/catch.hpp"
 #include "../inc/treenode.h"
@@ -14,13 +14,19 @@ public:
         if (x < 0 || (x != 0 && x % 10 == 0)) {
             return false;
         }
-        return false;
+        int32_t reversed {0};
+        while (x > reversed) {
+            reversed = (reversed * 10) + (x % 10);
+            x /= 10;
+        }
+        return x == reversed || x == reversed / 10;
     }
 };
 
 TEST_CASE("LC test cases", "[Core]") {
     std::vector<std::tuple<int,bool>> input {
-        {121,true},{-121,true},{10,false},{-101,false}
+        {121,true},{-121,false},{10,false},{-101,false},
+        {1,true},{12344321,true}
     };
 
     SECTION("Test cases") {
