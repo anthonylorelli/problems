@@ -1,18 +1,20 @@
 // 0190. Reverse Bits
 // Problem definition: https://leetcode.com/problems/reverse-bits/
-// Accepted ?
+// Accepted 2021-06-10
 #define CATCH_CONFIG_RUNNER
 #include "../inc/catch.hpp"
 #include "../inc/treenode.h"
 
 #include <algorithm>
 
-constexpr uint32_t c_most {0x80000000};
-
 class Solution {
 public:
     uint32_t reverseBits(uint32_t n) {
         uint32_t result {0};
+        for (uint32_t i {0}; i < 32; ++i, n >>= 1) {
+            result <<= 1;
+            result |= (n & 1);
+        }
         return result;
     }
 };
@@ -27,7 +29,7 @@ TEST_CASE("LC test cases", "[Core]") {
         std::for_each(std::begin(input), std::end(input),
             [&](auto& p) {
                 auto& [testInput, expected] = p;
-                REQUIRE(Solution{}.hammingWeight(testInput) == expected);
+                REQUIRE(Solution{}.reverseBits(testInput) == expected);
             });
     }
 }
