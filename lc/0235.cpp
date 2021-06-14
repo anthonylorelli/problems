@@ -1,6 +1,6 @@
 // 0235. Lowest Common Ancestor of a Binary Search Tree
 // Problem definition: https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/
-// Accepted ?
+// Accepted 2021-06-13
 #define CATCH_CONFIG_RUNNER
 #include "../inc/catch.hpp"
 #include "../inc/treenode.h"
@@ -20,7 +20,13 @@
 class Solution {
 public:
     TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
-        return nullptr;
+        if (p->val < root->val && q->val < root->val) {
+            return lowestCommonAncestor(root->left, p, q);
+        } else if (p->val > root->val && q->val > root->val) {
+            return lowestCommonAncestor(root->right, p, q);
+        } else { 
+            return root;
+        }
     }
 };
 
