@@ -1,12 +1,13 @@
 // 0257. Binary Tree Paths
 // Problem definition: https://leetcode.com/problems/binary-tree-paths/
-// Accepted ?
+// Accepted 2021-06-14
 #define CATCH_CONFIG_RUNNER
 #include "../inc/catch.hpp"
 #include "../inc/treenode.h"
 
 #include <algorithm>
 #include <vector>
+#include <string>
 
 /**
  * Definition for a binary tree node.
@@ -19,8 +20,27 @@
  */
 class Solution {
 public:
-    std::vector<string> binaryTreePaths(TreeNode* root) {
-        return {};
+    std::vector<std::string> binaryTreePaths(TreeNode* root) {
+        std::vector<std::string> result;
+        std::string root_val {std::to_string(root->val)};
+        binaryTreePaths(root, result, root_val);
+        return result;
+    }
+
+    void binaryTreePaths(TreeNode* root, std::vector<std::string>& paths, std::string& path) {
+        if (!root->left && !root->right) {
+            paths.push_back(path);
+            return;
+        }
+
+        if (root->left) {
+            std::string next_path {path + "->" + std::to_string(root->left->val)};
+            binaryTreePaths(root->left, paths, next_path);
+        }
+        if (root->right) {
+            std::string next_path {path + "->" + std::to_string(root->right->val)};
+            binaryTreePaths(root->right, paths, next_path);
+        }
     }
 };
 
