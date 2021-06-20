@@ -1,15 +1,34 @@
 // 0202. Happy Number
 // Problem definition: https://leetcode.com/problems/happy-number/
-// Accepted ?
+// Accepted 2021-06-19
 #define CATCH_CONFIG_RUNNER
 #include "../inc/catch.hpp"
 
 #include <algorithm>
+#include <unordered_set>
 
 class Solution {
 public:
     bool isHappy(int n) {
-        return false;
+        if (n == 1) { return n; }
+        std::unordered_set<int64_t> found = {n};
+        for (int64_t i = next(n); i != 1; found.insert(i), i = next(i)) {
+            if (found.contains(i)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    constexpr int64_t next(int64_t n) const {
+        if (n == 1) { return n; }
+        int64_t total {0};
+        while (n > 0) {
+            int32_t digit {n % 10};
+            total += (digit * digit);
+            n /= 10;
+        }
+        return total;
     }
 };
 
