@@ -1,6 +1,6 @@
 // 0263. Ugly Number
 // Problem definition: https://leetcode.com/problems/ugly-number/
-// Accepted ?
+// Accepted 2021-06-23
 #define CATCH_CONFIG_RUNNER
 #include "../inc/catch.hpp"
 
@@ -9,7 +9,12 @@
 class Solution {
 public:
     bool isUgly(int num) {
-        
+        return 1 == factor_out(factor_out(factor_out(num, 2), 3), 5);
+    }
+
+    constexpr int32_t factor_out(int32_t n, const int32_t factor) {
+        while (n % factor == 0 && n > 0) { n /= factor; }
+        return n;
     }
 };
 
