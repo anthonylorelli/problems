@@ -1,6 +1,6 @@
 // 0228. Summary Ranges
 // Problem definition: https://leetcode.com/problems/summary-ranges/
-// Accepted ?
+// Accepted 2021-06-26
 #define CATCH_CONFIG_RUNNER
 #include "../inc/catch.hpp"
 
@@ -12,7 +12,7 @@ class Solution {
 public:
     std::vector<std::string> summaryRanges(std::vector<int>& nums) {
         std::vector<std::string> result;
-        for_each_element(nums.begin(), nums.end(), [&result](const auto& begin, const auto& end) {
+        while_element(nums.begin(), nums.end(), [&](const auto& begin, const auto& end) {
             std::string range{std::to_string(*begin)};
             auto right = find_end_range(begin, end);
             if (begin != right) {
@@ -20,14 +20,15 @@ public:
                 range += std::to_string(*right);
             }
             result.push_back(range);
+            return right;
         });
         return result;
     }
 
     template <typename T, typename U>
-    void for_each_element(T begin, T end, const U& action) {
-        for (; begin != end; ++begin) {
-            action(begin, end);
+    void while_element(T begin, T end, const U& action) {
+        while (begin != end) {
+            begin = action(begin, end) + 1;
         }
     }
 
