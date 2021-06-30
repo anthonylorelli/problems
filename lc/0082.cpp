@@ -1,9 +1,9 @@
 // 0082. Remove Duplicates from Sorted List II
 // Problem definition: https://leetcode.com/problems/remove-duplicates-from-sorted-list-ii/
-// Accepted ?
+// Accepted 2021-06-29
 #define CATCH_CONFIG_RUNNER
 #include "../inc/catch.hpp"
-#include "../inc/listnode.hpp"
+#include "../inc/listnode.h"
 
 #include <algorithm>
 #include <vector>
@@ -22,23 +22,23 @@
 class Solution {
 public:
     ListNode* deleteDuplicates(ListNode* head) {
-        if (!head) { return nullptr; }
-        deleteDuplicates(head->next, head);
-        return head;        
-    }
+        ListNode sentinel {0, head};
+        ListNode* prev {&sentinel};
+        while (head) {
+            auto val {head->val};
+            if (head->next && val == head->next->val) {
+                while (head->next && val == head->next->val) {
+                    head = head->next;
+                }
+                prev->next = head->next;
+            } else {
+                prev = prev->next;
+            }
 
-    void deleteDuplicates(ListNode* current, ListNode* prev) {
-        prev->next = current;
-
-        if (!current) { return; }
-
-        if (current->val == prev->val) {
-            prev->next = current->next;
-        } else {
-            prev = current;
+            head = head->next;
         }
 
-        deleteDuplicates(current->next, prev);
+        return sentinel.next;
     }
 };
 
