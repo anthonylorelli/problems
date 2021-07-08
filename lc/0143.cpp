@@ -7,13 +7,22 @@
 
 #include <algorithm>
 #include <string>
-#include <vector>
+#include <stack>
 
 class Solution {
 public:
     void reorderList(ListNode* head) {
-        
+        if (!head) {
+            m_mid = m_length / 2;
+        }
+        m_length++;
+        reorderList(head->next);
     }
+
+private:
+    std::stack<ListNode*> m_stack;
+    int32_t m_length {0};
+    int32_t m_mid {0};
 };
 
 // TEST_CASE("LC test cases", "[Core]") {
