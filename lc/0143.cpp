@@ -12,11 +12,31 @@
 class Solution {
 public:
     void reorderList(ListNode* head) {
+        traverse(head);
+        ListNode* current {head};
+        while (!m_stack.empty()) {
+            ListNode* next {m_stack.top()};
+            m_stack.pop();
+            next->next = current->next;
+            current->next = next;
+            current = next->next;
+        }
+        if (current) {
+            current->next = nullptr;
+        }
+    }
+
+    void traverse(ListNode* head) {
         if (!head) {
             m_mid = m_length / 2;
+            return;
         }
         m_length++;
         reorderList(head->next);
+        if (m_mid > 0) {
+            m_stack.push(head);
+            m_mid--;
+        }
     }
 
 private:
