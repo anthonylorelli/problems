@@ -1,6 +1,6 @@
 // 0143. Reorder List
 // Problem definition: https://leetcode.com/problems/reorder-list/
-// Accepted ?
+// Accepted 2021-07-09
 #define CATCH_CONFIG_RUNNER
 #include "../inc/catch.hpp"
 #include "../inc/listnode.h"
@@ -14,7 +14,7 @@ public:
     void reorderList(ListNode* head) {
         traverse(head);
         ListNode* current {head};
-        while (!m_stack.empty()) {
+        while (m_mid-- > 0) {
             ListNode* next {m_stack.top()};
             m_stack.pop();
             next->next = current->next;
@@ -32,11 +32,8 @@ public:
             return;
         }
         m_length++;
-        reorderList(head->next);
-        if (m_mid > 0) {
-            m_stack.push(head);
-            m_mid--;
-        }
+        m_stack.push(head);
+        traverse(head->next);
     }
 
 private:
