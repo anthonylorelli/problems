@@ -12,6 +12,54 @@
 class Solution {
 public:
     void reorderList(ListNode* head) {
+        if (!head->next || !head->next->next) {
+            return;
+        }
+
+        ListNode* right = reverse(split(head));
+        merge(head, right);
+    }
+
+    ListNode* split(ListNode* head) {
+        ListNode* right {head};
+        while (right && right->next) {
+            head = head->next;
+            right = right->next->next;
+        }
+        return head->next;
+    }
+
+    ListNode* reverse(ListNode* node) {
+        ListNode* tail {node};
+        ListNode* head {node->next};
+        tail->next = nullptr;
+        while (head) {
+            ListNode* next {head->next};
+            head->next = tail;
+            tail = head;
+            head = next;
+        }
+        return tail;
+    }
+
+    ListNode* merge(ListNode* left, ListNode* right) {
+        ListNode* it_left {left};
+        ListNode* it_right {right};
+        while (it_left && it_right) {
+            ListNode* left_next {it_left->next};
+            ListNode* right_next {it_right->next};
+            it_left->next = it_right;
+            it_right->next = left_next;
+            it_left = left_next;
+            it_right = right_next;
+        }
+        return left;
+    }
+};
+
+class SolutionStack {
+public:
+    void reorderList(ListNode* head) {
         traverse(head);
         ListNode* current {head};
         while (m_mid-- > 0) {
