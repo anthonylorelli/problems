@@ -21,12 +21,14 @@ public:
     }
 
     ListNode* split(ListNode* head) {
-        ListNode* right {head};
+        ListNode* right {head->next};
         while (right && right->next) {
             head = head->next;
             right = right->next->next;
         }
-        return head->next;
+        right = head->next;
+        head->next = nullptr;
+        return right;
     }
 
     ListNode* reverse(ListNode* node) {
@@ -90,7 +92,7 @@ private:
     int32_t m_mid {0};
 };
 
-// TEST_CASE("LC test cases", "[Core]") {
+TEST_CASE("LC test cases", "[Core]") {
 //     std::vector<std::tuple<std::string,std::string,std::string,bool>> input {
 //         {"aabcc", "dbbca", "aadbbcbcac", true},
 //         {"aabcc", "dbbca", "aadbbbaccc", false},
@@ -105,7 +107,22 @@ private:
 //                 REQUIRE(s.isInterleave(s1, s2, s3) == expected);
 //             });
 //     }
-// }
+
+    SECTION("split() tests") {
+        Solution s;
+        auto list1 = {1, 2, 3, 4, 5, 6};
+        ListNode* head = create(list1);
+        ListNode* right = s.split(head);
+        REQUIRE(to_string(head) == "1->2->3->");
+        REQUIRE(to_string(right) == "4->5->6->");
+
+        auto list2 = {1, 2, 3, 4, 5, 6, 7};
+        ListNode* h2 = create(list2);
+        ListNode* r2 = s.split(h2);
+        REQUIRE(to_string(h2) == "1->2->3->4->");
+        REQUIRE(to_string(r2) == "5->6->7->");
+    }
+}
 
 int main(int argc, char* argv[]) {
     std::ios_base::sync_with_stdio(false);
