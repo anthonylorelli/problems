@@ -22,7 +22,7 @@ std::string to_string(const ListNode* head) {
     return s;
 }
 
-ListNode* create(std::initializer_list<int32_t>& list) {
+ListNode* create(const std::initializer_list<int32_t>& list) {
     ListNode sentinel;
     ListNode* next {&sentinel};
     for (const auto n : list) {
