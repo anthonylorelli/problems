@@ -141,6 +141,24 @@ TEST_CASE("LC test cases", "[Core]") {
         ListNode* r3 = s.reverse(h3);
         REQUIRE(to_string(r3) == "2->1->");
     }
+
+    SECTION("merge() tests") {
+        Solution s;
+        ListNode* l1 = create({1, 3, 5, 7});
+        ListNode* r1 = create({2, 4, 6, 8});
+        ListNode* merged1 = s.merge(l1, r1);
+        REQUIRE(to_string(merged1) == "1->2->3->4->5->6->7->8->");
+
+        ListNode* l2 = create({1});
+        ListNode* r2 = create({2});
+        ListNode* merged2 = s.merge(l2, r2);
+        REQUIRE(to_string(merged2) == "1->2->");
+
+        ListNode* l3 = create({1});
+        ListNode* r3 = nullptr;
+        ListNode* merged3 = s.merge(l3, r3);
+        REQUIRE(to_string(merged3) == "1->");
+    }
 }
 
 int main(int argc, char* argv[]) {
