@@ -122,6 +122,25 @@ TEST_CASE("LC test cases", "[Core]") {
         REQUIRE(to_string(h2) == "1->2->3->4->");
         REQUIRE(to_string(r2) == "5->6->7->");
     }
+
+    SECTION("reverse() tests") {
+        Solution s;
+        auto list1 = {1, 2, 3, 4, 5, 6};
+        ListNode* head = create(list1);
+        ListNode* rev = s.reverse(head);
+        REQUIRE(to_string(rev) == "6->5->4->3->2->1->");
+
+        auto list2 = {1};
+        ListNode* h2 = create(list2);
+        REQUIRE(to_string(h2) == "1->");
+        ListNode* r2 = s.reverse(h2);
+        REQUIRE(to_string(r2) == "1->");
+
+        auto list3 = {1, 2};
+        ListNode* h3 = create(list3);
+        ListNode* r3 = s.reverse(h3);
+        REQUIRE(to_string(r3) == "2->1->");
+    }
 }
 
 int main(int argc, char* argv[]) {
