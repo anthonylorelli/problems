@@ -1,6 +1,6 @@
 // 0143. Reorder List
 // Problem definition: https://leetcode.com/problems/reorder-list/
-// Accepted 2021-07-09
+// Accepted 2021-07-09, 2021-07-12
 #define CATCH_CONFIG_RUNNER
 #include "../inc/catch.hpp"
 #include "../inc/listnode.h"
@@ -8,8 +8,20 @@
 #include <algorithm>
 #include <string>
 #include <stack>
+#include <vector>
 
 class Solution {
+    void reorderList(ListNode* head) {
+        std::vector<ListNode*> nodes;
+        while (head) {
+            nodes.push_back(head);
+            head = head->next;
+        }
+        size_t left {0}, right {nodes.size() - 1};
+    }
+};
+
+class SolutionLinkedList {
 public:
     void reorderList(ListNode* head) {
         if (!head->next || !head->next->next) {
