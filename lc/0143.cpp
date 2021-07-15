@@ -1,6 +1,6 @@
 // 0143. Reorder List
 // Problem definition: https://leetcode.com/problems/reorder-list/
-// Accepted 2021-07-09, 2021-07-12
+// Accepted 2021-07-09, 2021-07-12, 2021,07-13
 #define CATCH_CONFIG_RUNNER
 #include "../inc/catch.hpp"
 #include "../inc/listnode.h"
@@ -11,6 +11,7 @@
 #include <vector>
 
 class Solution {
+public:
     void reorderList(ListNode* head) {
         std::vector<ListNode*> nodes;
         while (head) {
@@ -18,6 +19,11 @@ class Solution {
             head = head->next;
         }
         size_t left {0}, right {nodes.size() - 1};
+        while (left < right) {
+            nodes[left]->next = nodes[right];
+            nodes[right--]->next = nodes[++left];
+        }
+        nodes[left]->next = nullptr;
     }
 };
 
@@ -120,8 +126,27 @@ TEST_CASE("LC test cases", "[Core]") {
 //             });
 //     }
 
-    SECTION("split() tests") {
+    SECTION("vector tests") {
         Solution s;
+        ListNode* h1 = create({1,2,3,4});
+        s.reorderList(h1);
+        REQUIRE(to_string(h1) == "1->4->2->3->");
+
+        ListNode* h2 = create({1,2,3,4,5});
+        s.reorderList(h2);
+        REQUIRE(to_string(h2) == "1->5->2->4->3->");
+
+        ListNode* h3 = create({1});
+        s.reorderList(h3);
+        REQUIRE(to_string(h3) == "1->");
+
+        ListNode* h4 = create({1,2});
+        s.reorderList(h4);
+        REQUIRE(to_string(h4) == "1->2->");
+    }
+
+    SECTION("split() tests") {
+        SolutionLinkedList s;
         auto list1 = {1, 2, 3, 4, 5, 6};
         ListNode* head = create(list1);
         ListNode* right = s.split(head);
@@ -136,7 +161,7 @@ TEST_CASE("LC test cases", "[Core]") {
     }
 
     SECTION("reverse() tests") {
-        Solution s;
+        SolutionLinkedList s;
         auto list1 = {1, 2, 3, 4, 5, 6};
         ListNode* head = create(list1);
         ListNode* rev = s.reverse(head);
@@ -155,7 +180,7 @@ TEST_CASE("LC test cases", "[Core]") {
     }
 
     SECTION("merge() tests") {
-        Solution s;
+        SolutionLinkedList s;
         ListNode* l1 = create({1, 3, 5, 7});
         ListNode* r1 = create({2, 4, 6, 8});
         ListNode* merged1 = s.merge(l1, r1);
