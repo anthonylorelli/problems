@@ -13,6 +13,13 @@ public:
     std::vector<std::string> restoreIpAddresses(std::string s) {
         return {};
     }
+
+    void parse() {
+        
+    }
+
+private:
+    std::vector<std::string> m_vec;
 };
 
 TEST_CASE("LC test cases", "[Core]") {
