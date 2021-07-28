@@ -1,6 +1,6 @@
 // 0152. Maximum Product Subarray
 // Problem definition: https://leetcode.com/problems/maximum-product-subarray/
-// Accepted 2021-07-27 - very slow!
+// Accepted 2021-07-27 - first very slow, second much faster
 #define CATCH_CONFIG_RUNNER
 #include "../inc/catch.hpp"
 
@@ -10,6 +10,24 @@
 #include <numeric>
 
 class Solution {
+public:
+    int maxProduct(std::vector<int>& nums) {
+        auto size {nums.size()};
+        std::vector<int> maxes(size + 1, 1);
+        std::vector<int> mins(size + 1, 1);
+        int max {std::numeric_limits<int>::min()};
+        for (int i {1}; i <= size; ++i) {
+            int n {nums[i-1]};
+            auto list = {n, n * maxes[i-1], n * mins[i-1]};
+            maxes[i] = *std::max_element(list.begin(), list.end());
+            mins[i] = *std::min_element(list.begin(), list.end());
+            max = std::max(max, maxes[i]);
+        }
+        return max;
+    }
+};
+
+class SolutionPrefix {
 public:
     int maxProduct(std::vector<int>& nums) {
         std::vector<int> result(nums.size());
@@ -28,7 +46,7 @@ public:
 
 TEST_CASE("LC test cases", "[Core]") {
     std::vector<std::tuple<std::vector<int>,int>> input {
-        {{2,3,-2,4},6},{{-2,0,-1},0},{{-2},-2}
+        {{2,3,-2,4},6},{{-2,0,-1},0},{{-2},-2},{{0,2},2}
     };
 
     SECTION("LC test cases") {
