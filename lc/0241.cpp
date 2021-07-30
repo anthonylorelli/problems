@@ -7,47 +7,45 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <stack>
 
 class Solution {
 public:
     std::vector<int> diffWaysToCompute(std::string expression) {
-        return {};        
+        op(expression.begin() + 1, expression.end(), [&expression]() { return expression[0] - '0'; });
+        return m_result;
     }
 
-    template<typename It, typename End>
-    void rand(It begin, End end, std::stack<char>& op, std::stack<int>& rands) {
-        rands.push(*begin - '0');
-    }
-
-    template<typename It, typename End>
-    void op(It begin, End end, std::stack<char>& op, std::stack<int>& rands) {
+    template <typename It, typename End, typename Expr>
+    void op(It begin, End end, const Expr& expr) {
         if (begin == end) {
-            reduce(op, rands);
-            return;
+            m_result.push_back(expr());
         }
-        
+
+        auto n = expr();
+
+        switch (*begin) {
+        case '+':
+            rand(begin + 1, end, [&n](const auto i) { return i + n; });
+            rand(begin + 1, end, [&expr](const auto i) { return i + expr(); });
+            break;
+        case '-':
+            rand(begin + 1, end, [&n](const auto i) { return i - n; });
+            rand(begin + 1, end, [&expr](const auto i) { return i - expr(); });
+            break;
+        case '*':
+            rand(begin + 1, end, [&n](const auto i) { return i * n; });
+            rand(begin + 1, end, [&expr](const auto i) { return i * expr(); });
+            break;
+        }
     }
 
-    void reduce(std::stack<char>& op, std::stack<int>& rands) {
-        int answer {rands.top()};
-        rands.pop();
-        while (!op.empty()) {
-            switch (op.top()) {
-            case '+':
-                answer = rands.top() + answer;
-                break;
-            case '-':
-                answer = rands.top() - answer;
-                break;
-            case '*':
-                answer = rands.top() * answer;
-                break;
-            }
-            rands.pop();
-            op.pop();
-        }
-    } 
+    template <typename It, typename End, typename Expr>
+    void rand(It begin, End end, const Expr& expr) {
+        int operand = *begin - '0';
+        int n = expr(operand);
+        op(begin + 1, end, [&n]() { return n; });
+        op(begin + 1, end, [&expr, &operand]() { return expr(operand); });
+    }
 
 private:
     std::vector<int> m_result;
