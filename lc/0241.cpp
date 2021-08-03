@@ -1,107 +1,85 @@
 // 0241. Different Ways to Add Parentheses
 // Problem definition: https://leetcode.com/problems/different-ways-to-add-parentheses/
-// Accepted ?
+// Accepted 2021-08-02
+// Cf. https://leetcode.com/problems/different-ways-to-add-parentheses/discuss/1005450/C%2B%2B-Recursive-AST-%2B-Memoization-with-segments-as-the-keys-%2B-explanation
 #define CATCH_CONFIG_RUNNER
 #include "../inc/catch.hpp"
 
 #include <algorithm>
 #include <vector>
 #include <string>
+#include <functional>
+#include <iostream>
+#include <unordered_map>
 
-class Expr {
-public:
-    Expr(Expr* expr) : m_expr{expr}, m_n{0} {}
-    Expr(int n) : m_expr{nullptr}, m_n{n} {}
-    Expr(Expr* expr, int n) : m_expr{expr}, m_n{n} { }
-
-    int operator()() {
-        return m_expr ? (*m_expr)(m_n) : m_n;
-    }
-
-    virtual int operator()(const int i) = 0;
-
-protected:
-    Expr* m_expr;
-    int m_n;
-};
-
-class AddExpr : public Expr {
-public:
-    AddExpr(Expr* expr) : Expr(expr) {}
-    AddExpr(int n) : Expr(n) {}
-    int operator()(const int i) override {
-        return m_expr ? (*m_expr)() + i : i + m_n;
-    }
-};
-
-class SubExpr : public Expr {
-public:
-    SubExpr(Expr* expr) : Expr(expr) {}
-    SubExpr(int n) : Expr(n) {}
-    int operator()(const int i) override {
-        return m_expr ? (*m_expr)() - i : i - m_n;
-    }
-};
-
-class MultExpr : public Expr {
-public:
-    MultExpr(Expr* expr) : Expr(expr) {}
-    MultExpr(int n) : Expr(n) {}
-    int operator()(const int i) override {
-        return m_expr ? (*m_expr)() * i : i * m_n;
+struct pair_hash {
+    size_t operator()(std::pair<int,int> p) const noexcept {
+        return std::hash<int>{}(p.first) ^ (std::hash<int>{}(p.second) << 1);
     }
 };
 
 class Solution {
 public:
     std::vector<int> diffWaysToCompute(std::string expression) {
-        op(expression.begin() + 1, expression.end(), [&expression]() { return expression[0] - '0'; });
-        return m_result;
+        if (expression.empty()) { return {}; }
+        auto nums = parse(expression);
+        return evaluate(nums, 0, nums.size());
     }
 
-    //template <typename It, typename End, typename Expr>
-    //void op(It begin, End end, const Expr& expr) {
-    template <typename Expr>
-    void op(std::string::iterator begin, std::string::iterator end, const Expr& expr) {
-        if (begin == end) {
-            m_result.push_back(expr());
+    std::vector<int> parse(const std::string& expression) {
+        std::vector<int> nums;
+        std::istringstream str{expression};
+        int rand {0};
+        str >> rand;
+        nums.push_back(rand);
+        for (char op{'\0'}; str >> op;) {
+            nums.push_back(op);
+            str >> rand;
+            nums.push_back(rand);
         }
-
-        auto n = expr();
-
-        switch (*begin) {
-        case '+':
-            rand(begin + 1, end, [&n](const int i) { return i + n; });
-            rand(begin + 1, end, [&expr](const int i) { return i + expr(); });
-            break;
-        case '-':
-            rand(begin + 1, end, [&n](const int i) { return i - n; });
-            rand(begin + 1, end, [&expr](const int i) { return i - expr(); });
-            break;
-        case '*':
-            rand(begin + 1, end, [&n](const int i) { return i * n; });
-            rand(begin + 1, end, [&expr](const int i) { return i * expr(); });
-            break;
-        }
+        return nums;
     }
 
-    //template <typename It, typename End, typename Expr>
-    //void rand(It begin, End end, const Expr& expr) {
-    template <typename Expr>
-    void rand(std::string::iterator begin, std::string::iterator end, const Expr& expr) {
-        int operand = *begin - '0';
-        int n = expr(operand);
-        op(begin + 1, end, [&n]() { return n; });
-        op(begin + 1, end, [&expr, &operand]() { return expr(operand); });
+    std::vector<int> evaluate(const std::vector<int>& expr, size_t b, size_t e) {
+        if (b + 1 == e) {
+            return {expr[b]};
+        }
+
+        auto it = m_map.find({b,e});
+        if (it != m_map.end()) {
+            return it->second;
+        }
+
+        std::vector<int> result;
+        for (auto i {b+1}; i < e; i += 2) {
+            auto lhs = evaluate(expr, b, i);
+            auto rhs = evaluate(expr, i + 1, e);
+            for (const auto a : lhs) {
+                for (const auto b : rhs) {
+                    auto op = expr[i];
+                    if (op == '+') {
+                        result.push_back(a + b);
+                    } else if (op == '-') {
+                        result.push_back(a - b);
+                    } else {
+                        result.push_back(a * b);
+                    }
+                }
+            }
+        }
+
+        m_map[{b,e}] = result;
+        return result;
     }
 
 private:
-    std::vector<int> m_result;
+    std::unordered_map<std::pair<int,int>,std::vector<int>,pair_hash> m_map;
 };
 
 TEST_CASE("LC test cases", "[Core]") {
     std::vector<std::tuple<std::string,std::vector<int>>> input {
-        {"2-1-1",{0,2}},{"2*3-4*5",{-34,-14,-10,-10,10}}
+        {"2-1-1",{2,0}},{"2*3-4*5",{-34,-10,-14,-10,10}},{"1",{1}},
+        {"11",{11}}
     };
 
     SECTION("LC test cases") {
