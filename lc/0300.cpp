@@ -1,58 +1,35 @@
 // 0300. Longest Increasing Subsequence
 // Problem definition: https://leetcode.com/problems/longest-increasing-subsequence/
-// Accepted ?
+// Accepted 2021-08-04
+// Cf. https://leetcode.com/problems/longest-increasing-subsequence/discuss/1326780/C%2B%2B-Clean-Easy-O(N2)-and-O(N*log(N))-Solutions
 #define CATCH_CONFIG_RUNNER
 #include "../inc/catch.hpp"
 
 #include <algorithm>
 #include <vector>
-#include <tuple>
-#include <iostream>
+#include <limits>
 
 class Solution {
 public:
     int lengthOfLIS(std::vector<int>& nums) {
-        std::vector<std::tuple<int,int,bool>> seq;
-        for (size_t i {0}; i < nums.size(); ++i) {
-            seq.push_back({nums[i], i, false});
-        }
-        std::sort(seq.begin(), seq.end(), [](const auto& a, const auto& b) {
-            return std::get<0>(a) == std::get<0>(b) ? std::get<1>(a) < std::get<1>(b) :
-                std::get<0>(a) < std::get<0>(b);
-        });
-        for (const auto& [n, i, used] : seq) {
-            std::cout << n << " " << i << " " << used << "\n";
-        }
-        int max {0};
-        for (auto b = seq.begin(); b != seq.end(); ++b) {
-            if (!std::get<2>(*b)) {
-                std::get<2>(*b) = true;
-                max = std::max(max, count(b, seq.end(), 0));
+        std::vector<int> result(1, nums[0]);
+        for (size_t i {1}; i < nums.size(); ++i) {
+            auto offset = std::distance(result.begin(), 
+                std::lower_bound(result.begin(), result.end(), nums[i]));
+            if (offset >= result.size()) {
+                result.push_back(nums[i]);
+            } else {
+                result[offset] = nums[i];
             }
         }
-        return 0;
-    }
-
-    template<typename It, typename End>
-    int count(It begin, End end, int current) {
-        auto [bn, bi, bused] = *begin;
-        std::cout << "Lower bound " << bn << " " << bi << " " << bused << "\n";
-        auto result = std::upper_bound(begin + 1, end, *begin, [](const auto& a, const auto& b) {
-            return std::get<0>(a) < std::get<0>(b) && std::get<1>(a) < std::get<1>(b);
-        });
-        if (result == end) {
-            return current;
-        }
-        auto [n, i, used] = *result;
-        std::cout << "Found " << n << " " << i << " " << used << "\n";
-        std::get<2>(*result) = true;
-        return count(result, end, current + 1);
+        return result.size();
     }
 };
 
 TEST_CASE("LC test cases", "[Core]") {
     std::vector<std::tuple<std::vector<int>,int>> input {
-        {{10,9,2,5,3,7,101,18},4},{{0,1,0,3,2,3},4},{{7,7,7,7,7,7,7},1}
+        {{10,9,2,5,3,7,101,18},4},{{0,1,0,3,2,3},4},{{7,7,7,7,7,7,7},1},
+        {{1,3,6,7,9,4,10,5,6},6}
     };
 
     SECTION("LC test cases") {
