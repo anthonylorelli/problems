@@ -16,17 +16,17 @@ public:
         m_arr[0] = 1;
         int32_t i2 {0}, i3 {0}, i5 {0};
         for (int32_t i {1}; i < m_arr.size(); ++i) {
-            const auto n2 = m_arr[i2] * 2;
-            const auto n3 = m_arr[i3] * 3;
-            const auto n5 = m_arr[i5] * 5;
-            m_arr[i] = std::min(n2, std::min(n3, n5));
+            const auto n2 {m_arr[i2] * 2};
+            const auto n3 {m_arr[i3] * 3};
+            const auto n5 {m_arr[i5] * 5};
+            m_arr[i] = std::min({n2, n3, n5});
             if (m_arr[i] == n2) { i2++; }
             if (m_arr[i] == n3) { i3++; }
             if (m_arr[i] == n5) { i5++; }
         }
     }
 
-    int32_t operator[](const int32_t index) const { return m_arr[index]; }
+    constexpr int32_t operator[](const int32_t index) const { return m_arr[index]; }
 
 private:
     std::array<int32_t,c_max_size> m_arr;
