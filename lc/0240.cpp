@@ -1,6 +1,6 @@
 // 0240. Search a 2D Matrix II
 // Problem definition: https://leetcode.com/problems/search-a-2d-matrix-ii/
-// Accepted ?
+// Accepted 2021-08-09
 #define CATCH_CONFIG_RUNNER
 #include "../inc/catch.hpp"
 
@@ -10,6 +10,13 @@
 class Solution {
 public:
     bool searchMatrix(std::vector<std::vector<int>>& matrix, int target) {
+        for (int row = 0, col = matrix[0].size() - 1; row < matrix.size() && col >= 0;) {
+            const auto n {matrix[row][col]};
+            if (n == target) {
+                return true;
+            }
+            if (n > target) { col--; } else { row++; }
+        }
         return false;
     }
 };
