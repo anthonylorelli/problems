@@ -1,12 +1,13 @@
 // 0095. Unique Binary Search Trees II
 // Problem definition: https://leetcode.com/problems/unique-binary-search-trees-ii/
-// Accepted ?
+// Accepted 2021-08-20
 #define CATCH_CONFIG_RUNNER
 #include "../inc/catch.hpp"
 #include "../inc/treenode.h"
 
 #include <algorithm>
 #include <vector>
+#include <unordered_map>
 
 /**
  * Definition for a binary tree node.
@@ -19,10 +20,65 @@
  *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
+struct pair_hash {
+    size_t operator()(std::pair<int,int> p) const noexcept {
+        return std::hash<int>{}(p.first) ^ (std::hash<int>{}(p.second) << 1);
+    }
+};
+
 class Solution {
 public:
     std::vector<TreeNode*> generateTrees(int n) {
-        
+        return generate(1, n);
+    }
+
+    std::vector<TreeNode*> generate(const int32_t start, const int32_t end) {
+        auto entry = m_map.find({start, end});
+        if (entry != m_map.end()) {
+            return entry->second;
+        }
+
+        if (start > end) {
+            return {nullptr};
+        }
+
+        std::vector<TreeNode*> combos;
+        for (int32_t i {start}; i <= end; ++i) {
+            for (auto l : generate(start, i - 1)) {
+                for (auto r : generate(i + 1, end)) {
+                    combos.push_back(new TreeNode{i, l, r});
+                }
+            }
+        }
+
+        return m_map[{start,end}] = combos;
+    }
+
+private:
+    std::unordered_map<std::pair<int,int>,std::vector<TreeNode*>,pair_hash> m_map;
+};
+
+class Solution_iter {
+public:
+    std::vector<TreeNode*> generateTrees(int n) {
+        return generate(1, n);
+    }
+
+    std::vector<TreeNode*> generate(const int32_t start, const int32_t end) {
+        if (start > end) {
+            return {nullptr};
+        }
+
+        std::vector<TreeNode*> combos;
+        for (int32_t i {start}; i <= end; ++i) {
+            for (auto l : generate(start, i - 1)) {
+                for (auto r : generate(i + 1, end)) {
+                    combos.push_back(new TreeNode{i, l, r});
+                }
+            }
+        }
+
+        return combos;
     }
 };
 
