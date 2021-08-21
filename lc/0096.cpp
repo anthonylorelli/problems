@@ -1,6 +1,6 @@
 // 0096. Unique Binary Search Trees
 // Problem definition: https://leetcode.com/problems/unique-binary-search-trees/
-// Accepted ?
+// Accepted 2021-08.20
 #define CATCH_CONFIG_RUNNER
 #include "../inc/catch.hpp"
 #include "../inc/treenode.h"
@@ -33,22 +33,24 @@ public:
     }
 
     int generate(const int32_t start, const int32_t end) {
-        auto entry = m_map.find({start, end});
-        if (entry != m_map.end()) {
-            return entry->second;
+        auto element = m_map.find({start,end});
+        if (element != m_map.end()) {
+            return element->second;
         }
 
         if (start > end) {
-            return {nullptr};
+            return 0;
         }
 
-        std::vector<TreeNode*> combos;
+        if (start == end) {
+            return 1;
+        }
+
+        int32_t combos {0};
         for (int32_t i {start}; i <= end; ++i) {
-            for (auto l : generate(start, i - 1)) {
-                for (auto r : generate(i + 1, end)) {
-                    combos.push_back(new TreeNode{i, l, r});
-                }
-            }
+            auto left = generate(start, i - 1);
+            auto right = generate(i + 1, end);
+            combos += left == 0 ? right : right == 0 ? left : right * left;
         }
 
         return m_map[{start,end}] = combos;
