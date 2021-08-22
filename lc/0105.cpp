@@ -1,6 +1,7 @@
 // 0105. Construct Binary Tree from Preorder and Inorder Traversal
 // Problem definition: https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/
-// Accepted ?
+// Accepted 2021-08-22
+// Cf. https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/discuss/1402483/C%2B%2B-or-Map-or-Commented
 #define CATCH_CONFIG_RUNNER
 #include "../inc/catch.hpp"
 #include "../inc/treenode.h"
@@ -35,12 +36,7 @@ public:
             return nullptr;
         }
 
-        auto root = new TreeNode{*pre++};
-
-        if (start == end) {
-            return root;
-        }
-
+        auto root = new TreeNode{*m_pre++};
         auto split = m_splits[root->val];
         root->left = make(start, split - 1);
         root->right = make(split + 1, end);
