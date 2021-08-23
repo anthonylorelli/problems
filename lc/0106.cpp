@@ -1,7 +1,6 @@
-// 0105. Construct Binary Tree from Preorder and Inorder Traversal
-// Problem definition: https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/
+// 0106. Construct Binary Tree from Inorder and Postorder Traversal
+// Problem definition: https://leetcode.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/
 // Accepted 2021-08-22
-// Cf. https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/discuss/1402483/C%2B%2B-or-Map-or-Commented
 #define CATCH_CONFIG_RUNNER
 #include "../inc/catch.hpp"
 #include "../inc/treenode.h"
@@ -23,30 +22,30 @@
  */
 class Solution {
 public:
-    TreeNode* buildTree(std::vector<int>& preorder, std::vector<int>& inorder) {
+    TreeNode* buildTree(std::vector<int>& inorder, std::vector<int>& postorder) {
         for (size_t i {0}; i < inorder.size(); ++i) {
-            m_splits[inorder[i]] = i;
+            m_map[inorder[i]] = i;
         }
-        m_pre = preorder.begin();
+        m_post = postorder.rbegin();
         return make(0, inorder.size() - 1);
     }
 
-    TreeNode* make(int32_t start, int32_t end) {
+    TreeNode* make(const int32_t start, const int32_t end) {
         if (start > end) {
             return nullptr;
         }
 
-        auto root = new TreeNode{*m_pre++};
-        auto split = m_splits[root->val];
-        root->left = make(start, split - 1);
+        auto root = new TreeNode{*m_post++};
+        auto split = m_map[root->val];
         root->right = make(split + 1, end);
+        root->left = make(start, split - 1);
 
         return root;
     }
 
 private:
-    std::unordered_map<int,int> m_splits;
-    std::vector<int>::iterator m_pre;
+    std::unordered_map<int32_t,int32_t> m_map;
+    std::vector<int>::reverse_iterator m_post;
 };
 
 // TEST_CASE("LC test cases", "[Core]") {
