@@ -6,12 +6,45 @@
 
 #include <algorithm>
 #include <vector>
+#include <numeric>
 
 class Solution {
 public:
     std::vector<std::vector<int>> combinationSum3(int k, int n) {
-        return {};
+        constexpr auto nums = {1,2,3,4,5,6,7,8,9};
+        constexpr int32_t limit = std::accumulate(nums.begin(), nums.end(), 0);
+        if (n > limit) {
+            return {};
+        }
+        m_k = k;
+        std::vector<int> combo(k);
+        for (int32_t i {0}; i < nums.size(); ++i) {
+            combine(nums.begin() + i, nums.end(), n, combo, 0);
+        }
+        return m_result;
     }
+
+    template <typename It>
+    void combine(It begin, It end, const int32_t delta, std::vector<int>& combo, const int32_t j) {
+        if (delta == 0 && j == m_k) {
+            m_result.push_back(combo);
+            return;
+        }
+        if ((delta == 0 && j != m_k) || j == m_k || begin == end) {
+            return;
+        }
+        if (*begin <= delta) {
+            combo[j] = *begin;
+            combine(begin + 1, end, delta - *begin, combo, j+1);
+        }
+        if (j > 0) {
+            combine(begin + 1, end, delta, combo, j);
+        }
+    }
+
+private:
+    std::vector<std::vector<int>> m_result;
+    int32_t m_k;
 };
 
 TEST_CASE("LC test cases", "[Core]") {
