@@ -1,18 +1,19 @@
 // 0216. Combination Sum III
 // Problem definition: https://leetcode.com/problems/combination-sum-iii/
-// Accepted ?
+// Accepted 2021-08-24
 #define CATCH_CONFIG_RUNNER
 #include "../inc/catch.hpp"
 
 #include <algorithm>
 #include <vector>
 #include <numeric>
+#include <array>
 
 class Solution {
 public:
     std::vector<std::vector<int>> combinationSum3(int k, int n) {
-        constexpr auto nums = {1,2,3,4,5,6,7,8,9};
-        constexpr int32_t limit = std::accumulate(nums.begin(), nums.end(), 0);
+        constexpr std::array<int,9> nums = {1,2,3,4,5,6,7,8,9};
+        const int32_t limit = std::accumulate(nums.begin(), nums.end(), 0);
         if (n > limit) {
             return {};
         }
