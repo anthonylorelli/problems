@@ -1,11 +1,12 @@
 // 0334. Increasing Triplet Subsequence
 // Problem definition: https://leetcode.com/problems/increasing-triplet-subsequence/
-// Accepted ?
+// Accepted 2021-08-27
 #define CATCH_CONFIG_RUNNER
 #include "../inc/catch.hpp"
 
 #include <algorithm>
 #include <vector>
+#include <limits>
 
 class Solution {
 public:
@@ -13,6 +14,20 @@ public:
         if (nums.size() < 3) {
             return false;
         }
+
+        int low {std::numeric_limits<int>::max()}, mid {std::numeric_limits<int>::max()};
+
+        for (const auto n : nums) {
+            if (n <= low) {
+                low = n;
+            } else if (n <= mid) {
+                mid = n;
+            } else {
+                return true;
+            }
+        }
+
+        return false;
     }
 };
 
