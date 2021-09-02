@@ -7,14 +7,12 @@
 #include <algorithm>
 #include <vector>
 
-class Solution {
+class OceanSearch {
 public:
-    std::vector<std::vector<int>> pacificAtlantic(std::vector<std::vector<int>>& matrix) {
-        if (matrix.size() == 0) {
-            return m_ans;
-        }
-        m_m = matrix.size(), m_n = matrix[0].size();
-        m_atlantic = m_pacific = std::vector<std::vector<bool>>(m_m, std::vector<bool>(m_n, false));
+    OceanSearch(const int32_t m, const int32_t n) : m_atlantic(m, std::vector<bool>(n, false)),
+        m_pacific(m, std::vector<bool>(n, false)), m_m{m}, m_n{n} { }
+
+    std::vector<std::vector<int>> search(std::vector<std::vector<int>>& matrix) {
         for (int32_t i {0}; i < m_m; ++i) {
             dfs(matrix, m_pacific, i, 0);
             dfs(matrix, m_atlantic, i, m_n - 1);
@@ -23,17 +21,18 @@ public:
             dfs(matrix, m_pacific, 0, i);
             dfs(matrix, m_atlantic, m_m - 1, i);
         }
-        return m_ans;
+        return m_answer;
     }
 
     void dfs(std::vector<std::vector<int>>& matrix, std::vector<std::vector<bool>>& visited, const int32_t i, const int32_t j) {
         if (visited[i][j]) {
             return;
         }
+
         visited[i][j] = true;
 
         if (m_atlantic[i][j] && m_pacific[i][j]) {
-            m_ans.push_back(std::vector<int>{i,j});
+            m_answer.push_back(std::vector<int>{i,j});
         }
 
         if (i + 1 < m_m && matrix[i + 1][j] >= matrix[i][j]) {
@@ -52,8 +51,16 @@ public:
 
 private:
     std::vector<std::vector<bool>> m_atlantic, m_pacific;
-    std::vector<std::vector<int>> m_ans;
+    std::vector<std::vector<int>> m_answer;
     int32_t m_m, m_n;
+};
+
+class Solution {
+public:
+    std::vector<std::vector<int>> pacificAtlantic(std::vector<std::vector<int>>& matrix) {
+        OceanSearch search(matrix.size(), matrix[0].size());
+        return search.search(matrix);
+    }
 };
 
 TEST_CASE("LC test cases", "[Core]") {
