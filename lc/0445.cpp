@@ -11,7 +11,19 @@
 class Solution {
 public:
     ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
-        return nullptr;
+        auto l3 = to_int(l1) + to_int(l2);
+        return to_list(l3);
+    }
+
+    int32_t to_int(ListNode* node, int32_t n) {
+        return !node ? n : to_int(node->next, (n * 10) + node->val);
+    }
+
+    ListNode* to_list(int32_t n, ListNode* tail) {
+        auto digit {n % 10};
+        auto upper {n / 10};
+        auto head = new ListNode{digit, tail};
+        return upper == 0 ? head : to_list(upper, head);
     }
 };
 
