@@ -1,6 +1,6 @@
 // 0445. Add Two Numbers II
 // Problem definition: https://leetcode.com/problems/add-two-numbers-ii/
-// Accepted ?
+// Accepted 2021-09-06
 #define CATCH_CONFIG_RUNNER
 #include "../inc/catch.hpp"
 #include "../inc/listnode.h"
@@ -11,19 +11,40 @@
 class Solution {
 public:
     ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
-        auto l3 = to_int(l1) + to_int(l2);
-        return to_list(l3);
+        int32_t count_l1 {count(l1, 0)}, count_l2 {count(l2, 0)};
+        if (count_l2 > count_l1) {
+            std::swap(l1, l2);
+            std::swap(count_l1, count_l2);
+        }
+        l2 = pad(l2, count_l1 - count_l2);
+        int32_t carry {0};
+        auto head = add(l1, l2, &carry);
+        return carry > 0 ? new ListNode{carry, head} : head;
     }
 
-    int32_t to_int(ListNode* node, int32_t n) {
-        return !node ? n : to_int(node->next, (n * 10) + node->val);
+    constexpr ListNode* add(ListNode* l1, ListNode* l2, int32_t* carry) const {
+        if (!l1 && !l2) {
+            return nullptr;
+        }
+        int32_t carry_next {0};
+        auto next = add(l1->next, l2->next, &carry_next);
+        int32_t value = l1->val + l2->val + carry_next;
+        auto head = new ListNode{value % 10, next};
+        *carry = value / 10;
+        return head;
     }
 
-    ListNode* to_list(int32_t n, ListNode* tail) {
-        auto digit {n % 10};
-        auto upper {n / 10};
-        auto head = new ListNode{digit, tail};
-        return upper == 0 ? head : to_list(upper, head);
+    constexpr int32_t count(ListNode* node, int32_t n) const {
+        return node ? count(node->next, n + 1) : n;
+    }
+
+    constexpr ListNode* pad(ListNode* node, int32_t count) const {
+        auto head {node};
+        while (count > 0) {
+            head = new ListNode{0, head};
+            count--;
+        }
+        return head;
     }
 };
 
