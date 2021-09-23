@@ -1,6 +1,6 @@
 // 0371. Sum of Two Integers
 // Problem definition: https://leetcode.com/problems/sum-of-two-integers/
-// Accepted ?
+// Accepted 2021-09-21
 #define CATCH_CONFIG_RUNNER
 #include "../inc/catch.hpp"
 #include "../inc/listnode.h"
