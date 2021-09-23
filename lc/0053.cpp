@@ -1,6 +1,7 @@
 // 0053. Maximum Subarray
 // Problem definition: https://leetcode.com/problems/maximum-subarray/
-// Accepted ?
+// Accepted 2021-09-22
+// Cf. https://en.wikipedia.org/wiki/Maximum_subarray_problem#Kadane's_algorithm
 #define CATCH_CONFIG_RUNNER
 #include "../inc/catch.hpp"
 
@@ -10,7 +11,21 @@
 class Solution {
 public:
     int maxSubArray(std::vector<int>& nums) {
-        return 0;
+        int32_t sum {nums[0]}, max {nums[0]};
+        for (int32_t i {1}; i < nums.size(); ++i) {
+            sum = std::max(nums[i], sum + nums[i]);
+            max = std::max(max, sum);
+        }
+        return max;
+    }
+
+    int maxSubArray_foreach(std::vector<int>& nums) {
+        int32_t sum {nums[0]}, max {nums[0]};
+        std::for_each(nums.begin() + 1, nums.end(), [&](const auto n) {
+            sum = std::max(n, sum + n);
+            max = std::max(max, sum);
+        });
+        return max;
     }
 };
 
