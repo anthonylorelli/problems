@@ -19,8 +19,8 @@ public:
         for (const auto c : t) {
             chars[c - 'a']--;
         }
-        auto it = std::find_if(chars.begin(), chars.end(), [](const auto n) { return n != 0; });
-        return it == chars.end();
+        return std::find_if(chars.begin(), chars.end(), 
+            [](const auto n) { return n != 0; }) == chars.end();
     }
 
     bool isAnagram_sort(std::string s, std::string t) {
