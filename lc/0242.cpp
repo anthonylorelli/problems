@@ -12,15 +12,21 @@
 class Solution {
 public:
     bool isAnagram(std::string s, std::string t) {
+        if (s.size() != t.size()) {
+            return false;
+        }
         std::array<int32_t,26> chars{};
         for (const auto c : s) {
             chars[c - 'a']++;
         }
         for (const auto c : t) {
-            chars[c - 'a']--;
+            auto i {c - 'a'};
+            if (chars[i] == 0) {
+                return false;
+            }
+            chars[i]--;
         }
-        return std::find_if(chars.begin(), chars.end(), 
-            [](const auto n) { return n != 0; }) == chars.end();
+        return true;
     }
 
     bool isAnagram_sort(std::string s, std::string t) {
