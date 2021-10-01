@@ -6,13 +6,11 @@
 
 #include <algorithm>
 #include <vector>
-#include <numeric>
 
 class NumMatrix {
 public:
     NumMatrix(std::vector<std::vector<int>>& matrix) : 
-        m_sums{std::vector<std::vector<int>>(matrix.size() + 1, 
-            std::vector<int>(matrix[0].size() + 1))} {
+        m_sums(matrix.size() + 1, std::vector<int>(matrix[0].size() + 1)) {
         for (size_t i {0}; i < matrix.size(); ++i) {
             for (size_t j {0}; j < matrix[0].size(); ++j) {
                 m_sums[i+1][j+1] = m_sums[i+1][j] + m_sums[i][j+1] + matrix[i][j] - m_sums[i][j];
