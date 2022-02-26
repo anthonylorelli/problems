@@ -9,8 +9,18 @@
 class Solution {
 public:
     bool isAdditiveNumber(std::string num) {
+        if (num.length() < 3) { return false; }
+
         return false;
     }
+
+    
+
+private:
+    size_t m_a_start;
+    size_t m_b_start;
+    size_t m_a_len;
+    size_t m_b_len;
 };
 
 TEST_CASE("LC test cases", "[Core]") {
