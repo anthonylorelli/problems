@@ -14,13 +14,9 @@ public:
         return false;
     }
 
-    
-
-private:
-    size_t m_a_start;
-    size_t m_b_start;
-    size_t m_a_len;
-    size_t m_b_len;
+    bool isAdditiveSequence(size_t a_start, size_t a_size, size_t b_start, size_t b_size, 
+        std::string& num) {
+    }
 };
 
 TEST_CASE("LC test cases", "[Core]") {
