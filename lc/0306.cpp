@@ -14,9 +14,27 @@ public:
         return false;
     }
 
+    bool check_sum(size_t start, size_t len, std::string& num) {
+        std::string s1 = num.substr(start, len);
+        auto remaining = num.size() - len;
+        auto limit = remaining / 2;
+        auto start2 = start + len;
+        for (size_t len2 {len}; len2 <= limit; ++len2) {
+            if (num.compare(start2, len2, s1) < 0) {
+                continue;
+            }
+            std::string s2 = num.substr(start2, len2);
+            std::string sum = add(s1, s2);
+            if (num.compare(len + len2, sum.size(), sum) == 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     template <typename It>
     void add_strings(It b1, It e1, It b2, It e2, int32_t carry, std::string& result) {
-        int32_t digit {0};
         if (b1 == e1 && b2 == e2) {
             if (carry > 0) {
                 result.push_back(carry + '0');
@@ -71,6 +89,16 @@ TEST_CASE("LC test cases", "[Core]") {
         s1 = "1";
         s2 = "999";
         REQUIRE(std::string{"1000"} == s.add(s1, s2));
+    }
+
+    SECTION("Compare sum") {
+        Solution s;
+        std::string s1{"123"};
+        std::string s2{"459"};
+        std::string s3{"199100"};
+        REQUIRE(s.check_sum(0, 1, s1));
+        REQUIRE(s.check_sum(0, 1, s2));
+        REQUIRE(s.check_sum(0, 1, s3));
     }
 }
 
