@@ -11,6 +11,13 @@ public:
     bool isAdditiveNumber(std::string num) {
         if (num.length() < 3) { return false; }
 
+        auto limit = num.size() / 3;
+        for (size_t len {1}; len <= limit; ++len) {
+            if (check_sum(0, len, num)) {
+                return true;
+            }
+        }
+
         return false;
     }
 
@@ -26,7 +33,7 @@ public:
             std::string s2 = num.substr(start2, len2);
             std::string sum = add(s1, s2);
             if (num.compare(len + len2, sum.size(), sum) == 0) {
-                return true;
+                return len + len2 + sum.size() == num.size() ? true : check_sum(len, len2, num);
             }
         }
 
@@ -69,17 +76,18 @@ public:
 
 TEST_CASE("LC test cases", "[Core]") {
     std::vector<std::tuple<std::string,bool>> input {
-        {{"112358", true}, {"199100199", true}}
+        {{"112358", true}, {"199100199", true}, {"19995555", false}}
     };
 
-    // SECTION("LC test cases") {
-    //     std::for_each(std::begin(input), std::end(input),
-    //         [&input](auto& p) {
-    //             Solution s;
-    //             auto& [testInput, expected] = p;
-    //             REQUIRE(s.isAdditiveNumber(testInput) == expected);
-    //         });
-    // }
+    SECTION("LC test cases") {
+        std::for_each(std::begin(input), std::end(input),
+            [&input](auto& p) {
+                Solution s;
+                auto& [testInput, expected] = p;
+                REQUIRE(s.isAdditiveNumber(testInput) == expected);
+            });
+    }
+
     SECTION("Add strings") {
         Solution s;
         std::string s1{"123"};
