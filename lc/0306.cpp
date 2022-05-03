@@ -5,18 +5,32 @@
 #include "../inc/catch.hpp"
 
 #include <string>
+#include <string_view>
 
 class Solution {
 public:
     bool isAdditiveNumber(std::string num) {
         if (num.length() < 3) { return false; }
 
-        auto limit = num.size() / 3;
         for (size_t len {1}; len <= limit; ++len) {
-            if (check_sum(0, len, num)) {
+            if (check_sum(num.substr(0, len), len, num)) {
                 return true;
             }
         }
+
+        return false;
+    }
+
+    bool check_sum(const std::string& str1, const size_t next, const std::string& num) {
+        if (next == num.size()) {
+            return true;
+        }
+
+        if (num[next] == '0') {
+            return false;
+        }
+
+        auto remaining = num.size() - (str1.size() * 2);
 
         return false;
     }
