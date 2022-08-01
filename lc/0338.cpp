@@ -10,8 +10,26 @@
 class Solution {
 public:
     std::vector<int> countBits(int n) {
-        return {};
+        if (n == 0) { return m_0; }
+        if (n == 1) { return m_1; }
+
+        std::vector<int> result = {0, 1, 1};
+        
+        for (int32_t i {3}; i <= n; ++i) {
+            int32_t rem  {i % 2};
+            int32_t pow {i / 2};
+            if (rem == 0 && pow > 0) {
+                result.push_back(1);
+            } else {
+                result.push_back(result[pow * 2] + result[rem]);
+            }
+        }
+        return result;
     }
+
+private:
+    std::vector<int> m_0 = {0};
+    std::vector<int> m_1 = {0, 1};
 };
 
 TEST_CASE("LC test cases", "[Core]") {
@@ -24,7 +42,7 @@ TEST_CASE("LC test cases", "[Core]") {
             [&input](auto& p) {
                 Solution s;
                 auto& [testInput, expected] = p;
-                REQUIRE(s.countBits(testInput, k) == expected);
+                REQUIRE(s.countBits(testInput) == expected);
             });
     }
 }
