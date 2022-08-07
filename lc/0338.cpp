@@ -17,10 +17,9 @@ public:
         int32_t largest_2 {2};
         
         for (int32_t i {3}; i <= n; ++i) {
-            int32_t div {i / largest_2};
-            if (div > 1) { largest_2 <<= 1; }
-            int32_t rem {i - largest_2};
-            result.push_back(rem == 0 ? 1 : result[rem] + 1);
+            if ((i / largest_2) > 1) { largest_2 <<= 1; }
+            const int32_t rem {i - largest_2};
+            result.push_back(result[rem] + 1);
         }
 
         return result;
