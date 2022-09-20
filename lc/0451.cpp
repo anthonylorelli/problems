@@ -13,7 +13,26 @@
 class Solution {
 public:
     std::string frequencySort(std::string s) {
-        int count[256]{};
+        std::pair<int,char> count[128]{};
+        for (auto c : s) {
+            count[c].first++;
+            count[c].second = c;
+        }
+        std::sort(std::begin(count), std::end(count), [](auto a, auto b) {
+            return a.first == b.first ? a.second > b.second : a.first > b.first;
+        });
+        std::string answer;
+        for (size_t i {0}; count[i].first != 0; ++i) {
+            auto c {count[i].second};
+            for (size_t j {0}; j < count[i].first; ++j) {
+                answer.push_back(c);
+            }
+        }
+        return answer;
+    }
+
+    std::string frequencySort_secondsuccess(std::string s) {
+        int count[128]{};
         for (auto c : s) {
             count[c]++;
         }
