@@ -8,6 +8,7 @@
 #include <string>
 #include <queue>
 #include <vector>
+#include <array>
 
 struct Record
 {
@@ -17,8 +18,38 @@ struct Record
 };
 
 class Solution {
+private:
+    bool all_zero(std::array<int,26>& table) {
+        for (auto count : table) {
+            if (count != 0) { return false; }
+        }
+        return true;
+    }
+
 public:
     std::vector<int> findAnagrams(std::string s, std::string p) {
+        size_t len {p.size()};
+        std::vector<int> result;
+        if (len > s.size()) {
+            return result;
+        }
+        std::array<int,26> table{};
+        for (auto c : p) {
+            table[c - 'a']++;
+        }
+        std::for_each(s.begin(), s.begin() + len - 1, [&](auto c) {
+            table[c - 'a']--;
+        });
+        for (size_t i {len - 1}; i < s.size(); i++, table[s[i - len] - 'a']++) {
+            table[s[i] - 'a']--;
+            if (all_zero(table)) {
+                result.push_back(i - (len - 1));
+            }
+        }
+        return result;
+    }
+
+    std::vector<int> findAnagrams_first(std::string s, std::string p) {
         size_t len {p.size()};
         std::vector<int> result;
         if (len > s.size()) {
